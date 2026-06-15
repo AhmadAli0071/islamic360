@@ -1,0 +1,8 @@
+{
+  "name": "Theislamic360",
+  "description": "A comprehensive Islamic lifestyle platform providing prayer times, Qibla finder, Quran academy, Islamic calendar, history, and daily recommendations.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

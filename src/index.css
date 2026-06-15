@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* 🎨 THEME CUSTOM VARIABLES DECLARATIONS */
+:root {
+  --primary: #1B5E20; /* Deep Islamic Green */
+  --primary-hover: #123F15;
+  --secondary: #D4AF37; /* Gold Accent */
+  --secondary-hover: #BCA032;
+  --background: #FFF8E1; /* Warm Cream */
+  --surface: #FFFFFF; /* High-contrast card background */
+  
+  --text-primary: #1A1A1A;
+  --text-secondary: #555555;
+  --accent: #00897B; /* Teal Accent */
+  --ad-bg: #F5F5F5;
+  --border: #E0D9C4;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --header-bg: rgba(255, 255, 255, 0.95);
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Poppins', 'Noto Sans Arabic', sans-serif;
+  --font-arabic: 'Noto Naskh Arabic', serif;
+}
+
+/* 🌙 DARK MODE OVERRIDES */
+.dark {
+  --primary: #2E7D32;
+  --primary-hover: #1B5E20;
+  --secondary: #F3C63F;
+  --secondary-hover: #D4AF37;
+  --background: #111827; /* Dark slate */
+  --surface: #1F2937; /* Warm charcoals */
+  
+  --text-primary: #F9FAF2;
+  --text-secondary: #9CA3AF;
+  --accent: #0D9488;
+  --ad-bg: #1F2937;
+  --border: #374151;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --header-bg: rgba(31, 41, 55, 0.95);
+}
+
+/* Global Reset settings */
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+/* 🎯 CUSTOM CSS ANIMATIONS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ⚠️ AD CONTAINERS STYLINGS */
+.ad-container {
+  width: 100%;
+}
+
+.ad-label {
+  font-size: 10px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 🖨️ DETAILED PRINT STYLES */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  
+  /* Hide interactive, accessory digital items on printers */
+  header, 
+  footer, 
+  aside, 
+  nav, 
+  .none-print,
+  .ad-container,
+  button, 
+  input, 
+  select,
+  .fixed,
+  .absolute {
+    display: none !important;
+  }
+  
+  /* Expand the main workspace to A4 parameters gracefully */
+  main,
+  .printable-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #CCC !important;
+    padding: 6px 12px !important;
+    color: #000 !important;
+  }
+}
