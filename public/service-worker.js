@@ -66,12 +66,33 @@ self.addEventListener('message', (event) => {
 // Notification click: focus or open app
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  const url = event.notification.data?.url || '/';
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url === '/' && 'focus' in client) return client.focus();
+        if (client.url === url && 'focus' in client) return client.focus();
       }
-      if (clients.openWindow) return clients.openWindow('/');
+      if (clients.openWindow) return clients.openWindow(url);
     })
   );
+});
+
+// Handle push events from ad networks (Adsterra / PropellerAds)
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  try {
+    const data = event.data.json();
+    const title = data.title || 'Islamic360';
+    const options = {
+      body: data.body || '',
+      icon: data.icon || '/favicon.ico',
+      badge: '/favicon.ico',
+      vibrate: [200, 100, 200],
+      requireInteraction: true,
+      data: { url: data.url || '/', network: data.network || 'adsterra' },
+    };
+    event.waitUntil(self.registration.showNotification(title, options));
+  } catch {
+    // Silent fail
+  }
 });
