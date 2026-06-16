@@ -62,8 +62,15 @@ app.get('*', (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Islamic360 server running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Islamic360 server running on port ${PORT}`);
+  });
+}).catch((err) => {
+  console.error('Failed to start server:', err.message);
+  app.listen(PORT, () => {
+    console.log(`Islamic360 server running on port ${PORT} (without database)`);
+  });
 });
 
 export default app;
