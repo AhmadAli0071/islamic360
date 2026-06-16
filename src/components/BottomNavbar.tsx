@@ -31,12 +31,10 @@ export default function BottomNavbar({ activeTab, onTabChange, language }: Botto
     setShowMore(false);
   };
 
-  const tabs = showMore ? moreTabs : mainTabs;
-
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-[var(--border)] shadow-xl flex items-center justify-around z-40 pb-safe transition-colors duration-300">
-        {tabs.map(tab => {
+        {mainTabs.map(tab => {
           const isActive = activeTab === tab.id;
           return (
             <button
@@ -59,15 +57,15 @@ export default function BottomNavbar({ activeTab, onTabChange, language }: Botto
           );
         })}
 
-        {!showMore && (
-          <button
-            onClick={() => setShowMore(true)}
-            className={`flex flex-col items-center justify-center w-14 h-full cursor-pointer select-none transition-all active:scale-95 duration-100 text-gray-400 dark:text-gray-500`}
-          >
-            <span className="text-xl block">•••</span>
-            <span className="text-[9px] mt-0.5 tracking-tight font-heading">{language === 'en' ? 'More' : 'مزید'}</span>
-          </button>
-        )}
+        <button
+          onClick={() => setShowMore(!showMore)}
+          className={`flex flex-col items-center justify-center w-14 h-full cursor-pointer select-none transition-all active:scale-95 duration-100 ${
+            showMore ? 'text-emerald-700 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500'
+          }`}
+        >
+          <span className="text-xl block">{showMore ? '✕' : '•••'}</span>
+          <span className="text-[9px] mt-0.5 tracking-tight font-heading">{language === 'en' ? 'More' : 'مزید'}</span>
+        </button>
       </nav>
 
       {showMore && (
