@@ -4,6 +4,8 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
+  '/icons/icon-192.svg',
+  '/icons/icon-512.svg',
 ];
 
 // Install: cache static assets
