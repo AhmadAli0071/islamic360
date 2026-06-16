@@ -7,10 +7,28 @@ import {
   createCourse, updateCourse, deleteCourse,
   getTeachers, createTeacher, updateTeacher, deleteTeacher,
 } from '../controllers/adminController.js';
+import seedEvents from '../scripts/seedEvents.js';
+import seedDuas from '../scripts/seedDuas.js';
+import seedHadith from '../scripts/seedHadith.js';
+import seedCourses from '../scripts/seedCourses.js';
+import seedWazifas from '../scripts/seedWazifas.js';
 
 const router = Router();
 
 router.get('/stats', getAdminStats);
+
+router.post('/seed', async (req, res) => {
+  try {
+    await seedEvents();
+    await seedDuas();
+    await seedHadith();
+    await seedCourses();
+    await seedWazifas();
+    res.json({ success: true, message: 'All data seeded successfully!' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
 
 router.post('/events', createEvent);
 router.put('/events/:id', updateEvent);
