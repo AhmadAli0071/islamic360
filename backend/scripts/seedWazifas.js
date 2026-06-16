@@ -1,3 +1,5 @@
+import Wazifa from '../models/Wazifa.js';
+
 const wazifas = [
   {
     dayOfYear: 1,
@@ -4017,7 +4019,15 @@ const wazifas = [
 ];
 
 export default async function seedWazifas() {
-  console.log(`Seeding ${wazifas.length} wazifas for 365 days...`);
+  try {
+    console.log(`Seeding ${wazifas.length} wazifas for 365 days...`);
+    await Wazifa.deleteMany({});
+    await Wazifa.insertMany(wazifas);
+    console.log(`${wazifas.length} Wazifas seeded successfully`);
+  } catch (error) {
+    console.error('Error seeding wazifas:', error.message);
+    throw error;
+  }
 }
 
 export { wazifas };
