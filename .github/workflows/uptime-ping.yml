@@ -1,0 +1,13 @@
+name: Uptime Ping
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Islamic360
+        run: curl -s -o /dev/null -w "%{http_code}" https://islamic360.onrender.com
