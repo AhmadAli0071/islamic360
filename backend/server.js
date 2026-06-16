@@ -19,7 +19,7 @@ import wazifaRoutes from './routes/wazifaRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 
-dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '.env') });
+dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

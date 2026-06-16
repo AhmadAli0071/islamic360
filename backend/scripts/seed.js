@@ -9,7 +9,7 @@ import seedCourses from './seedCourses.js';
 import seedWazifas from './seedWazifas.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, '..', '.env') });
+dotenv.config({ path: join(__dirname, '..', '..', '.env') });
 
 const seed = async () => {
   try {
