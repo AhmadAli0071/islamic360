@@ -12,7 +12,7 @@ export const CITIES_DB: CityData[] = [
     maghrib: '19:04',
     isha: '20:34',
     timezone: 'Asia/Riyadh',
-    coords: { lat: 21.3891, lng: 39.8579, qibla: 251 } // Centered at Kaaba, angle is 0/self, let's use 251 relative to Compass North standard or local coordinates
+    coords: { lat: 21.3891, lng: 39.8579, qibla: 251 }
   },
   {
     name: 'Karachi',
@@ -27,6 +27,66 @@ export const CITIES_DB: CityData[] = [
     coords: { lat: 24.8607, lng: 67.0011, qibla: 268 }
   },
   {
+    name: 'Lahore',
+    country: 'Pakistan',
+    fajr: '04:05',
+    sunrise: '05:31',
+    dhuhr: '12:18',
+    asr: '15:40',
+    maghrib: '19:05',
+    isha: '20:31',
+    timezone: 'Asia/Karachi',
+    coords: { lat: 31.5497, lng: 74.3436, qibla: 265 }
+  },
+  {
+    name: 'Islamabad',
+    country: 'Pakistan',
+    fajr: '03:52',
+    sunrise: '05:20',
+    dhuhr: '12:10',
+    asr: '15:35',
+    maghrib: '19:00',
+    isha: '20:28',
+    timezone: 'Asia/Karachi',
+    coords: { lat: 33.6844, lng: 73.0479, qibla: 261 }
+  },
+  {
+    name: 'Dhaka',
+    country: 'Bangladesh',
+    fajr: '04:10',
+    sunrise: '05:35',
+    dhuhr: '12:15',
+    asr: '15:40',
+    maghrib: '18:55',
+    isha: '20:20',
+    timezone: 'Asia/Dhaka',
+    coords: { lat: 23.8103, lng: 90.4125, qibla: 279 }
+  },
+  {
+    name: 'Mumbai',
+    country: 'India',
+    fajr: '04:30',
+    sunrise: '05:55',
+    dhuhr: '12:35',
+    asr: '15:55',
+    maghrib: '19:15',
+    isha: '20:40',
+    timezone: 'Asia/Kolkata',
+    coords: { lat: 19.0760, lng: 72.8777, qibla: 276 }
+  },
+  {
+    name: 'Delhi',
+    country: 'India',
+    fajr: '04:20',
+    sunrise: '05:45',
+    dhuhr: '12:25',
+    asr: '15:50',
+    maghrib: '19:05',
+    isha: '20:30',
+    timezone: 'Asia/Kolkata',
+    coords: { lat: 28.7041, lng: 77.1025, qibla: 272 }
+  },
+  {
     name: 'Cairo',
     country: 'Egypt',
     fajr: '03:09',
@@ -37,6 +97,66 @@ export const CITIES_DB: CityData[] = [
     isha: '20:37',
     timezone: 'Africa/Cairo',
     coords: { lat: 30.0444, lng: 31.2357, qibla: 136 }
+  },
+  {
+    name: 'Istanbul',
+    country: 'Turkey',
+    fajr: '03:30',
+    sunrise: '05:10',
+    dhuhr: '12:20',
+    asr: '16:00',
+    maghrib: '19:30',
+    isha: '21:00',
+    timezone: 'Europe/Istanbul',
+    coords: { lat: 41.0082, lng: 28.9784, qibla: 150 }
+  },
+  {
+    name: 'Riyadh',
+    country: 'Saudi Arabia',
+    fajr: '04:00',
+    sunrise: '05:25',
+    dhuhr: '12:10',
+    asr: '15:30',
+    maghrib: '18:55',
+    isha: '20:25',
+    timezone: 'Asia/Riyadh',
+    coords: { lat: 24.7136, lng: 46.6753, qibla: 248 }
+  },
+  {
+    name: 'Dubai',
+    country: 'UAE',
+    fajr: '04:20',
+    sunrise: '05:45',
+    dhuhr: '12:30',
+    asr: '16:00',
+    maghrib: '19:15',
+    isha: '20:40',
+    timezone: 'Asia/Dubai',
+    coords: { lat: 25.2048, lng: 55.2708, qibla: 260 }
+  },
+  {
+    name: 'Kuala Lumpur',
+    country: 'Malaysia',
+    fajr: '05:10',
+    sunrise: '06:35',
+    dhuhr: '13:10',
+    asr: '16:30',
+    maghrib: '19:50',
+    isha: '21:10',
+    timezone: 'Asia/Kuala_Lumpur',
+    coords: { lat: 3.1390, lng: 101.6869, qibla: 293 }
+  },
+  {
+    name: 'Jakarta',
+    country: 'Indonesia',
+    fajr: '04:25',
+    sunrise: '05:50',
+    dhuhr: '12:25',
+    asr: '15:45',
+    maghrib: '19:00',
+    isha: '20:25',
+    timezone: 'Asia/Jakarta',
+    coords: { lat: -6.2088, lng: 106.8456, qibla: 298 }
   },
   {
     name: 'London',
@@ -61,7 +181,43 @@ export const CITIES_DB: CityData[] = [
     isha: '22:07',
     timezone: 'America/New_York',
     coords: { lat: 40.7128, lng: -74.0060, qibla: 58 }
-  }
+  },
+  {
+    name: 'Toronto',
+    country: 'Canada',
+    fajr: '03:55',
+    sunrise: '05:30',
+    dhuhr: '13:05',
+    asr: '17:05',
+    maghrib: '20:40',
+    isha: '22:15',
+    timezone: 'America/Toronto',
+    coords: { lat: 43.6532, lng: -79.3832, qibla: 58 }
+  },
+  {
+    name: 'Sydney',
+    country: 'Australia',
+    fajr: '04:45',
+    sunrise: '06:15',
+    dhuhr: '12:55',
+    asr: '16:20',
+    maghrib: '19:35',
+    isha: '21:05',
+    timezone: 'Australia/Sydney',
+    coords: { lat: -33.8688, lng: 151.2093, qibla: 277 }
+  },
+  {
+    name: 'Medina',
+    country: 'Saudi Arabia',
+    fajr: '04:10',
+    sunrise: '05:35',
+    dhuhr: '12:20',
+    asr: '15:40',
+    maghrib: '19:05',
+    isha: '20:30',
+    timezone: 'Asia/Riyadh',
+    coords: { lat: 24.4672, lng: 39.6112, qibla: 252 }
+  },
 ];
 
 export const ACADEMY_COURSES: AcademicCourse[] = [

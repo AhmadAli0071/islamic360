@@ -10,16 +10,45 @@ import QuranAcademy from './components/QuranAcademy';
 import IslamicCalendar from './components/IslamicCalendar';
 import IslamicHistory from './components/IslamicHistory';
 import AdContainer from './components/AdContainer';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import AdminPanel from './components/AdminPanel';
+import DuasPage from './components/DuasPage';
+import HadithPage from './components/HadithPage';
+import WazifaPage from './components/WazifaPage';
+import TasbeehCounter from './components/TasbeehCounter';
+import AsmaUlHusna from './components/AsmaUlHusna';
+import AdsterraPush from './components/ads/AdsterraPush';
+import AdMavenPopunder from './components/ads/AdMavenPopunder';
 import { CITIES_DB } from './prayerData';
-import { CityData, HistoryEvent } from './types';
+import { CityData } from './types';
+
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function findNearestCity(lat: number, lng: number): CityData {
+  let nearest = CITIES_DB[0];
+  let minDist = Infinity;
+  for (const city of CITIES_DB) {
+    const dist = haversineDistance(lat, lng, city.coords.lat, city.coords.lng);
+    if (dist < minDist) {
+      minDist = dist;
+      nearest = city;
+    }
+  }
+  return nearest;
+}
 
 export default function App() {
   // Master states
   const [activeTab, setActiveTab] = useState<string>('home');
   const [currentCity, setCurrentCity] = useState<CityData>(CITIES_DB[0]); // Defaults to Mecca
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [language, setLanguage] = useState<'en' | 'ur'>('en');
-  const [selectedHistoryEvent, setSelectedHistoryEvent] = useState<HistoryEvent | null>(null);
+  const [language, setLanguage] = useState<'en' | 'ur'>((localStorage.getItem('theislamic360_lang') as 'en' | 'ur') || 'en');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Load and apply dark theme from localStorage on initial boot
@@ -31,6 +60,34 @@ export default function App() {
     } else {
       setDarkMode(false);
       document.documentElement.classList.remove('dark');
+    }
+    // Apply RTL for Urdu
+    const savedLang = localStorage.getItem('theislamic360_lang');
+    if (savedLang === 'ur') {
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.documentElement.dir = 'ltr';
+    }
+  }, []);
+
+  // Auto-detect location on first load
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const nearest = findNearestCity(position.coords.latitude, position.coords.longitude);
+          setCurrentCity(nearest);
+          localStorage.setItem('theislamic360_city', JSON.stringify({ name: nearest.name, country: nearest.country }));
+          const lang = localStorage.getItem('theislamic360_lang') || 'en';
+          const msg = lang === 'en'
+            ? `📍 Location detected: ${nearest.name}, ${nearest.country}`
+            : `📍 مقام کی نشاندہی: ${nearest.name}، ${nearest.country}`;
+          setToastMessage(msg);
+        },
+        () => {
+          // Location denied — keep default (Mecca)
+        }
+      );
     }
   }, []);
 
@@ -68,7 +125,6 @@ export default function App() {
             currentCity={currentCity}
             language={language}
             onTabChange={setActiveTab}
-            onSelectHistoryEvent={setSelectedHistoryEvent}
             onSetRemindEvent={handleSetRemindEvent}
           />
         );
@@ -84,21 +140,44 @@ export default function App() {
         return (
           <IslamicHistory
             language={language}
-            selectedEvent={selectedHistoryEvent}
-            onSelectEvent={setSelectedHistoryEvent}
           />
         );
+      case 'admin':
+        return <AdminPanel language={language} />;
+      case 'duas':
+        return <DuasPage language={language} />;
+      case 'hadith':
+        return <HadithPage language={language} />;
+      case 'wazifa':
+        return <WazifaPage language={language} />;
+      case 'tasbeeh':
+        return <TasbeehCounter language={language} />;
+      case 'asma':
+        return <AsmaUlHusna language={language} />;
       default:
         return (
           <Homepage
             currentCity={currentCity}
             language={language}
             onTabChange={setActiveTab}
-            onSelectHistoryEvent={setSelectedHistoryEvent}
             onSetRemindEvent={handleSetRemindEvent}
           />
         );
     }
+  };
+
+  // Real-time clock for status bar
+  const [statusTime, setStatusTime] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setStatusTime(new Date()), 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  const formatStatusTime = (d: Date) => {
+    const h = d.getHours(), m = d.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
   };
 
   return (
@@ -116,11 +195,18 @@ export default function App() {
         </div>
       )}
 
+      {/* PWA INSTALL PROMPT */}
+      <PWAInstallPrompt />
+
+      {/* AD NETWORKS — Global components */}
+      <AdsterraPush language={language} />
+      <AdMavenPopunder />
+
       {/* ==================== 📱 MOBILE APP LAYOUT (< 768px) ==================== */}
       <div className="block md:hidden flex-1 flex flex-col pb-20">
         {/* Sleek iOS Status Bar */}
         <div className="bg-emerald-950 dark:bg-gray-950 text-white px-5 py-2.5 flex justify-between items-center text-[10px] font-bold select-none sticky top-0 z-50">
-          <div>9:41 AM</div>
+          <div>{formatStatusTime(statusTime)}</div>
           <div className="flex items-center space-x-1.5">
             <span>📶</span>
             <span>📶</span>
@@ -157,6 +243,8 @@ export default function App() {
               onClick={() => {
                 const lang = language === 'en' ? 'ur' : 'en';
                 setLanguage(lang);
+                localStorage.setItem('theislamic360_lang', lang);
+                document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
                 showToast(lang === 'en' ? '🌎 Portal language updated to English' : '🌎 پورٹل کی زبان اردو میں تبدیل کر دی گئی ہے');
               }}
               className="px-1.5 py-0.5 text-[8px] font-extrabold rounded bg-[var(--background)] text-[var(--text-primary)] border border-[var(--border)] uppercase"
@@ -175,7 +263,7 @@ export default function App() {
         </div>
 
         {/* Scrollable Active Screen Body */}
-        <div className="flex-1 pt-4 px-1">
+        <div className="flex-1 pt-4">
           {renderActivePage()}
         </div>
       </div>
@@ -187,6 +275,7 @@ export default function App() {
           currentCity={currentCity}
           onCityChange={(city) => {
             setCurrentCity(city);
+            localStorage.setItem('theislamic360_city', JSON.stringify({ name: city.name, country: city.country }));
             showToast(`📍 Switched current prayer calculation location to ${city.name}, ${city.country}`);
           }}
           darkMode={darkMode}
@@ -194,6 +283,8 @@ export default function App() {
           language={language}
           onLanguageChange={(lang) => {
             setLanguage(lang);
+            localStorage.setItem('theislamic360_lang', lang);
+            document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
             showToast(lang === 'en' ? '🌎 Portal language updated to English' : '🌎 پورٹل کی زبان اردو میں تبدیل کر دی گئی ہے');
           }}
           activeTab={activeTab}

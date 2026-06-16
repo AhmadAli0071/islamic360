@@ -1,0 +1,59 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import connectDB from './config/db.js';
+import errorHandler from './middleware/errorHandler.js';
+
+import prayerRoutes from './routes/prayerRoutes.js';
+import qiblaRoutes from './routes/qiblaRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import duaRoutes from './routes/duaRoutes.js';
+import hadithRoutes from './routes/hadithRoutes.js';
+import courseRoutes from './routes/courseRoutes.js';
+import wazifaRoutes from './routes/wazifaRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+
+dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '.env') });
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+connectDB();
+
+app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(compression());
+app.use(morgan('dev'));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Islamic360 API is running' });
+});
+
+app.use('/api/prayers', prayerRoutes);
+app.use('/api/qibla', qiblaRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/duas', duaRoutes);
+app.use('/api/hadith', hadithRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/wazifas', wazifaRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin', adminRoutes);
+
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Islamic360 server running on port ${PORT}`);
+});
+
+export default app;

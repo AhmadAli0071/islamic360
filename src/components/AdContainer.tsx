@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { AD_CONFIG, getAdNetworkForPlacement } from '../config/ads';
+import { useAdNetwork } from '../hooks/useAdNetwork';
 
 interface AdContainerProps {
   id: string;
-  size: string; // e.g. "728x90", "300x250", "300x600", "320x50"
+  size: string;
   type: 'leaderboard' | 'rectangle' | 'sidebar' | 'mobile-sticky' | 'native';
   className?: string;
   onClose?: () => void;
 }
 
 export default function AdContainer({ id, size, type, className = '', onClose }: AdContainerProps) {
-  // Respecting Tablet/Mobile responsive visibility rules
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [adReady, setAdReady] = useState(false);
+  const { loading, loaded, error, network } = useAdNetwork(id);
+
   let responsiveClasses = 'ad-container ';
   if (type === 'sidebar') {
     responsiveClasses += 'hidden md:block md:sticky md:top-24 ';
@@ -19,15 +24,55 @@ export default function AdContainer({ id, size, type, className = '', onClose }:
     responsiveClasses += 'w-full max-w-4xl mx-auto ';
   }
 
+  // Load real ad when network is ready
+  useEffect(() => {
+    if (loaded && network && containerRef.current) {
+      const timer = setTimeout(() => setAdReady(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loaded, network]);
+
+  // Real ad rendering based on network
+  const renderRealAd = () => {
+    if (!network || !adReady) return null;
+
+    switch (network) {
+      case 'adsterra': {
+        const zoneId = (AD_CONFIG.adsterra.banners as any)[id]?.zoneId;
+        if (!zoneId) return null;
+        return (
+          <ins className="adsbyadsterra"
+            style={{ display: 'block' }}
+            data-zone={zoneId}
+            data-type={type === 'mobile-sticky' ? 'anchor' : 'banner'} />
+        );
+      }
+      case 'admaven': {
+        const zoneId = (AD_CONFIG.admaven.banner as any)[id]?.zoneId;
+        if (!zoneId) return null;
+        return (
+          <div data-admaven-zone={zoneId}
+            className="admaven-ad-unit" />
+        );
+      }
+      case 'propellerads':
+        return (
+          <div data-propeller-zone={AD_CONFIG.propellerads.banners.zoneId}
+            className="propeller-ad-unit" />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div
       id={id}
+      ref={containerRef}
       className={`${responsiveClasses} ${className}`}
-      style={{
-        margin: type === 'mobile-sticky' ? '0' : '20px 0',
-      }}
+      style={{ margin: type === 'mobile-sticky' ? '0' : '20px 0' }}
     >
-      <div className={`relative bg-[#F9F9F9] dark:bg-[#1E293B] border border-dashed border-[#DDD] dark:border-[#475569] rounded-lg p-2.5 text-center overflow-hidden transition-all duration-300 w-full`}>
+      <div className="relative bg-[#F9F9F9] dark:bg-[#1E293B] border border-dashed border-[#DDD] dark:border-[#475569] rounded-lg p-2.5 text-center overflow-hidden transition-all duration-300 w-full">
         {onClose && (
           <button
             onClick={onClose}
@@ -37,21 +82,43 @@ export default function AdContainer({ id, size, type, className = '', onClose }:
             ✕
           </button>
         )}
-        
-        {/* Ad label */}
+
         <div className="text-[9px] uppercase tracking-widest text-[#999] dark:text-[#64748B] mb-1 font-semibold">
           {type === 'native' ? 'Sponsored' : 'Advertisement'}
         </div>
 
-        {/* Ad Placeholder Content */}
-        <div className="flex flex-col items-center justify-center p-3 py-4 min-h-[50px]">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-            Ad Space — {size}
+        {/* Loading state */}
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
           </div>
-          <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
-            Supports doubleclick, AdSense & Direct sales networks
+        )}
+
+        {/* Real ad */}
+        {!loading && loaded && network && renderRealAd()}
+
+        {/* Error / fallback */}
+        {!loading && error && (
+          <div className="flex flex-col items-center justify-center p-3 py-4 min-h-[50px]">
+            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+              Ad Space — {size}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Placeholder (testing mode or no network) */}
+        {!loading && !loaded && !error && (
+          <div className="flex flex-col items-center justify-center p-3 py-4 min-h-[50px]">
+            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+              Ad Space — {size}
+            </div>
+            <div className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+              {AD_CONFIG.global.testingMode
+                ? '🔧 Testing Mode — Add IDs in src/config/ads.ts'
+                : 'Ad will appear here'}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

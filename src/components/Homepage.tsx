@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { CityData, AcademicCourse, HistoryEvent } from '../types';
-import { ACADEMY_COURSES, HISTORY_EVENTS, UPCOMING_EVENTS, getHijriDateString, getFullDayName } from '../prayerData';
+import { CityData, AcademicCourse } from '../types';
+import { HISTORY_EVENTS, UPCOMING_EVENTS, getHijriDateString, getFullDayName } from '../prayerData';
 import AdContainer from './AdContainer';
 
 interface HomepageProps {
   currentCity: CityData;
   language: 'en' | 'ur';
   onTabChange: (tab: string) => void;
-  onSelectHistoryEvent: (event: HistoryEvent) => void;
   onSetRemindEvent: (name: string) => void;
 }
 
@@ -15,7 +14,6 @@ export default function Homepage({
   currentCity,
   language,
   onTabChange,
-  onSelectHistoryEvent,
   onSetRemindEvent
 }: HomepageProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -300,10 +298,7 @@ export default function Homepage({
           </p>
           
           <button
-            onClick={() => {
-              onSelectHistoryEvent(historyEventPreview);
-              onTabChange('history');
-            }}
+            onClick={() => onTabChange('history')}
             className="inline-flex items-center space-x-1 text-xs font-semibold text-emerald-600 dark:text-amber-400 hover:underline cursor-pointer pt-1"
           >
             <span>{language === 'en' ? 'Explore details & Amal' : 'پورا واقعہ پڑھیں اور دعائیں'}</span>
@@ -394,92 +389,7 @@ export default function Homepage({
         </button>
       </section>
 
-      {/* 11. FEATURED QURAN COURSES */}
-      <section className="space-y-4">
-        <div className="flex justify-between items-baseline">
-          <h3 className="font-heading font-bold text-base flex items-center space-x-2">
-            <span>🎓</span>
-            <span>{language === 'en' ? 'Featured Quran Courses' : 'قرآنی علوم کے کورسز'}</span>
-          </h3>
-          <button 
-            onClick={() => onTabChange('academy')}
-            className="text-xs font-semibold text-emerald-600 dark:text-amber-400 hover:underline cursor-pointer"
-          >
-            {language === 'en' ? 'View all programs' : 'تمام کورسز دیکھیں'}
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {ACADEMY_COURSES.map(course => (
-            <div 
-              key={course.id} 
-              className="bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col group relative"
-            >
-              {course.isFreeTrial && (
-                <span className="absolute top-3.5 right-3.5 z-10 bg-amber-500 text-emerald-950 text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow-xs">
-                  Free Trial Class
-                </span>
-              )}
-              
-              <div className="h-40 overflow-hidden relative">
-                <img 
-                  src={course.image} 
-                  alt={course.title}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider">
-                    {course.tag}
-                  </span>
-                  <h4 className="text-white text-xs font-arabic mt-0.5 leading-none">
-                    {course.arabicTitle}
-                  </h4>
-                </div>
-              </div>
-
-              <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-1.5">
-                  <h5 className="text-xs font-bold leading-tight line-clamp-1 group-hover:text-[var(--primary)] dark:group-hover:text-amber-400 transition">
-                    {course.title}
-                  </h5>
-                  <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed line-clamp-2">
-                    {course.description}
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <div className="flex justify-between items-center text-[10px] text-gray-400 border-t border-[var(--border)] pt-2">
-                    <span className="flex items-center space-x-1">
-                      <span>⏱️</span>
-                      <span>{course.duration}</span>
-                    </span>
-                    <span className="font-bold text-amber-500">
-                      ★ {course.rating.toFixed(1)} ({course.studentsCount} Students)
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] text-gray-400 block leading-none">Tuition Cost</span>
-                      <span className="text-xs font-black text-emerald-700 dark:text-amber-400">{course.price}</span>
-                    </div>
-
-                    <button
-                      onClick={() => onTabChange('academy')}
-                      className="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white text-[10px] font-bold transition cursor-pointer"
-                    >
-                      Book Free Seat
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 12. AD PLACEMENT 4 - BETWEEN CONTENT */}
+      {/* 11. AD PLACEMENT 4 - BETWEEN CONTENT */}
       <AdContainer id="ad-content-2" size="728x90 Inline Placement" type="leaderboard" />
 
       {/* 13. UPCOMING ISLAMIC EVENTS */}

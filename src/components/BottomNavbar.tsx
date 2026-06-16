@@ -11,8 +11,15 @@ export default function BottomNavbar({ activeTab, onTabChange, language }: Botto
     { id: 'home', label: language === 'en' ? 'Home' : 'ہوم', icon: '🏠', badge: false },
     { id: 'prayer', label: language === 'en' ? 'Prayer' : 'نماز', icon: '🕌', badge: false },
     { id: 'qibla', label: language === 'en' ? 'Qibla' : 'قبلہ', icon: '🧭', badge: false },
-    { id: 'academy', label: language === 'en' ? 'Academy' : 'کورسز', icon: '📚', badge: true }, // Red dot indicator for courses
+    { id: 'duas', label: language === 'en' ? 'Duas' : 'دعائیں', icon: '🤲', badge: false },
+    { id: 'hadith', label: language === 'en' ? 'Hadith' : 'حدیث', icon: '📖', badge: false },
+    { id: 'wazifa', label: language === 'en' ? 'Wazifa' : 'وظیفہ', icon: '📿', badge: false },
+    { id: 'tasbeeh', label: language === 'en' ? 'Tasbeeh' : 'تسبیح', icon: '📿', badge: false },
+    { id: 'asma', label: language === 'en' ? 'Names' : 'نام', icon: '🕊️', badge: false },
+    { id: 'academy', label: language === 'en' ? 'Academy' : 'کورسز', icon: '📚', badge: true },
     { id: 'calendar', label: language === 'en' ? 'Calendar' : 'کیلنڈر', icon: '📅', badge: false },
+    { id: 'history', label: language === 'en' ? 'History' : 'تاریخ', icon: '📖', badge: false },
+    { id: 'admin', label: language === 'en' ? 'Admin' : 'ایڈمن', icon: '⚙️', badge: false },
   ];
 
   return (

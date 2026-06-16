@@ -25,10 +25,6 @@ export default function Header({
 }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [signUpOpen, setSignUpOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [isLogged, setIsLogged] = useState(false);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -67,14 +63,6 @@ export default function Header({
       );
     } else {
       alert("Geolocation is not supported by your browser.");
-    }
-  };
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userEmail) {
-      setIsLogged(true);
-      setSignUpOpen(false);
     }
   };
 
@@ -197,96 +185,8 @@ export default function Header({
             )}
           </button>
 
-          {/* SIGN IN / USER ACTION */}
-          {isLogged ? (
-            <button
-              onClick={() => setIsLogged(false)}
-              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 text-xs font-semibold cursor-pointer transition shadow-sm"
-              title="Dashboard - Click to Logout"
-            >
-              <span>👤</span>
-              <span className="hidden sm:inline">Profile</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => setSignUpOpen(true)}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] text-xs font-semibold cursor-pointer transition shadow-sm"
-            >
-              <span className="text-xs">🔑</span>
-              <span className="hidden sm:inline">{language === 'en' ? 'Join Portal' : 'لاگ ان'}</span>
-            </button>
-          )}
-
         </div>
       </div>
-
-      {/* LOGIN MODAL */}
-      {signUpOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button
-              onClick={() => setSignUpOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer text-lg font-bold"
-            >
-              ✕
-            </button>
-            <div className="text-center mb-5">
-              <span className="text-4xl">🕌</span>
-              <h3 className="font-heading font-bold text-lg mt-2 text-[var(--primary)] dark:text-[var(--secondary)]">
-                {language === 'en' ? 'Join Theislamic360 Platform' : 'دی اسلامک 360 پورٹل'}
-              </h3>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">
-                {language === 'en' ? 'Save premium alerts and book trial Quran classes.' : 'مفت ٹرائل کلاس اور دعائیں بک کریں۔'}
-              </p>
-            </div>
-
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  value={userEmail}
-                  onChange={e => setUserEmail(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Passphrase</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={userPassword}
-                  onChange={e => setUserPassword(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-                />
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)]">
-                <label className="flex items-center space-x-1 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="rounded text-[var(--primary)] focus:ring-[var(--primary)]" />
-                  <span>Remember me</span>
-                </label>
-                <a href="#reset" className="hover:underline">Forgot?</a>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2 px-4 rounded-xl bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] font-bold text-xs transition duration-200"
-              >
-                Create Account & Log In
-              </button>
-            </form>
-
-            <div className="mt-4 text-center text-[10px] text-[var(--text-secondary)] border-t border-[var(--border)] pt-3">
-              We never pitch or sell your personal statistics. Your logs are secure.
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

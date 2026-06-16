@@ -11,9 +11,15 @@ export default function Sidebar({ activeTab, onTabChange, language }: SidebarPro
     { id: 'home', label: language === 'en' ? 'Dashboard Home' : 'مرکزی ڈیش بورڈ', icon: '🏠' },
     { id: 'prayer', label: language === 'en' ? 'Prayer Timetable' : 'نماز کے اوقات', icon: '⏱️' },
     { id: 'qibla', label: language === 'en' ? 'Qibla & Compass' : 'رو بہ قبلہ رخ', icon: '🧭' },
+    { id: 'duas', label: language === 'en' ? 'Duas & Azkar' : 'دعائیں و اذکار', icon: '🤲' },
+    { id: 'hadith', label: language === 'en' ? 'Hadith' : 'حدیث نبوی', icon: '📖' },
+    { id: 'wazifa', label: language === 'en' ? 'Daily Wazifa' : 'روزانہ وظیفہ', icon: '📿' },
+    { id: 'tasbeeh', label: language === 'en' ? 'Tasbeeh' : 'تسبیح', icon: '📿' },
+    { id: 'asma', label: language === 'en' ? '99 Names' : '99 نام', icon: '🕊️' },
     { id: 'academy', label: language === 'en' ? 'Quran Academy' : 'قرآن اکیڈمی', icon: '📚' },
     { id: 'calendar', label: language === 'en' ? 'Islamic Calendar' : 'قمری کیلنڈر', icon: '🗓️' },
     { id: 'history', label: language === 'en' ? 'History & Azkar' : 'تاریخ اور اذکار', icon: '📖' },
+    { id: 'admin', label: language === 'en' ? 'Admin Panel' : 'ایڈمن پینل', icon: '⚙️' },
   ];
 
   return (
