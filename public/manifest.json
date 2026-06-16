@@ -3,7 +3,7 @@
   "short_name": "Islamic360",
   "description": "Prayer times, Hadith, Duas, Wazifas, Quran Academy & more",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#065f46",
   "theme_color": "#065f46",
   "orientation": "portrait-primary",
