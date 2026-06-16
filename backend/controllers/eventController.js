@@ -3,9 +3,12 @@ import axios from 'axios';
 
 const getHijriDateInfo = async () => {
   try {
-    const response = await axios.get('http://api.aladhan.com/v1/gToH', {
-      params: { date: new Date().toISOString().split('T')[0] },
-    });
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const dateStr = `${day}-${month}-${year}`;
+    const response = await axios.get(`http://api.aladhan.com/v1/gToH/${dateStr}`);
     const hijri = response.data.data.hijri;
     const monthNames = [
       'Muharram', 'Safar', 'Rabi ul Awwal', 'Rabi ul Thani',
