@@ -23,6 +23,7 @@ dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 connectDB();
 
@@ -35,6 +36,10 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Serve built frontend (for production deployment on Render)
+const distPath = join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Islamic360 API is running' });
@@ -49,6 +54,11 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/wazifas', wazifaRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Fallback: serve index.html for any non-API route (SPA)
+app.get('*', (req, res) => {
+  res.sendFile(join(distPath, 'index.html'));
+});
 
 app.use(errorHandler);
 
