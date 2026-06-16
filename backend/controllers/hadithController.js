@@ -11,13 +11,13 @@ const PRAYER_DAY_MAP = {
 export const getDailyHadith = async (req, res, next) => {
   try {
     const dayOfYear = getDayOfYear();
-    let hadith = await Hadith.findOne({ dayOfYear });
+    let hadith = await Hadith.findOne({ dayOfYear }).lean();
 
     if (!hadith) {
       const count = await Hadith.countDocuments();
       if (count > 0) {
         const skip = dayOfYear % count;
-        hadith = await Hadith.findOne().skip(skip);
+        hadith = await Hadith.findOne().skip(skip).lean();
       }
     }
 
@@ -25,7 +25,7 @@ export const getDailyHadith = async (req, res, next) => {
       return res.json({ success: true, data: null, message: 'No hadith available' });
     }
 
-    res.json({ success: true, data: { ...hadith.toObject(), dayOfYear } });
+    res.json({ success: true, data: { ...hadith, dayOfYear } });
   } catch (error) {
     next(error);
   }
@@ -38,7 +38,7 @@ export const getRandomHadith = async (req, res, next) => {
       return res.json({ success: true, data: null, message: 'No hadith available' });
     }
     const random = Math.floor(Math.random() * count);
-    const hadith = await Hadith.findOne().skip(random);
+    const hadith = await Hadith.findOne().skip(random).lean();
     res.json({ success: true, data: hadith });
   } catch (error) {
     next(error);
@@ -58,17 +58,17 @@ export const getHadithByPrayer = async (req, res, next) => {
     const range = PRAYER_DAY_MAP[prayer];
     const dayOfYear = getDayOfYear();
     const prayerDay = range.start + (dayOfYear % (range.end - range.start + 1));
-    let hadith = await Hadith.findOne({ dayOfYear: prayerDay });
+    let hadith = await Hadith.findOne({ dayOfYear: prayerDay }).lean();
 
     if (!hadith) {
       const count = await Hadith.countDocuments();
       const skip = prayerDay % count;
-      hadith = await Hadith.findOne().skip(skip);
+      hadith = await Hadith.findOne().skip(skip).lean();
     }
 
     res.json({
       success: true,
-      data: hadith ? { ...hadith.toObject(), prayer } : null,
+      data: hadith ? { ...hadith, prayer } : null,
     });
   } catch (error) {
     next(error);

@@ -32,7 +32,7 @@ const getHijriDateInfo = async () => {
 export const getTodayEvents = async (req, res, next) => {
   try {
     const hijri = await getHijriDateInfo();
-    const events = await Event.find({ monthNumber: hijri.monthNumber, day: hijri.day });
+    const events = await Event.find({ monthNumber: hijri.monthNumber, day: hijri.day }).lean();
 
     res.json({
       success: true,
@@ -62,7 +62,7 @@ export const getMonthEvents = async (req, res, next) => {
       throw new Error('Invalid month name');
     }
 
-    const events = await Event.find({ monthNumber }).sort({ day: 1 });
+    const events = await Event.find({ monthNumber }).sort({ day: 1 }).lean();
 
     res.json({
       success: true,
@@ -85,7 +85,8 @@ export const getUpcomingEvents = async (req, res, next) => {
       ],
     })
       .sort({ monthNumber: 1, day: 1 })
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     res.json({
       success: true,

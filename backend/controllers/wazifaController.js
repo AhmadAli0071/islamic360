@@ -3,13 +3,13 @@ import Wazifa from '../models/Wazifa.js';
 export const getDailyWazifa = async (req, res, next) => {
   try {
     const dayOfYear = getDayOfYear();
-    let wazifa = await Wazifa.findOne({ dayOfYear });
+    let wazifa = await Wazifa.findOne({ dayOfYear }).lean();
 
     if (!wazifa) {
       const count = await Wazifa.countDocuments();
       if (count > 0) {
         const skip = dayOfYear % count;
-        wazifa = await Wazifa.findOne().skip(skip);
+        wazifa = await Wazifa.findOne().skip(skip).lean();
       }
     }
 
@@ -17,7 +17,7 @@ export const getDailyWazifa = async (req, res, next) => {
       return res.json({ success: true, data: null, message: 'No wazifa available for today' });
     }
 
-    res.json({ success: true, data: { ...wazifa.toObject(), dayOfYear } });
+    res.json({ success: true, data: { ...wazifa, dayOfYear } });
   } catch (error) {
     next(error);
   }
