@@ -7,7 +7,7 @@ export const getDuasByCategory = async (req, res, next) => {
     if (category) {
       filter.category = category;
     }
-    const duas = await Dua.find(filter).sort({ _id: 1 });
+    const duas = await Dua.find(filter).sort({ _id: 1 }).lean();
     res.json({ success: true, data: duas, count: duas.length });
   } catch (error) {
     next(error);
@@ -22,7 +22,7 @@ export const getDailyDua = async (req, res, next) => {
       return res.json({ success: true, data: null, message: 'No duas available' });
     }
     const skip = dayOfYear % count;
-    const dua = await Dua.findOne().skip(skip);
+    const dua = await Dua.findOne().skip(skip).lean();
     res.json({ success: true, data: dua });
   } catch (error) {
     next(error);
@@ -31,7 +31,7 @@ export const getDailyDua = async (req, res, next) => {
 
 export const getDuaById = async (req, res, next) => {
   try {
-    const dua = await Dua.findById(req.params.id);
+    const dua = await Dua.findById(req.params.id).lean();
     if (!dua) {
       res.status(404);
       throw new Error('Dua not found');

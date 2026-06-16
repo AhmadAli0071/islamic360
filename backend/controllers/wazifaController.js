@@ -31,7 +31,7 @@ export const getWazifaByDay = async (req, res, next) => {
       throw new Error('Day must be between 1 and 365');
     }
 
-    const wazifa = await Wazifa.findOne({ dayOfYear: day });
+    const wazifa = await Wazifa.findOne({ dayOfYear: day }).lean();
     if (!wazifa) {
       res.status(404);
       throw new Error('Wazifa not found for this day');

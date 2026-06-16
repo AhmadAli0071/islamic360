@@ -14,7 +14,7 @@ export const getSchedule = async (req, res, next) => {
         const range = PRAYER_DAY_MAP[prayer.name];
         if (!range) return null;
         const prayerDay = range.start + (dayOfYear % (range.end - range.start + 1));
-        const hadith = await Hadith.findOne({ dayOfYear: prayerDay });
+        const hadith = await Hadith.findOne({ dayOfYear: prayerDay }).lean();
 
         return {
           prayer: prayer.name,
@@ -30,7 +30,7 @@ export const getSchedule = async (req, res, next) => {
       })
     );
 
-    const wazifa = await Wazifa.findOne({ dayOfYear });
+    const wazifa = await Wazifa.findOne({ dayOfYear }).lean();
 
     const schedule = {
       date: prayerData.date,

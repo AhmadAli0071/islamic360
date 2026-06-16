@@ -8,7 +8,7 @@ export const getCourses = async (req, res, next) => {
     if (category) filter.category = category;
     if (teacher) filter.teacher = teacher;
 
-    const courses = await Course.find(filter).populate('teacher', 'name qualifications specializations');
+    const courses = await Course.find(filter).populate('teacher', 'name qualifications specializations').lean();
     res.json({ success: true, data: courses, count: courses.length });
   } catch (error) {
     next(error);
@@ -17,7 +17,7 @@ export const getCourses = async (req, res, next) => {
 
 export const getCourseBySlug = async (req, res, next) => {
   try {
-    const course = await Course.findOne({ slug: req.params.slug }).populate('teacher');
+    const course = await Course.findOne({ slug: req.params.slug }).populate('teacher').lean();
     if (!course) {
       res.status(404);
       throw new Error('Course not found');
