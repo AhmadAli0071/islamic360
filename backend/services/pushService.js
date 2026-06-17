@@ -3,12 +3,18 @@ import PushSubscription from '../models/PushSubscription.js';
 
 let vapidInitialized = false;
 
+const FALLBACK_VAPID = {
+  publicKey: 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI',
+  privateKey: '6o3JSBxkeTE--xaaY-Ksnp-sycGjIf5-qq_oJ2yZp7o',
+  mailto: 'mailto:admin@islamic360.com',
+};
+
 function ensureVapid() {
   if (vapidInitialized) return;
   webpush.setVapidDetails(
-    process.env.VAPID_MAILTO || 'mailto:admin@islamic360.com',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY,
+    process.env.VAPID_MAILTO || FALLBACK_VAPID.mailto,
+    process.env.VAPID_PUBLIC_KEY || FALLBACK_VAPID.publicKey,
+    process.env.VAPID_PRIVATE_KEY || FALLBACK_VAPID.privateKey,
   );
   vapidInitialized = true;
 }
