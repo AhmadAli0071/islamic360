@@ -75,4 +75,7 @@ export const api = {
   createTeacher: (data: unknown) => postJSON('/admin/teachers', data),
   updateTeacher: (id: string, data: unknown) => putJSON(`/admin/teachers/${id}`, data),
   deleteTeacher: (id: string) => del(`/admin/teachers/${id}`),
+
+  // Students
+  getStudents: () => fetchJSON('/admin/students'),
 };

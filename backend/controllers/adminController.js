@@ -3,6 +3,7 @@ import Dua from '../models/Dua.js';
 import Hadith from '../models/Hadith.js';
 import Course from '../models/Course.js';
 import Teacher from '../models/Teacher.js';
+import Student from '../models/Student.js';
 
 export const getAdminStats = async (req, res, next) => {
   try {
@@ -11,8 +12,9 @@ export const getAdminStats = async (req, res, next) => {
     const totalHadith = await Hadith.countDocuments();
     const totalCourses = await Course.countDocuments();
     const totalTeachers = await Teacher.countDocuments();
+    const totalStudents = await Student.countDocuments();
 
-    res.json({ success: true, data: { totalEvents, totalDuas, totalHadith, totalCourses, totalTeachers } });
+    res.json({ success: true, data: { totalEvents, totalDuas, totalHadith, totalCourses, totalTeachers, totalStudents } });
   } catch (error) {
     next(error);
   }
@@ -162,6 +164,15 @@ export const updateTeacher = async (req, res, next) => {
     const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!teacher) { res.status(404); throw new Error('Teacher not found'); }
     res.json({ success: true, data: teacher });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getStudents = async (req, res, next) => {
+  try {
+    const students = await Student.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: students });
   } catch (error) {
     next(error);
   }

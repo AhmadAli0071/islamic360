@@ -30,10 +30,11 @@ interface Stats {
   totalHadith: number;
   totalCourses: number;
   totalTeachers: number;
+  totalStudents: number;
 }
 
 export default function AdminPanel({ language, standalone }: { language: 'en' | 'ur'; standalone?: boolean }) {
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students'>('dashboard');
   const [stats, setStats] = useState<Stats | null>(null);
   const [courses, setCourses] = useState<CourseData[]>([]);
   const [teachers, setTeachers] = useState<TeacherData[]>([]);
@@ -158,10 +159,11 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
 
       {/* STATS */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
           {[
             { label: 'Courses', value: stats.totalCourses, color: 'bg-emerald-500' },
             { label: 'Teachers', value: stats.totalTeachers, color: 'bg-blue-500' },
+            { label: 'Students', value: stats.totalStudents, color: 'bg-teal-500' },
             { label: 'Events', value: stats.totalEvents, color: 'bg-amber-500' },
             { label: 'Duas', value: stats.totalDuas, color: 'bg-purple-500' },
             { label: 'Hadith', value: stats.totalHadith, color: 'bg-rose-500' },
@@ -178,7 +180,7 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
 
       {/* NAV */}
       <div className="flex space-x-2 border-b border-[var(--border)] pb-2">
-        {(['dashboard', 'courses', 'teachers'] as const).map(s => (
+        {(['dashboard', 'courses', 'teachers', 'students'] as const).map(s => (
           <button key={s} onClick={() => { setActiveSection(s); setShowForm(false); }}
             className={`px-4 py-2 text-xs font-bold rounded-t-lg transition cursor-pointer ${
               activeSection === s ? 'bg-[var(--primary)] text-white' : 'bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--background)]'
@@ -275,6 +277,11 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
           )}
         </div>
       )}
+
+      {/* STUDENTS SECTION */}
+      {activeSection === 'students' && (
+        <StudentsList language={language} />
+      )}
     </div>
   );
 
@@ -286,6 +293,62 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
     );
   }
   return content;
+}
+
+function StudentsList({ language }: { language: 'en' | 'ur' }) {
+  const [students, setStudents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getStudents().then(setStudents).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="text-xs text-[var(--text-secondary)]">Loading...</div>;
+
+  return (
+    <div className="space-y-4">
+      <h3 className="font-heading font-bold text-sm">{language === 'en' ? 'Student Enrollments' : 'طلبا کے اندراجات'}</h3>
+      {students.length === 0 ? (
+        <p className="text-xs text-[var(--text-secondary)]">{language === 'en' ? 'No enrollments yet.' : 'ابھی تک کوئی اندراج نہیں۔'}</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="bg-[var(--background)] border-b border-[var(--border)] text-left">
+                <th className="p-2 font-bold">Name</th>
+                <th className="p-2 font-bold">Contact</th>
+                <th className="p-2 font-bold">Course</th>
+                <th className="p-2 font-bold">Slot</th>
+                <th className="p-2 font-bold">Status</th>
+                <th className="p-2 font-bold">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map(s => (
+                <tr key={s._id} className="border-b border-[var(--border)] hover:bg-[var(--background)]">
+                  <td className="p-2">{s.name}</td>
+                  <td className="p-2">{s.contact}</td>
+                  <td className="p-2">{s.course}</td>
+                  <td className="p-2">{s.preferredSlot}</td>
+                  <td className="p-2">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      s.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                      s.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
+                      s.status === 'enrolled' ? 'bg-emerald-100 text-emerald-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                      {s.status}
+                    </span>
+                  </td>
+                  <td className="p-2 text-gray-400">{new Date(s.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function CourseForm({ course, language, onSave, onClose }: {

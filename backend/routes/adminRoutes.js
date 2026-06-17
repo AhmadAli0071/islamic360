@@ -6,6 +6,7 @@ import {
   createHadith, updateHadith, deleteHadith,
   createCourse, updateCourse, deleteCourse,
   getTeachers, createTeacher, updateTeacher, deleteTeacher,
+  getStudents,
 } from '../controllers/adminController.js';
 import seedEvents from '../scripts/seedEvents.js';
 import seedDuas from '../scripts/seedDuas.js';
@@ -50,5 +51,7 @@ router.get('/teachers', getTeachers);
 router.post('/teachers', createTeacher);
 router.put('/teachers/:id', updateTeacher);
 router.delete('/teachers/:id', deleteTeacher);
+
+router.get('/students', getStudents);
 
 export default router;
