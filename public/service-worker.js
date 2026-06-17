@@ -30,17 +30,15 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-  // Fetch: cache app assets, skip external/third-party requests
+  // Fetch: network first, fallback to cache
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
-  // Only handle our own origin — skip all third-party (ads, fonts, analytics, etc.)
-  if (url.origin !== self.location.origin) {
+  // API requests — network only (don't cache)
+  if (event.request.url.includes('/api/')) {
     return;
   }
 
-  // API requests — network only (don't cache)
-  if (url.pathname.startsWith('/api/')) {
+  // Ad network requests — don't intercept (let them load directly)
+  if (event.request.url.includes('effectivecpmnetwork.com') || event.request.url.includes('adsterra.com') || event.request.url.includes('adsterra.net') || event.request.url.includes('popcash.net')) {
     return;
   }
 
