@@ -77,15 +77,9 @@ export default function QuranAcademy({ language }: QuranAcademyProps) {
     }
   };
 
-  const courseImage = (slug: string) => {
-    const map: Record<string, string> = {
-      'quran-reading-beginners': 'https://images.unsplash.com/photo-1609599006353-e629beabfeae?auto=format&fit=crop&q=80&w=600',
-      'tajweed-ul-quran': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=600',
-      'hifz-program': 'https://images.unsplash.com/photo-1584282479211-1c5c56d78776?auto=format&fit=crop&q=80&w=600',
-      'tafseer-course': 'https://images.unsplash.com/photo-1584556812952-905ffd3a1c6a?auto=format&fit=crop&q=80&w=600',
-      'kids-quran-classes': 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=600',
-    };
-    return map[slug] || 'https://images.unsplash.com/photo-1609599006353-e629beabfeae?auto=format&fit=crop&q=80&w=600';
+  const courseIcon = (category: string) => {
+    const map: Record<string, string> = { Quran: '📖', Tajweed: '🎤', Hifz: '🧠', Tafseer: '📜', Kids: '🧸', Arabic: '📝' };
+    return map[category] || '📖';
   };
 
   const courseTag = (category: string) => {
@@ -169,12 +163,10 @@ export default function QuranAcademy({ language }: QuranAcademyProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {courses.map(course => (
             <div key={course._id} className="bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl overflow-hidden flex flex-col justify-between shadow-xs hover:shadow-md transition group">
-              <div className="relative h-44 overflow-hidden">
-                <img src={courseImage(course.slug)} alt={course.title} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider">{courseTag(course.category)}</span>
-                  <h4 className="text-white text-sm font-semibold font-arabic leading-none mt-1">{course.title}</h4>
-                </div>
+              <div className="bg-gradient-to-r from-emerald-950 to-emerald-800 p-5 text-center">
+                <span className="text-4xl block">{courseIcon(course.category)}</span>
+                <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider block mt-2">{courseTag(course.category)}</span>
+                <h4 className="text-white text-sm font-semibold mt-1">{course.title}</h4>
               </div>
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
@@ -234,20 +226,16 @@ export default function QuranAcademy({ language }: QuranAcademyProps) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {[
-            { name: 'Anas Bilal', location: 'London, UK', quote: 'My children love their lessons on Nazam360. The Noorani Qaida teacher is incredibly supportive, patient, and uses visual tools that keep them excited.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150', rating: 5 },
-            { name: 'Sarah Khan', location: 'Toronto, Canada', quote: 'Being able to take private Tajweed courses online with certified Egyptian instructors has completely changed my relationship with the Holy Quran.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150', rating: 5 },
+            { name: 'Anas Bilal', location: 'London, UK', quote: 'My children love their lessons on Nazam360. The Noorani Qaida teacher is incredibly supportive, patient, and uses visual tools that keep them excited.', rating: 5 },
+            { name: 'Sarah Khan', location: 'Toronto, Canada', quote: 'Being able to take private Tajweed courses online with certified Egyptian instructors has completely changed my relationship with the Holy Quran.', rating: 5 },
           ].map(t => (
-            <div key={t.name} className="p-5 bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl shadow-xs space-y-3.5 relative transition-colors duration-300">
-              <span className="text-4xl absolute -top-1.5 right-4 opacity-15 select-none leading-none">"</span>
-              <div className="flex items-center space-x-3.5">
-                <img src={t.avatar} alt={t.name} referrerPolicy="no-referrer" className="w-10 h-10 rounded-full object-cover shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold">{t.name}</h4>
-                  <span className="text-[10px] text-gray-400">{t.location}</span>
-                </div>
+            <div key={t.name} className="p-5 bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl shadow-xs space-y-3 relative transition-colors duration-300">
+              <div>
+                <h4 className="text-xs font-bold flex items-center gap-2"><span>👤</span>{t.name}</h4>
+                <span className="text-[10px] text-gray-400">{t.location}</span>
               </div>
               <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed italic">"{t.quote}"</p>
-              <div className="text-amber-500 text-[10px] font-bold">★★★★★ Rated ({t.rating}.0 / 5)</div>
+              <div className="text-amber-500 text-[10px] font-bold">★★★★★ {t.rating}.0/5</div>
             </div>
           ))}
         </div>
