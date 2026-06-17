@@ -67,6 +67,14 @@ export default function App() {
     }
   }, []);
 
+  // Load social bar ad
+  useEffect(() => {
+    const s = document.createElement('script');
+    s.src = 'https://pl29776410.effectivecpmnetwork.com/43/25/08/432508db907f956a18a5701846c195c5.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }, []);
+
   // Auto-detect location on first load
   useEffect(() => {
     if (navigator.geolocation) {
