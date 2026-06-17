@@ -141,9 +141,6 @@ export default function App() {
             language={language}
           />
         );
-      case 'admin':
-        window.location.href = '/admin';
-        return null;
       case 'duas':
         return <DuasPage language={language} />;
       case 'hadith':
