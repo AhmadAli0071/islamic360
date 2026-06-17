@@ -28,6 +28,10 @@ interface ScheduleData {
   wazifa: WazifaNotification | null;
 }
 
+interface ExtendableEvent extends Event {
+  waitUntil(promise: Promise<unknown>): void;
+}
+
 const API_BASE = '/api';
 const NOTIFICATION_TAG = 'islamic360';
 
@@ -59,6 +63,43 @@ export async function registerServiceWorker(): Promise<boolean> {
   }
 }
 
+export async function subscribeToPush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    let sub = await registration.pushManager.getSubscription();
+    if (sub) return;
+
+    const publicKey = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
+    sub = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: publicKey,
+    });
+
+    await fetch(`${API_BASE}/push/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        endpoint: sub.endpoint,
+        keys: { p256dh: arrayBufferToBase64(sub.getKey('p256dh')), auth: arrayBufferToBase64(sub.getKey('auth')) },
+        userAgent: navigator.userAgent,
+      }),
+    });
+
+    console.log('Push subscription registered');
+  } catch (err) {
+    console.error('Push subscription failed:', err);
+  }
+}
+
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
 export async function fetchSchedule(city = 'Karachi', country = 'Pakistan'): Promise<ScheduleData | null> {
   try {
     const res = await fetch(`${API_BASE}/notifications/schedule?city=${city}&country=${country}`);
@@ -87,40 +128,61 @@ function checkManualNotifications(notifs: ManualNotif[]) {
   for (const n of notifs) {
     if (shownManualNotifs.has(n._id)) continue;
     shownManualNotifs.add(n._id);
-    showBrowserNotification(n.title, n.body, `${NOTIFICATION_TAG}-manual-${n._id}`);
+    showBrowserNotification(n.title, n.body, `${NOTIFICATION_TAG}-manual-${n._id}`, 3);
   }
 }
 
-function playNotificationSound() {
+let activeAudioCtx: AudioContext | null = null;
+let activeOsc: OscillatorNode | null = null;
+let activeGain: GainNode | null = null;
+
+export function playNotificationSound(duration = 2) {
   try {
+    if (activeAudioCtx) {
+      activeOsc?.stop();
+      activeAudioCtx.close();
+    }
+
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = 880;
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 2);
-    // Resume if suspended (autoplay policy)
+    osc.stop(ctx.currentTime + duration);
+
+    activeAudioCtx = ctx;
+    activeOsc = osc;
+    activeGain = gain;
+
+    setTimeout(() => {
+      if (activeAudioCtx === ctx) {
+        activeAudioCtx = null;
+        activeOsc = null;
+        activeGain = null;
+      }
+    }, duration * 1000 + 100);
+
     if (ctx.state === 'suspended') ctx.resume();
   } catch {
     // Silent fail
   }
 }
 
-function showBrowserNotification(title: string, body: string, tag: string) {
+function showBrowserNotification(title: string, body: string, tag: string, soundDuration = 2) {
   if (Notification.permission === 'granted') {
-    playNotificationSound();
+    playNotificationSound(soundDuration);
     const n = new Notification(title, {
       body,
       tag,
       icon: '/favicon.ico',
       requireInteraction: true,
     });
-    (n as any).vibrate = [200, 100, 200];
+    (n as any).vibrate = soundDuration >= 10 ? [500, 200, 500, 200, 500, 200, 500, 200, 500] : [200, 100, 200];
   }
 }
 
@@ -151,7 +213,8 @@ function checkPrayerNotifications(prayers: PrayerNotification[], todayKey: strin
       showBrowserNotification(
         `🕌 ${prayer.prayer} ka waqt hogaya`,
         hadithText || `${prayer.prayer} ki namaz ka waqt hai`,
-        `${NOTIFICATION_TAG}-${prayer.prayer}`
+        `${NOTIFICATION_TAG}-${prayer.prayer}`,
+        10,
       );
     }
   }
@@ -169,7 +232,8 @@ function checkWazifaNotification(wazifa: WazifaNotification | null, todayKey: st
     showBrowserNotification(
       `🤲 Aaj ka Wazifa: ${wazifa.title.ur}`,
       `${wazifa.urdu}\n\nTadad: ${wazifa.count} martaba`,
-      `${NOTIFICATION_TAG}-wazifa`
+      `${NOTIFICATION_TAG}-wazifa`,
+      3,
     );
   }
 }
@@ -188,13 +252,16 @@ export async function startNotificationSystem() {
     const { city, country } = getCityFromStorage();
     navigator.serviceWorker.controller?.postMessage({ type: 'START_NOTIFICATION_POLL', city, country });
   };
-  // Wait a tick for SW to be ready
   setTimeout(sendCityToSW, 1000);
+
+  // Subscribe to push (VAPID) for real-time notifications
+  setTimeout(subscribeToPush, 3000);
 
   // Listen for PLAY_NOTIFICATION_SOUND from service worker
   navigator.serviceWorker.addEventListener('message', (event) => {
     if (event.data?.type === 'PLAY_NOTIFICATION_SOUND') {
-      playNotificationSound();
+      const duration = event.data.duration || 3;
+      playNotificationSound(duration);
     }
   });
 

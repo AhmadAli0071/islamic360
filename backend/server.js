@@ -21,6 +21,8 @@ import adminRoutes from './routes/adminRoutes.js';
 import hijriRoutes from './routes/hijriRoutes.js';
 import teacherRoutes from './routes/teacherRoutes.js';
 import enrollRoutes from './routes/enrollRoutes.js';
+import pushRoutes from './routes/pushRoutes.js';
+import { startPushCron } from './services/pushCron.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
@@ -74,6 +76,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/hijri', hijriRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/enroll', enrollRoutes);
+app.use('/api/push', pushRoutes);
 
 // Fallback: serve index.html for any non-API route (SPA)
 app.get('*', (req, res) => {
@@ -85,6 +88,7 @@ app.use(errorHandler);
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Islamic360 server running on port ${PORT}`);
+    startPushCron();
   });
 }).catch((err) => {
   console.error('Failed to start server:', err.message);

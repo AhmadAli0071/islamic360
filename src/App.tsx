@@ -67,6 +67,17 @@ export default function App() {
     }
   }, []);
 
+  // Read ?tab= parameter from URL on mount (for notification click navigation)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history'].includes(tab)) {
+      setActiveTab(tab);
+      // Clean URL without reload
+      window.history.replaceState(null, '', '/');
+    }
+  }, []);
+
   // Load ads (only on main app, not on /admin)
   useEffect(() => {
     // Popunder
