@@ -67,8 +67,14 @@ export default function App() {
     }
   }, []);
 
-  // Load social bar ad
+  // Load ads (only on main app, not on /admin)
   useEffect(() => {
+    // Popunder
+    const p = document.createElement('script');
+    p.src = 'https://pl29776408.effectivecpmnetwork.com/d1/4c/d4/d14cd465b50dc1e91f19c4bf35f97498.js';
+    p.async = true;
+    document.body.appendChild(p);
+    // Social bar
     const s = document.createElement('script');
     s.src = 'https://pl29776410.effectivecpmnetwork.com/43/25/08/432508db907f956a18a5701846c195c5.js';
     s.async = true;
