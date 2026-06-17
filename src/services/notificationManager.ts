@@ -68,15 +68,17 @@ export async function subscribeToPush() {
 
   try {
     const registration = await navigator.serviceWorker.ready;
-    let sub = await registration.pushManager.getSubscription();
-    if (sub) {
-      console.log('Already subscribed to push');
-      return;
+
+    // Unsubscribe any existing subscription (Adsterra may have registered one)
+    const existing = await registration.pushManager.getSubscription();
+    if (existing) {
+      await existing.unsubscribe();
+      console.log('Unsubscribed existing push subscription');
     }
 
     const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
     const publicKey = urlBase64ToUint8Array(publicKeyBase64);
-    sub = await registration.pushManager.subscribe({
+    const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: publicKey,
     });
