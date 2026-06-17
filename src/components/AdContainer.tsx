@@ -11,18 +11,13 @@ interface AdContainerProps {
 export default function AdContainer({ id, size, type, className = '', onClose }: AdContainerProps) {
   return (
     <div id={id} className={`ad-container ${className}`} style={{ margin: '20px 0' }}>
-      <div className="relative bg-[#F9F9F9] dark:bg-[#1E293B] border border-dashed border-[#DDD] dark:border-[#475569] rounded-lg p-2.5 text-center overflow-hidden w-full">
-        {onClose && (
-          <button onClick={onClose} className="absolute top-1 right-2 text-xs font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">✕</button>
-        )}
-        <div className="text-[9px] uppercase tracking-widest text-[#999] dark:text-[#64748B] mb-1 font-semibold">
-          Advertisement
-        </div>
-        <ins className="adsbyadsterra"
-          style={{ display: 'block', minHeight: type === 'sidebar' ? '250px' : '90px' }}
-          data-zone="29675910"
-          data-type="banner" />
-      </div>
+      {onClose && (
+        <button onClick={onClose} className="float-right text-xs font-bold text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+      )}
+      <ins className="adsbyadsterra"
+        style={{ display: 'block', width: '100%', minHeight: type === 'sidebar' ? '250px' : '90px', backgroundColor: 'transparent' }}
+        data-zone="29675910"
+        data-type="banner" />
     </div>
   );
 }
