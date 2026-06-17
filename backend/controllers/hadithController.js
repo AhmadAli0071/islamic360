@@ -82,8 +82,15 @@ export const getRandomHadith = async (req, res, next) => {
     if (count === 0) {
       return res.json({ success: true, data: null, message: 'No hadith available' });
     }
-    const random = Math.floor(Math.random() * count);
-    const hadith = await Hadith.findOne().skip(random).lean();
+    for (let attempt = 0; attempt < 20; attempt++) {
+      const random = Math.floor(Math.random() * count);
+      const hadith = await Hadith.findOne().skip(random).lean();
+      const fixed = await fixArabic(hadith);
+      if (fixed.arabic && !/\?{3,}/.test(fixed.arabic)) {
+        return res.json({ success: true, data: fixed });
+      }
+    }
+    const hadith = await Hadith.findOne().skip(Math.floor(Math.random() * count)).lean();
     res.json({ success: true, data: await fixArabic(hadith) });
   } catch (error) {
     next(error);
