@@ -50,31 +50,6 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Load and apply dark theme from localStorage on initial boot
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theislamic360_theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-    // Apply RTL for Urdu
-    const savedLang = localStorage.getItem('theislamic360_lang');
-    if (savedLang === 'ur') {
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.documentElement.dir = 'ltr';
-    }
-  }, []);
-
-  // Load global ad scripts (popunder already in index.html head)
-  useEffect(() => {
-    const s = document.createElement('script');
-    s.src = 'https://pl29776410.effectivecpmnetwork.com/43/25/08/432508db907f956a18a5701846c195c5.js';
-    s.async = true;
-    document.body.appendChild(s);
-  }, []);
 
   // Auto-detect location on first load
   useEffect(() => {
