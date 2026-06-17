@@ -39,7 +39,7 @@ app.use(helmet({
       imgSrc: ["'self'", "data:", "https:", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com", "https://cdn.adsterra.com", "https://cdn.popcash.net"],
       frameSrc: ["'self'", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com"],
       workerSrc: ["'self'", "blob:"],
     },
