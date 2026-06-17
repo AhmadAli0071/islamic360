@@ -8,33 +8,29 @@ interface AdContainerProps {
   onClose?: () => void;
 }
 
-const ZONE_MAP: Record<string, string> = {
-  'ad-sidebar-desktop-rectangle': '29675910',
-  'ad-sidebar-desktop-tower': '29675910',
-  'ad-leaderboard-1': '29675910',
-  'ad-content-1': '29675910',
-  'ad-content-2': '29675910',
-  'ad-calendar-bottom': '29675910',
-  'ad-history-sidebar': '29675910',
-  'ad-history-content': '29675910',
-  'ad-prayer-bottom': '29675910',
-  'ad-qibla-bottom': '29675910',
-  'ad-academy-header': '29675910',
-  'ad-academy-content': '29675910',
+const HEIGHT_MAP: Record<string, string> = {
+  'ad-leaderboard-1': '100px',
+  'ad-content-1': '280px',
+  'ad-content-2': '100px',
+  'ad-calendar-bottom': '100px',
+  'ad-history-sidebar': '280px',
+  'ad-history-content': '100px',
+  'ad-prayer-bottom': '100px',
+  'ad-qibla-bottom': '100px',
+  'ad-academy-header': '100px',
+  'ad-academy-content': '100px',
 };
 
-export default function AdContainer({ id, size }: AdContainerProps) {
-  const zone = ZONE_MAP[id] || '29675910';
+export default function AdContainer({ id }: AdContainerProps) {
+  const minHeight = HEIGHT_MAP[id] || '260px';
   return (
-    <div className="ad-container w-full" style={{ margin: '20px 0' }}>
-      <div className="relative bg-[#F9F9F9] dark:bg-[#1E293B] border border-dashed border-[#DDD] dark:border-[#475569] rounded-lg p-2.5 text-center w-full min-h-[90px] flex flex-col items-center justify-center">
-        <ins
-          className="adsbyadsterra"
-          data-zone={zone}
-          data-type="banner"
-          style={{ display: 'block', width: '100%', maxWidth: '728px', margin: '0 auto' }}
-        />
-      </div>
+    <div className="ad-container w-full" style={{ margin: '16px 0', minHeight, background: '#F9F9F9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <ins
+        className="adsbyadsterra"
+        data-zone="29675910"
+        data-type="banner"
+        style={{ display: 'block', width: '100%', maxWidth: '728px' }}
+      />
     </div>
   );
 }
