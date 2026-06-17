@@ -50,6 +50,22 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Load and apply dark theme from localStorage on initial boot
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theislamic360_theme');
+    if (savedTheme === 'dark') {
+      setDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+    const savedLang = localStorage.getItem('theislamic360_lang');
+    if (savedLang === 'ur') {
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.documentElement.dir = 'ltr';
+    }
+  }, []);
 
   // Auto-detect location on first load
   useEffect(() => {
