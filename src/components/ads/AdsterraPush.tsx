@@ -1,36 +1,25 @@
 import { useState, useEffect } from 'react';
-import { AD_CONFIG } from '../../config/ads';
-import { canShowPushNotification, markPushShown } from '../../hooks/useAdNetwork';
 
 export default function AdsterraPush({ language }: { language: 'en' | 'ur' }) {
   const [showPrompt, setShowPrompt] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (!AD_CONFIG.adsterra.enabled || AD_CONFIG.global.testingMode) return;
+    if (localStorage.getItem('adsterra_push_dismissed')) return;
 
-    // Show push prompt after 10 seconds, if eligible
     const timer = setTimeout(() => {
-      if (canShowPushNotification() && !localStorage.getItem('adsterra_push_dismissed')) {
-        setShowPrompt(true);
-      }
+      setShowPrompt(true);
     }, 10000);
 
     return () => clearTimeout(timer);
   }, []);
 
   const handleAllow = () => {
-    markPushShown();
     setShowPrompt(false);
     setDismissed(true);
-
-    // Initialize Adsterra push
-    if (AD_CONFIG.adsterra.push.scriptSrc) {
-      const script = document.createElement('script');
-      script.src = AD_CONFIG.adsterra.push.scriptSrc;
-      script.async = true;
-      document.head.appendChild(script);
-    }
+    var s = document.createElement('script');
+    s.src = 'https://pl29776408.effectivecpmnetwork.com/d1/4c/d4/d14cd465b50dc1e91f19c4bf35f97498.js';
+    document.head.appendChild(s);
   };
 
   const handleDismiss = () => {
