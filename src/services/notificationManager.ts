@@ -161,6 +161,15 @@ export async function startNotificationSystem() {
   }
 
   await registerServiceWorker();
+
+  // Tell service worker to start polling for background notifications
+  const sendCityToSW = () => {
+    const { city, country } = getCityFromStorage();
+    navigator.serviceWorker.controller?.postMessage({ type: 'START_NOTIFICATION_POLL', city, country });
+  };
+  // Wait a tick for SW to be ready
+  setTimeout(sendCityToSW, 1000);
+
   const todayKey = new Date().toDateString();
   notifiedPrayers = new Set();
   notifiedWazifa = false;
@@ -195,6 +204,7 @@ export async function startNotificationSystem() {
 }
 
 export function stopNotificationSystem() {
+  navigator.serviceWorker.controller?.postMessage({ type: 'STOP_NOTIFICATION_POLL' });
   if (checkInterval) {
     clearInterval(checkInterval);
     checkInterval = null;

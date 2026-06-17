@@ -8,63 +8,181 @@ const ASSETS_TO_CACHE = [
   '/icons/icon-512.svg',
 ];
 
+let pollInterval = null;
+let city = 'Karachi';
+let country = 'Pakistan';
+let notifiedPrayers = new Set();
+let notifiedWazifa = false;
+let shownManualNotifs = new Set();
+
 // Install: cache static assets
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
 });
 
 // Activate: clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
   );
   return self.clients.claim();
 });
 
-  // Fetch: cache app assets, skip external/third-party requests
+// Fetch: cache app assets, skip external/third-party requests
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-
-  // Only handle our own origin — skip all third-party (ads, tracking pixels, etc.)
-  if (url.origin !== self.location.origin) {
-    return;
-  }
-
-  // API requests — network only (don't cache)
-  if (url.pathname.startsWith('/api/')) {
-    return;
-  }
-
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith('/api/')) return;
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         const cloned = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, cloned);
-        });
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
         return response;
       })
       .catch(() => caches.match(event.request).then((cached) => cached || new Response('Offline', { status: 503 })))
   );
 });
 
-// Notification handler
+function timeToMinutes(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function getCurrentMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function getTodayKey() {
+  return new Date().toDateString();
+}
+
+async function fetchJSON(url) {
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    return json.success ? json.data : null;
+  } catch {
+    return null;
+  }
+}
+
+function checkPrayerNotifications(prayers) {
+  const currentMinutes = getCurrentMinutes();
+  const todayKey = getTodayKey();
+
+  for (const prayer of prayers) {
+    const prayerMinutes = timeToMinutes(prayer.time);
+    const diff = currentMinutes - prayerMinutes;
+    const key = `${prayer.prayer}-${todayKey}`;
+
+    if (diff >= 0 && diff <= 2 && !notifiedPrayers.has(key)) {
+      notifiedPrayers.add(key);
+      const hadithText = prayer.hadith
+        ? `${prayer.hadith.urdu}\n\n— ${prayer.hadith.narrator} (${prayer.hadith.source})`
+        : '';
+      self.registration.showNotification(`🕌 ${prayer.prayer} ka waqt hogaya`, {
+        body: hadithText || `${prayer.prayer} ki namaz ka waqt hai`,
+        tag: `sw-${prayer.prayer}`,
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        vibrate: [200, 100, 200],
+        requireInteraction: true,
+      });
+    }
+  }
+}
+
+function checkWazifaNotification(wazifa) {
+  if (!wazifa || notifiedWazifa) return;
+  const currentMinutes = getCurrentMinutes();
+  if (currentMinutes >= 300 && currentMinutes <= 750) {
+    notifiedWazifa = true;
+    self.registration.showNotification(`🤲 Aaj ka Wazifa: ${wazifa.title.ur}`, {
+      body: `${wazifa.urdu}\n\nTadad: ${wazifa.count} martaba`,
+      tag: 'sw-wazifa',
+      icon: '/favicon.ico',
+      badge: '/favicon.ico',
+      vibrate: [200, 100, 200],
+      requireInteraction: true,
+    });
+  }
+}
+
+function checkManualNotifications(notifs) {
+  for (const n of notifs) {
+    if (shownManualNotifs.has(n._id)) continue;
+    shownManualNotifs.add(n._id);
+    self.registration.showNotification(n.title, {
+      body: n.body || '',
+      tag: `sw-manual-${n._id}`,
+      icon: n.icon || '/favicon.ico',
+      badge: '/favicon.ico',
+      vibrate: [200, 100, 200],
+      requireInteraction: true,
+    });
+  }
+}
+
+async function pollNotifications() {
+  const todayKey = getTodayKey();
+
+  // Reset daily state at midnight
+  if (!poll._lastDate) poll._lastDate = todayKey;
+  if (poll._lastDate !== todayKey) {
+    notifiedPrayers = new Set();
+    notifiedWazifa = false;
+    poll._lastDate = todayKey;
+  }
+
+  const schedule = await fetchJSON(`/api/notifications/schedule?city=${city}&country=${country}`);
+  if (schedule) {
+    checkPrayerNotifications(schedule.prayers);
+    checkWazifaNotification(schedule.wazifa);
+  }
+
+  const manual = await fetchJSON('/api/notifications/manual');
+  if (manual && manual.length > 0) {
+    checkManualNotifications(manual);
+  }
+}
+poll._lastDate = null;
+
+function startPolling(cityVal, countryVal) {
+  city = cityVal || 'Karachi';
+  country = countryVal || 'Pakistan';
+  notifiedPrayers = new Set();
+  notifiedWazifa = false;
+  if (pollInterval) clearInterval(pollInterval);
+  pollNotifications();
+  pollInterval = setInterval(pollNotifications, 30000);
+}
+
+function stopPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval);
+    pollInterval = null;
+  }
+}
+
+// Message handler: start/stop polling + show notification from main thread
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-    const { title, body, tag, icon } = event.data;
-    self.registration.showNotification(title, {
-      body,
-      tag,
-      icon: icon || '/favicon.ico',
+  const data = event.data || {};
+  if (data.type === 'START_NOTIFICATION_POLL') {
+    startPolling(data.city, data.country);
+  } else if (data.type === 'STOP_NOTIFICATION_POLL') {
+    stopPolling();
+  } else if (data.type === 'SHOW_NOTIFICATION') {
+    self.registration.showNotification(data.title, {
+      body: data.body || '',
+      tag: data.tag || 'islamic360',
+      icon: data.icon || '/favicon.ico',
       badge: '/favicon.ico',
       vibrate: [200, 100, 200],
       requireInteraction: true,
@@ -91,16 +209,14 @@ self.addEventListener('push', (event) => {
   if (!event.data) return;
   try {
     const data = event.data.json();
-    const title = data.title || 'Islamic360';
-    const options = {
+    self.registration.showNotification(data.title || 'Islamic360', {
       body: data.body || '',
       icon: data.icon || '/favicon.ico',
       badge: '/favicon.ico',
       vibrate: [200, 100, 200],
       requireInteraction: true,
       data: { url: data.url || '/', network: data.network || 'adsterra' },
-    };
-    event.waitUntil(self.registration.showNotification(title, options));
+    });
   } catch {
     // Silent fail
   }
