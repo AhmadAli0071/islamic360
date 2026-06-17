@@ -69,9 +69,13 @@ export async function subscribeToPush() {
   try {
     const registration = await navigator.serviceWorker.ready;
     let sub = await registration.pushManager.getSubscription();
-    if (sub) return;
+    if (sub) {
+      console.log('Already subscribed to push');
+      return;
+    }
 
-    const publicKey = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
+    const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
+    const publicKey = urlBase64ToUint8Array(publicKeyBase64);
     sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: publicKey,
@@ -87,10 +91,21 @@ export async function subscribeToPush() {
       }),
     });
 
-    console.log('Push subscription registered');
+    console.log('Push subscription registered successfully');
   } catch (err) {
     console.error('Push subscription failed:', err);
   }
+}
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
