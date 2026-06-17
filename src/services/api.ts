@@ -56,7 +56,8 @@ export const api = {
 
   // Admin
   getAdminStats: () => fetchJSON('/admin/stats'),
-  getAdminUsers: () => fetchJSON('/admin/users'),
+  getAdminCourses: () => fetchJSON('/admin/courses'),
+  getAdminTeachers: () => fetchJSON('/admin/teachers'),
   createEvent: (data: unknown) => postJSON('/admin/events', data),
   updateEvent: (id: string, data: unknown) => putJSON(`/admin/events/${id}`, data),
   deleteEvent: (id: string) => del(`/admin/events/${id}`),

@@ -4,7 +4,7 @@ import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = Router();
 
-router.get('/', cacheMiddleware(86400), getCourses);
-router.get('/:slug', cacheMiddleware(86400), getCourseBySlug);
+router.get('/', cacheMiddleware(300), getCourses);
+router.get('/:slug', cacheMiddleware(300), getCourseBySlug);
 
 export default router;

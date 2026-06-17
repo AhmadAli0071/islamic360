@@ -111,6 +111,24 @@ export const deleteHadith = async (req, res, next) => {
 };
 
 // Courses CRUD
+export const getAdminCourses = async (req, res, next) => {
+  try {
+    const courses = await Course.find().populate('teacher', 'name').sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: courses });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAdminTeachers = async (req, res, next) => {
+  try {
+    const teachers = await Teacher.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: teachers });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createCourse = async (req, res, next) => {
   try {
     const course = await Course.create(req.body);

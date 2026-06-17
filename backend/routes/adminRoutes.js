@@ -4,8 +4,8 @@ import {
   createEvent, updateEvent, deleteEvent,
   createDua, updateDua, deleteDua,
   createHadith, updateHadith, deleteHadith,
-  createCourse, updateCourse, deleteCourse,
-  getTeachers, createTeacher, updateTeacher, deleteTeacher,
+  getAdminCourses, createCourse, updateCourse, deleteCourse,
+  getAdminTeachers, getTeachers, createTeacher, updateTeacher, deleteTeacher,
   getStudents,
 } from '../controllers/adminController.js';
 import seedEvents from '../scripts/seedEvents.js';
@@ -43,11 +43,12 @@ router.post('/hadith', createHadith);
 router.put('/hadith/:id', updateHadith);
 router.delete('/hadith/:id', deleteHadith);
 
+router.get('/courses', getAdminCourses);
 router.post('/courses', createCourse);
 router.put('/courses/:id', updateCourse);
 router.delete('/courses/:id', deleteCourse);
 
-router.get('/teachers', getTeachers);
+router.get('/teachers', getAdminTeachers);
 router.post('/teachers', createTeacher);
 router.put('/teachers/:id', updateTeacher);
 router.delete('/teachers/:id', deleteTeacher);

@@ -48,21 +48,11 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   }, []);
 
   const loadAll = async () => {
-    try {
-      setLoading(true);
-      const [s, c, t] = await Promise.all([
-        api.getAdminStats() as Promise<Stats>,
-        api.getCourses() as Promise<CourseData[]>,
-        api.getTeachers() as Promise<TeacherData[]>,
-      ]);
-      setStats(s);
-      setCourses(c);
-      setTeachers(t);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    try { setStats(await api.getAdminStats() as Stats); } catch (err) { console.error('Stats error:', err); }
+    try { setCourses(await api.getAdminCourses() as CourseData[]); } catch (err) { console.error('Courses error:', err); }
+    try { setTeachers(await api.getAdminTeachers() as TeacherData[]); } catch (err) { console.error('Teachers error:', err); }
+    setLoading(false);
   };
 
   const handleSaveCourse = async (course: Partial<CourseData>) => {
