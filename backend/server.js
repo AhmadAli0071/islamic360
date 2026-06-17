@@ -23,6 +23,7 @@ import teacherRoutes from './routes/teacherRoutes.js';
 import enrollRoutes from './routes/enrollRoutes.js';
 import pushRoutes from './routes/pushRoutes.js';
 import { startPushCron } from './services/pushCron.js';
+import { sendPushToAll } from './services/pushService.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
@@ -62,6 +63,21 @@ app.use(express.static(distPath));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Islamic360 API is running' });
+});
+
+// Temp: test push notification
+app.post('/api/push/test-fajr', async (req, res) => {
+  try {
+    const result = await sendPushToAll(
+      '🕌 Fajr ka waqt hogaya (TEST)',
+      'Yeh ek test notification hai. 10 second alarm bajega.',
+      'test-fajr-push',
+      10,
+    );
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 app.use('/api/prayers', prayerRoutes);
