@@ -164,8 +164,21 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
 
         {/* Compass circle */}
         <div className="relative w-64 h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-full border-4 border-[var(--border)] shadow-inner transition">
-          {/* Qibla needle (does NOT rotate - always points in direction user should turn) */}
-          <div className="absolute inset-0" style={{ transform: `rotate(${qiblaAngle - compassAngle}deg)` }}>
+          {/* Cardinal directions (always show where N/E/S/W is) */}
+          <div className="absolute inset-0" style={{ transform: `rotate(${-compassAngle}deg)` }}>
+            {[
+              { label: 'N', deg: 0 }, { label: 'E', deg: 90 }, { label: 'S', deg: 180 }, { label: 'W', deg: 270 },
+            ].map(c => (
+              <span key={c.label} className="absolute text-xs font-black text-gray-500 dark:text-gray-400" style={{
+                left: '50%', top: '50%',
+                transform: `rotate(${c.deg}deg) translateY(-105px)`,
+                transformOrigin: '0 0',
+              }}>{c.label}</span>
+            ))}
+          </div>
+
+          {/* Qibla needle */}
+          <div className="absolute inset-0 transition-transform duration-300" style={{ transform: `rotate(${qiblaAngle - compassAngle}deg)` }}>
             <div className="absolute top-1/2 left-1/2 w-0 h-0 -translate-y-16 -translate-x-1/2">
               <div className="w-2.5 h-20 bg-gradient-to-t from-red-600 to-red-400 rounded-full mx-auto shadow-lg" />
               <div className="w-5 h-5 bg-red-600 rounded-full mx-auto -mt-1 shadow-md" />
@@ -176,6 +189,16 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
           {/* Center dot */}
           <div className="w-3 h-3 bg-emerald-600 rounded-full z-10 shadow-md" />
         </div>
+
+        {/* Qibla bearing info */}
+        {qiblaData && (
+          <div className="text-center">
+            <p className="text-xs text-[var(--text-secondary)]">
+              {language === 'en' ? 'Qibla bearing' : 'قبلہ کی سمت'}: <span className="text-lg font-black text-[var(--primary)] dark:text-[var(--secondary)]">{qiblaData.degree}°</span>
+            </p>
+            <p className="text-[10px] text-[var(--text-secondary)]">{qiblaData.direction}</p>
+          </div>
+        )}
 
         {/* Instruction */}
         <p className="text-xs font-semibold text-[var(--text-secondary)] text-center">

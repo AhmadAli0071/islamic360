@@ -83,11 +83,6 @@ export default function App() {
           const nearest = findNearestCity(position.coords.latitude, position.coords.longitude);
           setCurrentCity(nearest);
           localStorage.setItem('theislamic360_city', JSON.stringify({ name: nearest.name, country: nearest.country }));
-          const lang = localStorage.getItem('theislamic360_lang') || 'en';
-          const msg = lang === 'en'
-            ? `📍 Location detected: ${nearest.name}, ${nearest.country}`
-            : `📍 مقام کی نشاندہی: ${nearest.name}، ${nearest.country}`;
-          setToastMessage(msg);
         },
         () => {
           // Location denied — keep default (Mecca)
