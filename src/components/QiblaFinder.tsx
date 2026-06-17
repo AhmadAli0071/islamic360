@@ -110,6 +110,18 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
     );
   }
 
+  if (qiblaData && qiblaData.distance < 1) {
+    return (
+      <div className="flex-1 max-w-5xl mx-auto px-4 pb-16">
+        <div className="text-center py-16 space-y-4">
+          <span className="text-6xl">🕋</span>
+          <p className="text-lg font-bold">{language === 'en' ? 'You are at the Kaaba!' : 'آپ کعبہ کے پاس ہیں!'}</p>
+          <p className="text-sm text-[var(--text-secondary)]">{language === 'en' ? 'Qibla direction is not needed — you are already at the holiest site.' : 'قبلہ کی سمت کی ضرورت نہیں — آپ پہلے ہی مقدس مقام پر ہیں۔'}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 space-y-6 max-w-4xl mx-auto px-4 pb-16 animate-fadeIn">
       {/* Header */}
