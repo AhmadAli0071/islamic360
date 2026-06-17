@@ -196,8 +196,8 @@ export default function App() {
 
       <AdsterraPush language={language} />
 
-      {/* ==================== 📱 MOBILE APP LAYOUT (< 768px) ==================== */}
-      <div className="block md:hidden flex-1 flex flex-col pb-20">
+      {/* ===== MOBILE CHROME (hidden on desktop) ===== */}
+      <div className="block md:hidden">
         {/* Sleek iOS Status Bar */}
         <div className="bg-emerald-950 dark:bg-gray-950 text-white px-5 py-2.5 flex justify-between items-center text-[10px] font-bold select-none sticky top-0 z-50">
           <div>{formatStatusTime(statusTime)}</div>
@@ -232,7 +232,6 @@ export default function App() {
           )}
 
           <div className="flex items-center space-x-2">
-            {/* Language toggle trigger */}
             <button
               onClick={() => {
                 const lang = language === 'en' ? 'ur' : 'en';
@@ -245,8 +244,6 @@ export default function App() {
             >
               {language === 'en' ? 'اردو' : 'EN'}
             </button>
-
-            {/* Dark mode trigger toggle */}
             <button
               onClick={handleThemeToggle}
               className="p-1 px-1.5 rounded-lg text-xs bg-[var(--background)] border border-[var(--border)] cursor-pointer"
@@ -255,61 +252,56 @@ export default function App() {
             </button>
           </div>
         </div>
-
-        {/* Scrollable Active Screen Body */}
-        <div className="flex-1 pt-4">
-          {renderActivePage()}
-        </div>
       </div>
 
-      {/* ==================== 💻 DESKTOP WEB LAYOUT (>= 768px) ==================== */}
-      <div className="hidden md:flex flex-col flex-1">
-        {/* Header Bar */}
-        <Header
-          currentCity={currentCity}
-          onCityChange={(city) => {
-            setCurrentCity(city);
-            localStorage.setItem('theislamic360_city', JSON.stringify({ name: city.name, country: city.country }));
-            showToast(`📍 Switched current prayer calculation location to ${city.name}, ${city.country}`);
-          }}
-          darkMode={darkMode}
-          onThemeToggle={handleThemeToggle}
-          language={language}
-          onLanguageChange={(lang) => {
-            setLanguage(lang);
-            localStorage.setItem('theislamic360_lang', lang);
-            document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
-            showToast(lang === 'en' ? '🌎 Portal language updated to English' : '🌎 پورٹل کی زبان اردو میں تبدیل کر دی گئی ہے');
-          }}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
-
-        {/* Body platform with Left Sidebar content, Central Main Content, and New Right-hand-side 300px sidebar */}
-        <div className="max-w-7xl w-full mx-auto flex flex-row items-start flex-1 gap-6 px-4 py-6">
-          {/* Menu side rail */}
-          <Sidebar 
-            activeTab={activeTab} 
-            onTabChange={setActiveTab} 
-            language={language} 
+      {/* ===== MAIN CONTENT (rendered ONCE for both layouts) ===== */}
+      <div className="flex-1 flex flex-col pb-20 md:pb-0">
+        {/* Desktop Header (hidden on mobile) */}
+        <div className="hidden md:block">
+          <Header
+            currentCity={currentCity}
+            onCityChange={(city) => {
+              setCurrentCity(city);
+              localStorage.setItem('theislamic360_city', JSON.stringify({ name: city.name, country: city.country }));
+              showToast(`📍 Switched current prayer calculation location to ${city.name}, ${city.country}`);
+            }}
+            darkMode={darkMode}
+            onThemeToggle={handleThemeToggle}
+            language={language}
+            onLanguageChange={(lang) => {
+              setLanguage(lang);
+              localStorage.setItem('theislamic360_lang', lang);
+              document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+              showToast(lang === 'en' ? '🌎 Portal language updated to English' : '🌎 پورٹل کی زبان اردو میں تبدیل کر دی گئی ہے');
+            }}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
+        </div>
 
-          {/* Central content screen */}
-          <main className="flex-1 min-w-0 bg-white dark:bg-gray-900 border border-[var(--border)] rounded-2xl p-6 min-h-[calc(100vh-210px)] shadow-xs transition-colors duration-300">
+        {/* Content + Sidebar row */}
+        <div className="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto md:gap-6 md:px-4 md:py-6">
+          {/* Desktop Left Sidebar (hidden on mobile) */}
+          <div className="hidden md:block">
+            <Sidebar 
+              activeTab={activeTab} 
+              onTabChange={setActiveTab} 
+              language={language} 
+            />
+          </div>
+
+          {/* CENTRAL CONTENT (rendered once) */}
+          <main className="flex-1 min-w-0 md:bg-white md:dark:bg-gray-900 md:border md:border-[var(--border)] md:rounded-2xl md:p-6 md:min-h-[calc(100vh-210px)] md:shadow-xs pt-4 transition-colors duration-300">
             {renderActivePage()}
           </main>
 
-          {/* RIGHT SIDEBAR WITH ADDITIONAL INFOGRAPHICS & RECURRENT ADS */}
-          <aside className="w-72 shrink-0 space-y-6">
-            
-            {/* Hijri Calendar Quick Date widget */}
+          {/* Desktop Right Sidebar (hidden on mobile) */}
+          <aside className="hidden md:block w-72 shrink-0 space-y-6">
             <div className="bg-emerald-900 text-white rounded-2xl p-5 border border-emerald-800/50 shadow-sm relative overflow-hidden">
               <span className="text-[9px] uppercase tracking-widest text-amber-300 font-extrabold block">Certified Date</span>
               <div className="text-xs font-bold font-heading text-amber-100 mt-1">29 Dhul-Qi'dah 1447 AH</div>
               <p className="text-[10px] text-emerald-100/80 mt-1.5">Countdown to Islamic New Year (1 Muharram): 17 Days</p>
             </div>
-
-            {/* Daily Supplication supps */}
             <div className="bg-amber-500/5 dark:bg-amber-400/5 border border-amber-500/20 rounded-2xl p-4.5 space-y-2">
               <h4 className="text-xs font-bold font-heading text-emerald-800 dark:text-amber-400 flex items-center space-x-1.5 uppercase tracking-wider mb-1">
                 <span>⭐</span>
@@ -322,11 +314,7 @@ export default function App() {
                 "Our Lord, give us in this world other that which is good and in the hereafter that which is good and protect us from the punishment of the Fire."
               </p>
             </div>
-
-            {/* Desktop Side Banner (300x250 Rectangle) */}
             <AdContainer id="ad-sidebar-desktop-rectangle" size="300x250 Medium Rectangle" type="native" />
-
-            {/* Mini Quick Timetable of current location */}
             <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-xs text-xs space-y-2">
               <h4 className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Quick Schedule ({currentCity.name})</h4>
               <div className="space-y-1.5 font-mono">
@@ -350,37 +338,25 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            {/* Desktop Side Banner (300x600 Half Page Tower) */}
             <AdContainer id="ad-sidebar-desktop-tower" size="300x600 Tower Ad" type="leaderboard" />
-
           </aside>
         </div>
 
-        {/* Footer Coils */}
-        <Footer language={language} onTabChange={setActiveTab} />
+        {/* Desktop Footer (hidden on mobile) */}
+        <div className="hidden md:block">
+          <Footer language={language} onTabChange={setActiveTab} />
+        </div>
       </div>
 
-      {/* AD PLACEMENT: Sticky Footer Ad ONLY visible on Mobile */}
+      {/* ===== MOBILE BOTTOM (hidden on desktop) ===== */}
       <div className="block md:hidden">
-        <AdContainer 
-          id="ad-mobile-footer" 
-          size="320x50 Mobile Sticky" 
-          type="mobile-sticky"
+        <AdContainer id="ad-mobile-footer" size="320x50 Mobile Sticky" type="mobile-sticky"
           onClose={() => {
             const el = document.getElementById('ad-mobile-footer');
             if (el) el.style.display = 'none';
           }}
         />
-      </div>
-
-      {/* MOBILE LOWER BOTTOM BAR */}
-      <div className="block md:hidden">
-        <BottomNavbar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          language={language}
-        />
+        <BottomNavbar activeTab={activeTab} onTabChange={setActiveTab} language={language} />
       </div>
     </div>
   );
