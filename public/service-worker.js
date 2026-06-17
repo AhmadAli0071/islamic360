@@ -30,10 +30,15 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch: network first, fallback to cache
+  // Fetch: network first, fallback to cache
 self.addEventListener('fetch', (event) => {
   // API requests — network only (don't cache)
   if (event.request.url.includes('/api/')) {
+    return;
+  }
+
+  // Ad network requests — don't intercept (let them load directly)
+  if (event.request.url.includes('effectivecpmnetwork.com') || event.request.url.includes('adsterra.com') || event.request.url.includes('popcash.net')) {
     return;
   }
 
