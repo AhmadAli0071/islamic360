@@ -17,9 +17,6 @@ import WazifaPage from './components/WazifaPage';
 import TasbeehCounter from './components/TasbeehCounter';
 import AsmaUlHusna from './components/AsmaUlHusna';
 import AdsterraPush from './components/ads/AdsterraPush';
-import AdsterraPopunder from './components/ads/AdsterraPopunder';
-import AdsterraSocialBar from './components/ads/AdsterraSocialBar';
-import AdsterraNative from './components/ads/AdsterraNative';
 import { CITIES_DB } from './prayerData';
 import { CityData } from './types';
 
@@ -122,15 +119,12 @@ export default function App() {
     switch (activeTab) {
       case 'home':
         return (
-          <>
-            <Homepage
-              currentCity={currentCity}
-              language={language}
-              onTabChange={setActiveTab}
-              onSetRemindEvent={handleSetRemindEvent}
-            />
-            <div className="max-w-5xl mx-auto px-4 pb-8"><AdsterraNative /></div>
-          </>
+          <Homepage
+            currentCity={currentCity}
+            language={language}
+            onTabChange={setActiveTab}
+            onSetRemindEvent={handleSetRemindEvent}
+          />
         );
       case 'prayer':
         return <PrayerTimes currentCity={currentCity} language={language} />;
@@ -200,10 +194,7 @@ export default function App() {
       {/* PWA INSTALL PROMPT */}
       <PWAInstallPrompt />
 
-      {/* ADSTERRA — Global: push prompt, popunder, social bar */}
       <AdsterraPush language={language} />
-      <AdsterraPopunder />
-      <AdsterraSocialBar />
 
       {/* ==================== 📱 MOBILE APP LAYOUT (< 768px) ==================== */}
       <div className="block md:hidden flex-1 flex flex-col pb-20">
