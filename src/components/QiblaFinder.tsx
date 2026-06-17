@@ -88,7 +88,7 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
   const compassAngle = deviceOrientation !== null ? deviceOrientation : 0;
   const qiblaAngle = qiblaData ? qiblaData.degree : 0;
   const turnDirection = qiblaData && deviceOrientation !== null
-    ? ((qiblaAngle - compassAngle + 540) % 360 - 180)
+    ? ((compassAngle - qiblaAngle + 540) % 360 - 180)
     : 0;
 
   if (loading) {
