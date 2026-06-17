@@ -77,7 +77,7 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
   // Calculate alignment
   useEffect(() => {
     if (deviceOrientation !== null && qiblaData) {
-      const diff = Math.abs((qiblaData.bearing - deviceOrientation + 540) % 360 - 180);
+      const diff = Math.abs((qiblaData.degree - deviceOrientation + 540) % 360 - 180);
       if (diff < 5) setAlignment('perfect');
       else if (diff < 20) setAlignment('close');
       else setAlignment('far');
@@ -85,7 +85,7 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
   }, [deviceOrientation, qiblaData]);
 
   const compassAngle = deviceOrientation !== null ? deviceOrientation : 0;
-  const qiblaAngle = qiblaData ? qiblaData.bearing : 0;
+  const qiblaAngle = qiblaData ? qiblaData.degree : 0;
   const needleAngle = qiblaAngle - compassAngle;
 
   if (loading) {
@@ -199,8 +199,8 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
           </h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center p-3 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl">
-              <p className="text-[10px] text-[var(--text-secondary)]">{language === 'en' ? 'Bearing' : 'سمت'}</p>
-              <p className="text-lg font-black text-[var(--primary)] dark:text-[var(--secondary)]">{qiblaData.bearing.toFixed(1)}°</p>
+              <p className="text-[10px] text-[var(--text-secondary)]">{language === 'en' ? 'Degree' : 'ڈگری'}</p>
+              <p className="text-lg font-black text-[var(--primary)] dark:text-[var(--secondary)]">{qiblaData.degree.toFixed(1)}°</p>
             </div>
             <div className="text-center p-3 bg-amber-50 dark:bg-amber-900/10 rounded-xl">
               <p className="text-[10px] text-[var(--text-secondary)]">{language === 'en' ? 'Direction' : 'رخ'}</p>
