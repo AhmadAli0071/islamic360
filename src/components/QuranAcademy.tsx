@@ -93,11 +93,6 @@ export default function QuranAcademy({ language }: QuranAcademyProps) {
     return map[category] || 'Beginner';
   };
 
-  const teacherAvatar = (name: string) => {
-    const seed = name.split(' ').map(s => s.charCodeAt(0)).reduce((a, b) => a + b, 0);
-    const id = (seed % 70) + 1;
-    return `https://i.pravatar.cc/200?img=${id}`;
-  };
 
   if (loading) {
     return (
@@ -221,9 +216,8 @@ export default function QuranAcademy({ language }: QuranAcademyProps) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {teachers.map(teacher => (
-            <div key={teacher._id} className="flex flex-col sm:flex-row items-center sm:items-start p-4 bg-[var(--background)] rounded-2xl border border-[var(--border)] gap-4">
-              <img src={teacher.image || teacherAvatar(teacher.name)} alt={teacher.name} referrerPolicy="no-referrer" className="w-16 h-16 rounded-full object-cover shrink-0 border-2 border-amber-500/30" />
-              <div className="text-center sm:text-left space-y-1">
+            <div key={teacher._id} className="p-4 bg-[var(--background)] rounded-2xl border border-[var(--border)]">
+              <div className="space-y-1">
                 <h4 className="text-xs font-bold text-[var(--text-primary)]">{teacher.name}</h4>
                 <div className="text-[10px] font-semibold text-emerald-600 dark:text-amber-400 uppercase tracking-widest">{teacher.specializations?.join(', ') || 'Quran Instructor'}</div>
                 <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed">{teacher.qualifications?.join(', ') || teacher.bio}</p>
