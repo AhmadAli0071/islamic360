@@ -35,12 +35,12 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com", "https://cdn.adsterra.com", "https://cdn.popcash.net"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com", "https://cdn.adsterra.com", "https://cdn.popcash.net"],
-      frameSrc: ["'self'", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com"],
+      connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https:"],
+      frameSrc: ["'self'", "https:"],
       workerSrc: ["'self'", "blob:"],
     },
   },
