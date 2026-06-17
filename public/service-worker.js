@@ -49,6 +49,17 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
+function notifyClientsPlaySound() {
+  self.clients.matchAll({ type: 'window' }).then((clients) => {
+    clients.forEach((client) => client.postMessage({ type: 'PLAY_NOTIFICATION_SOUND' }));
+  });
+}
+
+function showNotif(title, options) {
+  notifyClientsPlaySound();
+  return self.registration.showNotification(title, options);
+}
+
 function timeToMinutes(timeStr) {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
@@ -87,7 +98,7 @@ function checkPrayerNotifications(prayers) {
       const hadithText = prayer.hadith
         ? `${prayer.hadith.urdu}\n\n— ${prayer.hadith.narrator} (${prayer.hadith.source})`
         : '';
-      self.registration.showNotification(`🕌 ${prayer.prayer} ka waqt hogaya`, {
+      showNotif(`🕌 ${prayer.prayer} ka waqt hogaya`, {
         body: hadithText || `${prayer.prayer} ki namaz ka waqt hai`,
         tag: `sw-${prayer.prayer}`,
         icon: '/favicon.ico',
@@ -104,7 +115,7 @@ function checkWazifaNotification(wazifa) {
   const currentMinutes = getCurrentMinutes();
   if (currentMinutes >= 300 && currentMinutes <= 750) {
     notifiedWazifa = true;
-    self.registration.showNotification(`🤲 Aaj ka Wazifa: ${wazifa.title.ur}`, {
+    showNotif(`🤲 Aaj ka Wazifa: ${wazifa.title.ur}`, {
       body: `${wazifa.urdu}\n\nTadad: ${wazifa.count} martaba`,
       tag: 'sw-wazifa',
       icon: '/favicon.ico',
@@ -119,7 +130,7 @@ function checkManualNotifications(notifs) {
   for (const n of notifs) {
     if (shownManualNotifs.has(n._id)) continue;
     shownManualNotifs.add(n._id);
-    self.registration.showNotification(n.title, {
+    showNotif(n.title, {
       body: n.body || '',
       tag: `sw-manual-${n._id}`,
       icon: n.icon || '/favicon.ico',
@@ -179,7 +190,7 @@ self.addEventListener('message', (event) => {
   } else if (data.type === 'STOP_NOTIFICATION_POLL') {
     stopPolling();
   } else if (data.type === 'SHOW_NOTIFICATION') {
-    self.registration.showNotification(data.title, {
+    showNotif(data.title, {
       body: data.body || '',
       tag: data.tag || 'islamic360',
       icon: data.icon || '/favicon.ico',
@@ -204,7 +215,7 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Handle push events from ad networks (Adsterra / PropellerAds)
+  // Handle push events from ad networks (Adsterra / PropellerAds)
 self.addEventListener('push', (event) => {
   if (!event.data) return;
   try {

@@ -91,8 +91,29 @@ function checkManualNotifications(notifs: ManualNotif[]) {
   }
 }
 
+function playNotificationSound() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.5);
+    // Resume if suspended (autoplay policy)
+    if (ctx.state === 'suspended') ctx.resume();
+  } catch {
+    // Silent fail
+  }
+}
+
 function showBrowserNotification(title: string, body: string, tag: string) {
   if (Notification.permission === 'granted') {
+    playNotificationSound();
     const n = new Notification(title, {
       body,
       tag,
@@ -169,6 +190,13 @@ export async function startNotificationSystem() {
   };
   // Wait a tick for SW to be ready
   setTimeout(sendCityToSW, 1000);
+
+  // Listen for PLAY_NOTIFICATION_SOUND from service worker
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data?.type === 'PLAY_NOTIFICATION_SOUND') {
+      playNotificationSound();
+    }
+  });
 
   const todayKey = new Date().toDateString();
   notifiedPrayers = new Set();
