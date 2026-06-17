@@ -1,14 +1,23 @@
 import webpush from 'web-push';
 import PushSubscription from '../models/PushSubscription.js';
 
-webpush.setVapidDetails(
-  process.env.VAPID_MAILTO || 'mailto:admin@islamic360.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY,
-);
+let vapidInitialized = false;
+
+function ensureVapid() {
+  if (vapidInitialized) return;
+  webpush.setVapidDetails(
+    process.env.VAPID_MAILTO || 'mailto:admin@islamic360.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY,
+  );
+  vapidInitialized = true;
+}
 
 export async function sendPushToAll(title, body, tag, soundDuration = 3) {
+  ensureVapid();
   const subs = await PushSubscription.find().lean();
+  if (subs.length === 0) return { sent: 0, total: 0 };
+
   const payload = JSON.stringify({
     title,
     body,
