@@ -12,7 +12,6 @@ export default function BottomNavbar({ activeTab, onTabChange, language }: Botto
   const allTabs = [
     { id: 'home', label: language === 'en' ? 'Home' : 'ہوم', icon: '🏠', badge: false },
     { id: 'prayer', label: language === 'en' ? 'Prayer' : 'نماز', icon: '🕌', badge: false },
-    { id: 'qibla', label: language === 'en' ? 'Qibla' : 'قبلہ', icon: '🧭', badge: false },
     { id: 'duas', label: language === 'en' ? 'Duas' : 'دعائیں', icon: '🤲', badge: false },
     { id: 'hadith', label: language === 'en' ? 'Hadith' : 'حدیث', icon: '📖', badge: false },
     { id: 'wazifa', label: language === 'en' ? 'Wazifa' : 'وظیفہ', icon: '📿', badge: false },

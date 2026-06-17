@@ -362,15 +362,6 @@ export default function Homepage({
         </button>
 
         <button
-          onClick={() => onTabChange('qibla')}
-          className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--primary)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-xs text-center group"
-        >
-          <span className="text-2xl mb-1.5 block transition-transform group-hover:rotate-12">🧭</span>
-          <span className="text-xs font-bold block text-[var(--text-primary)]">Qibla Finder</span>
-          <span className="text-[9px] text-[var(--text-secondary)] mt-0.5">Live Compass Degree</span>
-        </button>
-
-        <button
           onClick={() => onTabChange('calendar')}
           className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--primary)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-xs text-center group"
         >

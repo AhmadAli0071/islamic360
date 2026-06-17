@@ -10,7 +10,6 @@ export default function Sidebar({ activeTab, onTabChange, language }: SidebarPro
   const menuItems = [
     { id: 'home', label: language === 'en' ? 'Dashboard Home' : 'مرکزی ڈیش بورڈ', icon: '🏠' },
     { id: 'prayer', label: language === 'en' ? 'Prayer Timetable' : 'نماز کے اوقات', icon: '⏱️' },
-    { id: 'qibla', label: language === 'en' ? 'Qibla & Compass' : 'رو بہ قبلہ رخ', icon: '🧭' },
     { id: 'duas', label: language === 'en' ? 'Duas & Azkar' : 'دعائیں و اذکار', icon: '🤲' },
     { id: 'hadith', label: language === 'en' ? 'Hadith' : 'حدیث نبوی', icon: '📖' },
     { id: 'wazifa', label: language === 'en' ? 'Daily Wazifa' : 'روزانہ وظیفہ', icon: '📿' },

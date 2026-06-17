@@ -58,11 +58,6 @@ export default function Footer({ language, onTabChange }: FooterProps) {
               </button>
             </li>
             <li>
-              <button onClick={() => onTabChange('qibla')} className="hover:text-amber-400 transition cursor-pointer text-left w-full">
-                🧭 {language === 'en' ? 'Qibla Finder & Compass' : 'رو بہ قبلہ رخ'}
-              </button>
-            </li>
-            <li>
               <button onClick={() => onTabChange('academy')} className="hover:text-amber-400 transition cursor-pointer text-left w-full">
                 📚 {language === 'en' ? 'Quran Academy Portal' : 'آن لائن قرآن اکیڈمی'}
               </button>

@@ -5,7 +5,7 @@ import Sidebar from './components/Sidebar';
 import BottomNavbar from './components/BottomNavbar';
 import Homepage from './components/Homepage';
 import PrayerTimes from './components/PrayerTimes';
-import QiblaFinder from './components/QiblaFinder';
+
 import QuranAcademy from './components/QuranAcademy';
 import IslamicCalendar from './components/IslamicCalendar';
 import IslamicHistory from './components/IslamicHistory';
@@ -130,8 +130,6 @@ export default function App() {
         );
       case 'prayer':
         return <PrayerTimes currentCity={currentCity} language={language} />;
-      case 'qibla':
-        return <QiblaFinder currentCity={currentCity} language={language} />;
       case 'academy':
         return <QuranAcademy language={language} />;
       case 'calendar':
