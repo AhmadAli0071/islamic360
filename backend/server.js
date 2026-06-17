@@ -30,7 +30,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 connectDB();
 
-app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com", "https://cdn.adsterra.com", "https://cdn.popcash.net"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      connectSrc: ["'self'"],
+      frameSrc: ["'self'", "https://pl29776408.effectivecpmnetwork.com", "https://pl29776409.effectivecpmnetwork.com", "https://pl29776410.effectivecpmnetwork.com"],
+      workerSrc: ["'self'", "blob:"],
+    },
+  },
+}));
 app.use(compression());
 app.use(morgan('dev'));
 app.use(cors({
