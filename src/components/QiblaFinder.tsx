@@ -84,9 +84,12 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
     }
   }, [deviceOrientation, qiblaData]);
 
+  // Calculate turn direction
   const compassAngle = deviceOrientation !== null ? deviceOrientation : 0;
   const qiblaAngle = qiblaData ? qiblaData.degree : 0;
-  const needleAngle = qiblaAngle - compassAngle;
+  const turnDirection = qiblaData && deviceOrientation !== null
+    ? ((qiblaAngle - compassAngle + 540) % 360 - 180)
+    : 0;
 
   if (loading) {
     return (
@@ -138,7 +141,7 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
       {/* Compass */}
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm flex flex-col items-center space-y-6">
         {/* Alignment status */}
-        <div className={`px-4 py-1.5 rounded-full text-[10px] font-bold ${
+        <div className={`px-5 py-2 rounded-full text-xs font-bold ${
           alignment === 'perfect' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
           alignment === 'close' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
           'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
@@ -148,26 +151,24 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
            (language === 'en' ? '🧭 Rotate device' : '🧭 آلہ گھمائیں')}
         </div>
 
+        {/* Turn direction indicator */}
+        {deviceOrientation !== null && alignment !== 'perfect' && (
+          <div className="text-center">
+            <p className="text-lg font-bold">
+              {turnDirection > 10 ? (language === 'en' ? '← Turn Left' : '← بائیں گھمائیں') :
+               turnDirection < -10 ? (language === 'en' ? '→ Turn Right' : '→ دائیں گھمائیں') :
+               (language === 'en' ? '⬆ Almost facing Qibla' : '⬆ قریب قریب قبلہ رخ')}
+            </p>
+          </div>
+        )}
+
         {/* Compass circle */}
         <div className="relative w-64 h-64 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-full border-4 border-[var(--border)] shadow-inner transition">
-          {/* Cardinal points - rotate with device */}
-          <div className="absolute inset-0 transition-transform duration-200" style={{ transform: `rotate(${-compassAngle}deg)` }}>
-            {[
-              { label: 'N', deg: 0 }, { label: 'E', deg: 90 }, { label: 'S', deg: 180 }, { label: 'W', deg: 270 },
-            ].map(c => (
-              <span key={c.label} className="absolute text-xs font-black text-gray-500" style={{
-                left: '50%', top: '50%',
-                transform: `rotate(${c.deg}deg) translateY(-105px)`,
-                transformOrigin: '0 0',
-              }}>{c.label}</span>
-            ))}
-          </div>
-
-          {/* Kaaba arrow (fixed direction, points to Qibla relative to device) */}
-          <div className="absolute inset-0 transition-transform duration-300" style={{ transform: `rotate(${needleAngle}deg)` }}>
+          {/* Qibla needle (does NOT rotate - always points in direction user should turn) */}
+          <div className="absolute inset-0" style={{ transform: `rotate(${qiblaAngle - compassAngle}deg)` }}>
             <div className="absolute top-1/2 left-1/2 w-0 h-0 -translate-y-16 -translate-x-1/2">
-              <div className="w-2 h-16 bg-gradient-to-t from-red-600 to-red-400 rounded-full mx-auto shadow-lg" />
-              <div className="w-4 h-4 bg-red-600 rounded-full mx-auto -mt-1 shadow-md" />
+              <div className="w-2.5 h-20 bg-gradient-to-t from-red-600 to-red-400 rounded-full mx-auto shadow-lg" />
+              <div className="w-5 h-5 bg-red-600 rounded-full mx-auto -mt-1 shadow-md" />
               <div className="text-2xl text-center -mt-8">🕋</div>
             </div>
           </div>
@@ -175,6 +176,13 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
           {/* Center dot */}
           <div className="w-3 h-3 bg-emerald-600 rounded-full z-10 shadow-md" />
         </div>
+
+        {/* Instruction */}
+        <p className="text-xs font-semibold text-[var(--text-secondary)] text-center">
+          {language === 'en'
+            ? 'Rotate your device until the 🕋 arrow points ⬆ UP'
+            : 'اپنے آلے کو اس طرح گھمائیں کہ 🕋 کا تیر ⬆ اوپر کی طرف ہو جائے'}
+        </p>
 
         {/* Device orientation info */}
         <div className="text-center space-y-1">
@@ -189,7 +197,7 @@ export default function QiblaFinder({ currentCity, language }: QiblaFinderProps)
           )}
         </div>
 
-        {/* Manual fallback slider */}
+        {/* Manual fallback slider for desktop */}
         {deviceOrientation === null && (
           <div className="w-full max-w-xs">
             <p className="text-[10px] text-[var(--text-secondary)] mb-1 text-center">
