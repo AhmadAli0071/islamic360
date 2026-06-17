@@ -99,11 +99,11 @@ function playNotificationSound() {
     osc.type = 'sine';
     osc.frequency.value = 880;
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 2);
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.5);
+    osc.stop(ctx.currentTime + 2);
     // Resume if suspended (autoplay policy)
     if (ctx.state === 'suspended') ctx.resume();
   } catch {
