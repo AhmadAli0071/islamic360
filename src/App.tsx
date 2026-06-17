@@ -164,20 +164,6 @@ export default function App() {
     }
   };
 
-  // Real-time clock for status bar
-  const [statusTime, setStatusTime] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setStatusTime(new Date()), 30000);
-    return () => clearInterval(t);
-  }, []);
-
-  const formatStatusTime = (d: Date) => {
-    const h = d.getHours(), m = d.getMinutes();
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const h12 = h % 12 || 12;
-    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
-  };
-
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased flex flex-col justify-between transition-colors duration-300">
       
@@ -200,16 +186,6 @@ export default function App() {
 
       {/* ===== MOBILE CHROME (hidden on desktop) ===== */}
       <div className="block md:hidden">
-        {/* Sleek iOS Status Bar */}
-        <div className="bg-emerald-950 dark:bg-gray-950 text-white px-5 py-2.5 flex justify-between items-center text-[10px] font-bold select-none sticky top-0 z-50">
-          <div>{formatStatusTime(statusTime)}</div>
-          <div className="flex items-center space-x-1.5">
-            <span>📶</span>
-            <span>📶</span>
-            <span className="text-[9px]">🔋 100%</span>
-          </div>
-        </div>
-
         {/* Sticky Mobile App-Style Header */}
         <div className="bg-white dark:bg-gray-900 border-b border-[var(--border)] sticky top-6 z-40 px-4 py-3 flex items-center justify-between shadow-xs">
           {activeTab !== 'home' ? (
