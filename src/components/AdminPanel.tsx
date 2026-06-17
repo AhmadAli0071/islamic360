@@ -34,7 +34,7 @@ interface Stats {
 }
 
 export default function AdminPanel({ language, standalone }: { language: 'en' | 'ur'; standalone?: boolean }) {
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students' | 'notifications'>('dashboard');
   const [stats, setStats] = useState<Stats | null>(null);
   const [courses, setCourses] = useState<CourseData[]>([]);
   const [teachers, setTeachers] = useState<TeacherData[]>([]);
@@ -42,6 +42,10 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   const [editingCourse, setEditingCourse] = useState<CourseData | null>(null);
   const [editingTeacher, setEditingTeacher] = useState<TeacherData | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [notifTitle, setNotifTitle] = useState('');
+  const [notifBody, setNotifBody] = useState('');
+  const [sendingNotif, setSendingNotif] = useState(false);
+  const [notifSent, setNotifSent] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -115,6 +119,22 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
     setShowForm(true);
   };
 
+  const handleSendNotification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSendingNotif(true);
+    try {
+      await api.sendNotification({ title: notifTitle, body: notifBody });
+      setNotifSent(true);
+      setNotifTitle('');
+      setNotifBody('');
+      setTimeout(() => setNotifSent(false), 4000);
+    } catch (err) {
+      alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
+    } finally {
+      setSendingNotif(false);
+    }
+  };
+
   if (loading) {
     const skeleton = (
       <div className="flex-1 space-y-6 max-w-5xl mx-auto px-4 pb-16">
@@ -169,8 +189,8 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
       )}
 
       {/* NAV */}
-      <div className="flex space-x-2 border-b border-[var(--border)] pb-2">
-        {(['dashboard', 'courses', 'teachers', 'students'] as const).map(s => (
+      <div className="flex space-x-2 border-b border-[var(--border)] pb-2 overflow-x-auto">
+        {(['dashboard', 'courses', 'teachers', 'students', 'notifications'] as const).map(s => (
           <button key={s} onClick={() => { setActiveSection(s); setShowForm(false); }}
             className={`px-4 py-2 text-xs font-bold rounded-t-lg transition cursor-pointer ${
               activeSection === s ? 'bg-[var(--primary)] text-white' : 'bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--background)]'
@@ -271,6 +291,48 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
       {/* STUDENTS SECTION */}
       {activeSection === 'students' && (
         <StudentsList language={language} />
+      )}
+
+      {/* NOTIFICATIONS SECTION */}
+      {activeSection === 'notifications' && (
+        <div className="space-y-4 max-w-lg">
+          <h3 className="font-heading font-bold text-sm">{language === 'en' ? 'Send Notification' : 'نوٹیفیکیشن بھیجیں'}</h3>
+          <p className="text-[10px] text-[var(--text-secondary)]">
+            {language === 'en'
+              ? 'Chrome notification sab users ko instantly bhej dega.'
+              : 'تمام صارفین کو فوری Chrome نوٹیفیکیشن بھیجیں۔'}
+          </p>
+          <form onSubmit={handleSendNotification} className="space-y-3">
+            <input
+              value={notifTitle}
+              onChange={e => setNotifTitle(e.target.value)}
+              placeholder={language === 'en' ? 'Title' : 'عنوان'}
+              required
+              className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-400"
+            />
+            <textarea
+              value={notifBody}
+              onChange={e => setNotifBody(e.target.value)}
+              placeholder={language === 'en' ? 'Body (optional)' : 'متن (اختیاری)'}
+              rows={3}
+              className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-400"
+            />
+            <button
+              type="submit"
+              disabled={sendingNotif}
+              className="w-full py-2.5 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition disabled:opacity-50"
+            >
+              {sendingNotif
+                ? (language === 'en' ? 'Sending...' : 'بھیج رہا ہے...')
+                : (language === 'en' ? '🔔 Send Notification' : '🔔 نوٹیفیکیشن بھیجیں')}
+            </button>
+          </form>
+          {notifSent && (
+            <div className="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs font-semibold px-4 py-2 rounded-lg text-center">
+              {language === 'en' ? '✅ Notification sent successfully!' : '✅ نوٹیفیکیشن کامیابی سے بھیج دیا گیا!'}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

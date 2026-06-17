@@ -1,3 +1,11 @@
+interface ManualNotif {
+  _id: string;
+  title: string;
+  body: string;
+  icon: string;
+  createdAt: string;
+}
+
 interface PrayerNotification {
   prayer: string;
   time: string;
@@ -25,6 +33,8 @@ const NOTIFICATION_TAG = 'islamic360';
 
 let notifiedPrayers = new Set<string>();
 let notifiedWazifa = false;
+let shownManualNotifs = new Set<string>();
+let lastManualCheck = '';
 let checkInterval: ReturnType<typeof setInterval> | null = null;
 
 export async function requestNotificationPermission(): Promise<boolean> {
@@ -57,6 +67,27 @@ export async function fetchSchedule(city = 'Karachi', country = 'Pakistan'): Pro
   } catch (error) {
     console.error('Failed to fetch schedule:', error);
     return null;
+  }
+}
+
+export async function fetchManualNotifications(): Promise<ManualNotif[]> {
+  try {
+    const res = await fetch(`${API_BASE}/notifications/manual?since=${encodeURIComponent(lastManualCheck)}`);
+    const json = await res.json();
+    if (json.success && json.data.length > 0) {
+      lastManualCheck = json.data[0].createdAt;
+    }
+    return json.success ? json.data : [];
+  } catch {
+    return [];
+  }
+}
+
+function checkManualNotifications(notifs: ManualNotif[]) {
+  for (const n of notifs) {
+    if (shownManualNotifs.has(n._id)) continue;
+    shownManualNotifs.add(n._id);
+    showBrowserNotification(n.title, n.body, `${NOTIFICATION_TAG}-manual-${n._id}`);
   }
 }
 
@@ -152,6 +183,8 @@ export async function startNotificationSystem() {
       checkPrayerNotifications(schedule.prayers, todayKey);
       checkWazifaNotification(schedule.wazifa, todayKey);
     }
+    const manualNotifs = await fetchManualNotifications();
+    checkManualNotifications(manualNotifs);
   };
 
   await fetchAndNotify();

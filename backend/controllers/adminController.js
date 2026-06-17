@@ -4,6 +4,7 @@ import Hadith from '../models/Hadith.js';
 import Course from '../models/Course.js';
 import Teacher from '../models/Teacher.js';
 import Student from '../models/Student.js';
+import ManualNotification from '../models/ManualNotification.js';
 
 export const getAdminStats = async (req, res, next) => {
   try {
@@ -201,6 +202,29 @@ export const deleteTeacher = async (req, res, next) => {
     const teacher = await Teacher.findByIdAndDelete(req.params.id);
     if (!teacher) { res.status(404); throw new Error('Teacher not found'); }
     res.json({ success: true, message: 'Teacher deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Manual Notifications
+export const createManualNotification = async (req, res, next) => {
+  try {
+    const notification = await ManualNotification.create(req.body);
+    res.status(201).json({ success: true, data: notification });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getManualNotifications = async (req, res, next) => {
+  try {
+    const since = req.query.since || new Date(0).toISOString();
+    const notifications = await ManualNotification.find({
+      active: true,
+      createdAt: { $gt: new Date(since) },
+    }).sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: notifications });
   } catch (error) {
     next(error);
   }

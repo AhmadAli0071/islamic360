@@ -79,4 +79,7 @@ export const api = {
 
   // Students
   getStudents: () => fetchJSON('/admin/students'),
+
+  // Manual Notifications
+  sendNotification: (data: { title: string; body: string }) => postJSON('/admin/notifications', data),
 };

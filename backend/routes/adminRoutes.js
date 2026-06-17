@@ -7,6 +7,7 @@ import {
   getAdminCourses, createCourse, updateCourse, deleteCourse,
   getAdminTeachers, getTeachers, createTeacher, updateTeacher, deleteTeacher,
   getStudents,
+  createManualNotification,
 } from '../controllers/adminController.js';
 import seedEvents from '../scripts/seedEvents.js';
 import seedDuas from '../scripts/seedDuas.js';
@@ -54,5 +55,7 @@ router.put('/teachers/:id', updateTeacher);
 router.delete('/teachers/:id', deleteTeacher);
 
 router.get('/students', getStudents);
+
+router.post('/notifications', createManualNotification);
 
 export default router;
