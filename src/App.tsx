@@ -17,7 +17,8 @@ import WazifaPage from './components/WazifaPage';
 import TasbeehCounter from './components/TasbeehCounter';
 import AsmaUlHusna from './components/AsmaUlHusna';
 import AdsterraPush from './components/ads/AdsterraPush';
-import AdMavenPopunder from './components/ads/AdMavenPopunder';
+import AdsterraPopunder from './components/ads/AdsterraPopunder';
+import AdsterraSocialBar from './components/ads/AdsterraSocialBar';
 import { CITIES_DB } from './prayerData';
 import { CityData } from './types';
 
@@ -197,7 +198,8 @@ export default function App() {
 
       {/* AD NETWORKS — Global components */}
       <AdsterraPush language={language} />
-      <AdMavenPopunder />
+      <AdsterraPopunder />
+      <AdsterraSocialBar />
 
       {/* ==================== 📱 MOBILE APP LAYOUT (< 768px) ==================== */}
       <div className="block md:hidden flex-1 flex flex-col pb-20">
