@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 
 interface AdContainerProps {
   id: string;
@@ -8,28 +8,35 @@ interface AdContainerProps {
   onClose?: () => void;
 }
 
-const HEIGHT_MAP: Record<string, string> = {
-  'ad-leaderboard-1': '100px',
-  'ad-content-1': '280px',
-  'ad-content-2': '100px',
-  'ad-calendar-bottom': '100px',
-  'ad-history-sidebar': '280px',
-  'ad-history-content': '100px',
-  'ad-prayer-bottom': '100px',
-  'ad-qibla-bottom': '100px',
-  'ad-academy-header': '100px',
-  'ad-academy-content': '100px',
-};
+const CONTAINER_ID = 'container-cd069bef97f173a739477489c2db4db1';
+const INVOKE_URL = 'https://pl29776409.effectivecpmnetwork.com/cd069bef97f173a739477489c2db4db1/invoke.js';
 
-export default function AdContainer({ id }: AdContainerProps) {
-  const minHeight = HEIGHT_MAP[id] || '260px';
+export default function AdContainer({ id, type }: AdContainerProps) {
+  const isPrimary = id === 'ad-content-1' && (type === 'native' || type === 'sidebar');
+
+  useEffect(() => {
+    if (!isPrimary) return;
+
+    const script = document.createElement('script');
+    script.src = `${INVOKE_URL}?cb=${Date.now()}`;
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    document.head.appendChild(script);
+
+    return () => {
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
+    };
+  }, [isPrimary]);
+
+  if (!isPrimary) return null;
+
   return (
-    <div className="ad-container w-full" style={{ margin: '16px 0', minHeight, background: '#F9F9F9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <ins
-        className="adsbyadsterra"
-        data-zone="29675910"
-        data-type="banner"
-        style={{ display: 'block', width: '100%', maxWidth: '728px' }}
+    <div className="ad-container w-full" style={{ margin: '16px 0' }}>
+      <div
+        id={CONTAINER_ID}
+        style={{ background: '#F9F9F9', borderRadius: '8px', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       />
     </div>
   );
