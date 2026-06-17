@@ -32,7 +32,7 @@ interface Stats {
   totalTeachers: number;
 }
 
-export default function AdminPanel({ language }: { language: 'en' | 'ur' }) {
+export default function AdminPanel({ language, standalone }: { language: 'en' | 'ur'; standalone?: boolean }) {
   const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers'>('dashboard');
   const [stats, setStats] = useState<Stats | null>(null);
   const [courses, setCourses] = useState<CourseData[]>([]);
@@ -125,7 +125,7 @@ export default function AdminPanel({ language }: { language: 'en' | 'ur' }) {
   };
 
   if (loading) {
-    return (
+    const skeleton = (
       <div className="flex-1 space-y-6 max-w-5xl mx-auto px-4 pb-16">
         <div className="animate-pulse space-y-4">
           <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-2xl" />
@@ -133,16 +133,27 @@ export default function AdminPanel({ language }: { language: 'en' | 'ur' }) {
         </div>
       </div>
     );
+    if (standalone) {
+      return <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased">{skeleton}</div>;
+    }
+    return skeleton;
   }
 
-  return (
+  const content = (
     <div className="flex-1 space-y-6 max-w-7xl mx-auto px-4 pb-16">
       {/* HEADER */}
       <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <h2 className="text-xl font-heading font-black text-[var(--primary)] dark:text-[var(--secondary)] flex items-center space-x-2">
-          <span>⚙️</span>
-          <span>{language === 'en' ? 'Admin Panel — Quran Academy' : 'ایڈمن پینل — قرآن اکیڈمی'}</span>
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-heading font-black text-[var(--primary)] dark:text-[var(--secondary)] flex items-center space-x-2">
+            <span>⚙️</span>
+            <span>{language === 'en' ? 'Admin Panel — Quran Academy' : 'ایڈمن پینل — قرآن اکیڈمی'}</span>
+          </h2>
+          {standalone && (
+            <a href="/" className="px-3 py-1.5 text-[10px] font-bold rounded-lg bg-[var(--background)] text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--primary)] hover:text-white transition no-underline cursor-pointer">
+              {language === 'en' ? '← Back to Home' : '← مرکزی صفحہ'}
+            </a>
+          )}
+        </div>
       </div>
 
       {/* STATS */}
@@ -266,6 +277,15 @@ export default function AdminPanel({ language }: { language: 'en' | 'ur' }) {
       )}
     </div>
   );
+
+  if (standalone) {
+    return (
+      <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased">
+        {content}
+      </div>
+    );
+  }
+  return content;
 }
 
 function CourseForm({ course, language, onSave, onClose }: {

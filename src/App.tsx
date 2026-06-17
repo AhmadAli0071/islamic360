@@ -11,7 +11,6 @@ import IslamicCalendar from './components/IslamicCalendar';
 import IslamicHistory from './components/IslamicHistory';
 import AdContainer from './components/AdContainer';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
-import AdminPanel from './components/AdminPanel';
 import DuasPage from './components/DuasPage';
 import HadithPage from './components/HadithPage';
 import WazifaPage from './components/WazifaPage';
@@ -143,7 +142,8 @@ export default function App() {
           />
         );
       case 'admin':
-        return <AdminPanel language={language} />;
+        window.location.href = '/admin';
+        return null;
       case 'duas':
         return <DuasPage language={language} />;
       case 'hadith':

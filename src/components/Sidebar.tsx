@@ -39,20 +39,30 @@ export default function Sidebar({ activeTab, onTabChange, language }: SidebarPro
           {menuItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-sm font-medium tracking-wide transition-all group cursor-pointer ${
-                  isActive
-                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[var(--primary)] dark:text-[var(--secondary)] border-l-4 border-emerald-700 dark:border-amber-400 font-semibold shadow-sm'
-                    : 'text-[var(--text-primary)] hover:bg-[var(--background)]'
-                }`}
-              >
-                <span className={`text-lg transition-transform duration-200 group-hover:scale-110 ${isActive ? 'scale-105' : ''}`}>
-                  {item.icon}
-                </span>
-                <span className="truncate">{item.label}</span>
-              </button>
+              <React.Fragment key={item.id}>
+                {item.id === 'admin' ? (
+                  <a href="/admin"
+                    className="w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-sm font-medium tracking-wide transition-all group cursor-pointer text-[var(--text-primary)] hover:bg-[var(--background)] no-underline"
+                  >
+                    <span className="text-lg transition-transform duration-200 group-hover:scale-110">{item.icon}</span>
+                    <span className="truncate">{item.label}</span>
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => onTabChange(item.id)}
+                    className={`w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-sm font-medium tracking-wide transition-all group cursor-pointer ${
+                      isActive
+                        ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[var(--primary)] dark:text-[var(--secondary)] border-l-4 border-emerald-700 dark:border-amber-400 font-semibold shadow-sm'
+                        : 'text-[var(--text-primary)] hover:bg-[var(--background)]'
+                    }`}
+                  >
+                    <span className={`text-lg transition-transform duration-200 group-hover:scale-110 ${isActive ? 'scale-105' : ''}`}>
+                      {item.icon}
+                    </span>
+                    <span className="truncate">{item.label}</span>
+                  </button>
+                )}
+              </React.Fragment>
             );
           })}
         </nav>
