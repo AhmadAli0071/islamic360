@@ -15,27 +15,38 @@ export default function IslamicCalendar({ language }: IslamicCalendarProps) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [events, setEvents] = useState<Record<number, { name: string; type: string }[]>>({});
   const [selectedDay, setSelectedDay] = useState<{ greg: number; events: { name: string; type: string }[] } | null>(null);
-  const [hijriInfo, setHijriInfo] = useState<{ month: string; year: number } | null>(null);
+  const [hijriDays, setHijriDays] = useState<Record<number, { day: string; month: string; year: string }>>({});
 
   useEffect(() => {
-    fetchMonthEvents();
-  }, [currentMonth]);
+    fetchMonthData();
+  }, [currentMonth, currentYear, language]);
 
-  const fetchMonthEvents = async () => {
+  const fetchMonthData = async () => {
+    const month = currentMonth + 1;
     try {
-      const res = await fetch(`/api/events/month/${MONTHS[currentMonth]}`);
-      const json = await res.json();
-      if (json.success && Array.isArray(json.data)) {
+      const [hijriRes, eventsRes] = await Promise.all([
+        fetch(`/api/hijri/calendar?month=${month}&year=${currentYear}`),
+        fetch(`/api/events/month/${MONTHS[currentMonth]}`),
+      ]);
+      const hijriJson = await hijriRes.json();
+      if (hijriJson.success && Array.isArray(hijriJson.data)) {
+        const map: Record<number, { day: string; month: string; year: string }> = {};
+        for (const day of hijriJson.data) {
+          const gregDay = parseInt(day.gregorian.split('-')[0]);
+          map[gregDay] = { day: day.hijri.day, month: day.hijri.month, year: day.hijri.year };
+        }
+        setHijriDays(map);
+      }
+      const eventsJson = await eventsRes.json();
+      if (eventsJson.success && Array.isArray(eventsJson.data)) {
         const grouped: Record<number, { name: string; type: string }[]> = {};
-        for (const ev of json.data) {
+        for (const ev of eventsJson.data) {
           if (!grouped[ev.day]) grouped[ev.day] = [];
           grouped[ev.day].push({ name: language === 'en' ? ev.title?.en : ev.title?.ur, type: ev.type });
         }
         setEvents(grouped);
       }
-    } catch {
-      // silently fail
-    }
+    } catch {}
   };
 
   const getDaysInMonth = (m: number, y: number) => new Date(y, m + 1, 0).getDate();
@@ -44,12 +55,7 @@ export default function IslamicCalendar({ language }: IslamicCalendarProps) {
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
 
-  // Convert to Hijri approximate
-  const getHijriApprox = (day: number) => {
-    // Rough approximate: add 14 days offset
-    const hijriDay = ((day + 13) % 30) || 30;
-    return { day: hijriDay, month: MONTHS[(currentMonth + 2) % 12], year: currentYear - 579 };
-  };
+  const getHijri = (day: number) => hijriDays[day] || { day: '-', month: '', year: '' };
 
   const prevMonth = () => {
     setSelectedDay(null);
@@ -94,7 +100,7 @@ export default function IslamicCalendar({ language }: IslamicCalendarProps) {
             {new Date(currentYear, currentMonth).toLocaleString(language === 'en' ? 'en-US' : 'ur-PK', { month: 'long', year: 'numeric' })}
           </p>
           <p className="text-[10px] text-[var(--text-secondary)]">
-            {MONTHS[(currentMonth + 2) % 12]} {currentYear - 579} AH
+            {hijriDays[1]?.month || ''} {hijriDays[1]?.year || ''} AH
           </p>
         </div>
         <button onClick={nextMonth} className="px-4 py-2 bg-[var(--background)] text-[var(--text-primary)] text-sm font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition">→</button>
@@ -116,7 +122,7 @@ export default function IslamicCalendar({ language }: IslamicCalendarProps) {
           {/* Day cells */}
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
-            const hijri = getHijriApprox(day);
+            const hijri = getHijri(day);
             const dayHasEvents = events[day] && events[day].length > 0;
             const isSelected = selectedDay?.greg === day;
             const isFriday = new Date(currentYear, currentMonth, day).getDay() === 5;

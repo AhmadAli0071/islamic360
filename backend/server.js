@@ -18,6 +18,7 @@ import courseRoutes from './routes/courseRoutes.js';
 import wazifaRoutes from './routes/wazifaRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import hijriRoutes from './routes/hijriRoutes.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
@@ -54,6 +55,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/wazifas', wazifaRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/hijri', hijriRoutes);
 
 // Fallback: serve index.html for any non-API route (SPA)
 app.get('*', (req, res) => {
