@@ -35,12 +35,12 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*.effectivecpmnetwork.com", "https://*.adsterra.com", "https://*.popcash.net", "https://preferencenail.com", "https://*.preferencenail.com"],
-      imgSrc: ["'self'", "data:", "https:", "blob:", "https://*.effectivecpmnetwork.com", "https://*.adsterra.com", "https://*.popcash.net"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://*.effectivecpmnetwork.com", "https://*.adsterra.com", "https://*.popcash.net", "https://preferencenail.com", "https://*.preferencenail.com"],
-      frameSrc: ["'self'", "https://*.effectivecpmnetwork.com", "https://*.adsterra.com", "https://*.popcash.net", "https://preferencenail.com", "https://*.preferencenail.com"],
+      connectSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https:"],
+      frameSrc: ["'self'", "https:"],
       workerSrc: ["'self'", "blob:"],
     },
   },
