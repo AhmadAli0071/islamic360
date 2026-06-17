@@ -10,171 +10,125 @@ const MONTHS = [
   'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul-Qi\'dah', 'Dhul-Hijjah',
 ];
 
+const GREG_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 export default function IslamicCalendar({ language }: IslamicCalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [events, setEvents] = useState<Record<number, { name: string; type: string }[]>>({});
-  const [selectedDay, setSelectedDay] = useState<{ greg: number; events: { name: string; type: string }[] } | null>(null);
-  const [hijriDays, setHijriDays] = useState<Record<number, { day: string; month: string; year: string }>>({});
+  const now = new Date();
+  const [dateOffset, setDateOffset] = useState(0);
+  const [hijri, setHijri] = useState<{ day: string; month: string; monthAr: string; year: string; full: string } | null>(null);
+  const [dayEvents, setDayEvents] = useState<{ name: string; type: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentDate = new Date(now);
+  currentDate.setDate(currentDate.getDate() + dateOffset);
 
   useEffect(() => {
-    fetchMonthData();
-  }, [currentMonth, currentYear, language]);
+    fetchDayData();
+  }, [dateOffset, language]);
 
-  const fetchMonthData = async () => {
-    const month = currentMonth + 1;
+  const fetchDayData = async () => {
+    setLoading(true);
+    const d = String(currentDate.getDate()).padStart(2, '0');
+    const m = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const y = currentDate.getFullYear();
     try {
-      const [hijriRes, eventsRes] = await Promise.all([
-        fetch(`/api/hijri/calendar?month=${month}&year=${currentYear}`),
-        fetch(`/api/events/month/${MONTHS[currentMonth]}`),
-      ]);
-      const hijriJson = await hijriRes.json();
-      if (hijriJson.success && Array.isArray(hijriJson.data)) {
-        const map: Record<number, { day: string; month: string; year: string }> = {};
-        for (const day of hijriJson.data) {
-          const gregDay = parseInt(day.gregorian.split('-')[0]);
-          map[gregDay] = { day: day.hijri.day, month: day.hijri.month, year: day.hijri.year };
+      const dateRes = await fetch(`/api/hijri/date?day=${d}&month=${m}&year=${y}`);
+      const dateJson = await dateRes.json();
+      if (dateJson.success) {
+        setHijri(dateJson.data.hijri);
+        const monthName = MONTHS[parseInt(dateJson.data.hijri.monthNumber) - 1] || dateJson.data.hijri.month;
+        const eventsRes = await fetch(`/api/events/month/${monthName}`);
+        const eventsJson = await eventsRes.json();
+        if (eventsJson.success && eventsJson.data?.events) {
+          const filtered = eventsJson.data.events
+            .filter(ev => ev.day === parseInt(dateJson.data.hijri.day))
+            .map(ev => ({ name: language === 'en' ? ev.title?.en : ev.title?.ur, type: ev.type }));
+          setDayEvents(filtered);
+        } else {
+          setDayEvents([]);
         }
-        setHijriDays(map);
-      }
-      const eventsJson = await eventsRes.json();
-      if (eventsJson.success && Array.isArray(eventsJson.data)) {
-        const grouped: Record<number, { name: string; type: string }[]> = {};
-        for (const ev of eventsJson.data) {
-          if (!grouped[ev.day]) grouped[ev.day] = [];
-          grouped[ev.day].push({ name: language === 'en' ? ev.title?.en : ev.title?.ur, type: ev.type });
-        }
-        setEvents(grouped);
       }
     } catch {}
+    setLoading(false);
   };
 
-  const getDaysInMonth = (m: number, y: number) => new Date(y, m + 1, 0).getDate();
-  const getFirstDayOfMonth = (m: number, y: number) => new Date(y, m, 1).getDay();
-
-  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-  const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
-
-  const getHijri = (day: number) => hijriDays[day] || { day: '-', month: '', year: '' };
-
-  const prevMonth = () => {
-    setSelectedDay(null);
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(y => y - 1);
-    } else {
-      setCurrentMonth(m => m - 1);
-    }
-  };
-
-  const nextMonth = () => {
-    setSelectedDay(null);
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(y => y + 1);
-    } else {
-      setCurrentMonth(m => m + 1);
-    }
-  };
-
-  const dayEvents = selectedDay ? events[selectedDay.greg] || [] : [];
+  const isToday = dateOffset === 0;
+  const gregMonthName = GREG_MONTHS[currentDate.getMonth()];
+  const dayName = DAY_NAMES[currentDate.getDay()];
 
   return (
-    <div className="flex-1 space-y-6 max-w-5xl mx-auto px-4 pb-16 animate-fadeIn">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-900 to-teal-800 text-white rounded-2xl p-5 shadow-md">
+    <div className="flex-1 space-y-6 max-w-4xl mx-auto px-4 pb-16 animate-fadeIn">
+      <div className="bg-gradient-to-r from-emerald-900 to-teal-800 text-white rounded-2xl p-6 shadow-md">
         <h2 className="text-lg font-heading font-black flex items-center gap-2">
           <span>🗓️</span>
           <span>{language === 'en' ? 'Islamic Calendar' : 'اسلامی کیلنڈر'}</span>
         </h2>
-        <p className="text-xs text-emerald-200 mt-1">
-          {language === 'en' ? 'Hijri & Gregorian dates with events' : 'ہجری اور عیسوی تاریخیں واقعات کے ساتھ'}
-        </p>
       </div>
 
-      {/* Month navigation */}
-      <div className="flex justify-between items-center bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
-        <button onClick={prevMonth} className="px-4 py-2 bg-[var(--background)] text-[var(--text-primary)] text-sm font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition">←</button>
-        <div className="text-center">
-          <p className="text-sm font-heading font-black text-[var(--primary)] dark:text-[var(--secondary)]">
-            {new Date(currentYear, currentMonth).toLocaleString(language === 'en' ? 'en-US' : 'ur-PK', { month: 'long', year: 'numeric' })}
-          </p>
-          <p className="text-[10px] text-[var(--text-secondary)]">
-            {hijriDays[1]?.month || ''} {hijriDays[1]?.year || ''} AH
-          </p>
-        </div>
-        <button onClick={nextMonth} className="px-4 py-2 bg-[var(--background)] text-[var(--text-primary)] text-sm font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition">→</button>
-      </div>
-
-      {/* Calendar Grid */}
-      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 shadow-sm">
-        {/* Day headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-            <div key={d} className="text-center text-[10px] font-bold text-[var(--text-secondary)] py-1">{d}</div>
-          ))}
-        </div>
-        <div className="grid grid-cols-7 gap-1">
-          {/* Empty slots */}
-          {Array.from({ length: firstDay }).map((_, i) => (
-            <div key={`e-${i}`} className="h-14" />
-          ))}
-          {/* Day cells */}
-          {Array.from({ length: daysInMonth }).map((_, i) => {
-            const day = i + 1;
-            const hijri = getHijri(day);
-            const dayHasEvents = events[day] && events[day].length > 0;
-            const isSelected = selectedDay?.greg === day;
-            const isFriday = new Date(currentYear, currentMonth, day).getDay() === 5;
-
-            return (
-              <button key={day} onClick={() => setSelectedDay({ greg: day, events: events[day] || [] })}
-                className={`h-14 rounded-xl text-xs flex flex-col items-center justify-center transition cursor-pointer relative ${
-                  isSelected ? 'bg-[var(--primary)] text-white shadow-md' : dayHasEvents ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30' : isFriday ? 'bg-emerald-50 dark:bg-emerald-900/10' : 'hover:bg-[var(--background)]'
-                }`}>
-                <span className="font-bold text-[11px]">{day}</span>
-                <span className="text-[8px] opacity-70">{hijri.day}</span>
-                {dayHasEvents && <span className="absolute bottom-0.5 w-1.5 h-1.5 rounded-full bg-amber-500" />}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Selected day events */}
-      {selectedDay && (
-        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-          <h3 className="text-sm font-heading font-bold mb-3 flex items-center gap-2">
-            <span>📅</span>
-            <span>{language === 'en' ? `Events for ${currentMonth + 1}/${selectedDay.greg}/${currentYear}` : `${selectedDay.greg}/${currentMonth + 1}/${currentYear} کے واقعات`}</span>
-          </h3>
-          {dayEvents.length === 0 ? (
-            <p className="text-xs text-[var(--text-secondary)]">
-              {language === 'en' ? 'No events on this day.' : 'اس دن کوئی واقعہ نہیں'}
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <button onClick={() => setDateOffset(o => o - 1)}
+            className="px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] text-sm font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition">
+            ←
+          </button>
+          <div className="text-center">
+            {isToday && <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block mb-1">{language === 'en' ? 'Today' : 'آج'}</span>}
+            <p className="text-lg font-heading font-black text-[var(--primary)] dark:text-[var(--secondary)]">
+              {dayName}, {gregMonthName} {currentDate.getDate()}, {currentDate.getFullYear()}
             </p>
-          ) : (
-            <div className="space-y-2">
-              {dayEvents.map((ev, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/10">
-                  <span className={`px-2 py-0.5 text-[9px] font-bold rounded ${
-                    ev.type === 'fard' ? 'bg-red-100 text-red-700' : ev.type === 'sunnah' ? 'bg-green-100 text-green-700' : ev.type === 'celebration' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
-                  }`}>{ev.type}</span>
-                  <span className="text-xs font-semibold">{ev.name}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          </div>
+          <button onClick={() => setDateOffset(o => o + 1)}
+            className="px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] text-sm font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition">
+            →
+          </button>
         </div>
-      )}
 
-      {/* Legend */}
-      <div className="flex flex-wrap gap-4 text-[10px] text-[var(--text-secondary)]">
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-500" /> {language === 'en' ? 'Has events' : 'واقعات'}</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-emerald-100 dark:bg-emerald-900/20 border border-emerald-300" /> {language === 'en' ? 'Friday' : 'جمعہ'}</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-red-100 text-red-700 text-[8px] flex items-center justify-center">F</span> Fard</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-green-100 text-green-700 text-[8px] flex items-center justify-center">S</span> Sunnah</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-amber-100 text-amber-700 text-[8px] flex items-center justify-center">C</span> Celebration</span>
-        <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-blue-100 text-blue-700 text-[8px] flex items-center justify-center">H</span> History</span>
+        <div className="text-center py-4 border-t border-[var(--border)]">
+          {loading ? (
+            <div className="animate-pulse space-y-2">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-40 mx-auto" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mx-auto" />
+            </div>
+          ) : hijri ? (
+            <>
+              <p className="text-2xl font-arabic font-bold text-emerald-800 dark:text-emerald-400" dir="rtl">
+                {hijri.day} {hijri.monthAr} {hijri.year}
+              </p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">
+                {hijri.full}
+              </p>
+            </>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+        <h3 className="text-sm font-heading font-bold mb-3 flex items-center gap-2">
+          <span>📅</span>
+          <span>{language === 'en' ? 'Events' : 'واقعات'}</span>
+        </h3>
+        {loading ? (
+          <div className="animate-pulse space-y-2">
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded" />
+            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded" />
+          </div>
+        ) : dayEvents.length === 0 ? (
+          <p className="text-xs text-[var(--text-secondary)]">
+            {language === 'en' ? 'No events on this day.' : 'اس دن کوئی واقعہ نہیں'}
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {dayEvents.map((ev, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/10">
+                <span className={`px-2 py-0.5 text-[9px] font-bold rounded ${
+                  ev.type === 'fard' ? 'bg-red-100 text-red-700' : ev.type === 'sunnah' ? 'bg-green-100 text-green-700' : ev.type === 'celebration' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                }`}>{ev.type}</span>
+                <span className="text-xs font-semibold">{ev.name}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <AdContainer id="ad-calendar-bottom" size="728x90 Bottom" type="leaderboard" />

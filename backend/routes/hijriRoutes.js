@@ -60,4 +60,36 @@ router.get('/today', cacheMiddleware(3600), async (req, res, next) => {
   }
 });
 
+router.get('/date', cacheMiddleware(86400), async (req, res, next) => {
+  try {
+    const day = String(parseInt(req.query.day) || new Date().getDate()).padStart(2, '0');
+    const month = String(parseInt(req.query.month) || (new Date().getMonth() + 1)).padStart(2, '0');
+    const year = parseInt(req.query.year) || new Date().getFullYear();
+    const url = `https://api.aladhan.com/v1/gToH?date=${day}-${month}-${year}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.code === 200 && data.data) {
+      const h = data.data.hijri;
+      res.json({
+        success: true,
+        data: {
+          gregorian: { day, month, year },
+          hijri: {
+            day: h.day,
+            month: h.month.en,
+            monthAr: h.month.ar,
+            monthNumber: h.month.number,
+            year: h.year,
+            full: `${h.day} ${h.month.en} ${h.year} ${h.designation.abbreviated}`,
+          },
+        },
+      });
+    } else {
+      res.status(500).json({ success: false, message: 'Failed to fetch Hijri date' });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
