@@ -1,5 +1,30 @@
 import Hadith from '../models/Hadith.js';
 
+const UMMAH_API = 'https://ummahapi.com/api/hadith';
+const SOURCE_MAP = {
+  'Sahih Bukhari': 'bukhari',
+  'Sahih Muslim': 'muslim',
+  'Sunan Abi Dawud': 'abudawud',
+  'Sunan an-Nasai': 'nasai',
+  'Jami At-Tirmidhi': 'tirmidhi',
+  'Sunan Ibn Majah': 'ibnmajah',
+};
+
+async function fixArabic(hadith) {
+  if (!hadith || !hadith.arabic || !/\?{3,}/.test(hadith.arabic)) return hadith;
+  const collection = SOURCE_MAP[hadith.source];
+  if (!collection || !hadith.reference) return hadith;
+  try {
+    const url = `${UMMAH_API}/${collection}/${hadith.reference}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.data?.arabic) hadith.arabic = data.data.arabic;
+    }
+  } catch {}
+  return hadith;
+}
+
 const PRAYER_DAY_MAP = {
   Fajr: { start: 1, end: 73 },
   Dhuhr: { start: 74, end: 146 },
@@ -25,7 +50,7 @@ export const getDailyHadith = async (req, res, next) => {
       return res.json({ success: true, data: null, message: 'No hadith available' });
     }
 
-    res.json({ success: true, data: { ...hadith, dayOfYear } });
+    res.json({ success: true, data: { ...(await fixArabic(hadith)), dayOfYear } });
   } catch (error) {
     next(error);
   }
@@ -39,7 +64,7 @@ export const getRandomHadith = async (req, res, next) => {
     }
     const random = Math.floor(Math.random() * count);
     const hadith = await Hadith.findOne().skip(random).lean();
-    res.json({ success: true, data: hadith });
+    res.json({ success: true, data: await fixArabic(hadith) });
   } catch (error) {
     next(error);
   }
@@ -68,7 +93,7 @@ export const getHadithByPrayer = async (req, res, next) => {
 
     res.json({
       success: true,
-      data: hadith ? { ...hadith, prayer } : null,
+      data: hadith ? { ...(await fixArabic(hadith)), prayer } : null,
     });
   } catch (error) {
     next(error);
