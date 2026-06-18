@@ -16,14 +16,12 @@ import duaRoutes from './routes/duaRoutes.js';
 import hadithRoutes from './routes/hadithRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import wazifaRoutes from './routes/wazifaRoutes.js';
-import notificationRoutes from './routes/notificationRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import hijriRoutes from './routes/hijriRoutes.js';
 import teacherRoutes from './routes/teacherRoutes.js';
 import enrollRoutes from './routes/enrollRoutes.js';
-import pushRoutes from './routes/pushRoutes.js';
+import pushRoutes from './routes/push.js';
 import { startPushCron } from './services/pushCron.js';
-import { sendPushToAll } from './services/pushService.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
@@ -38,7 +36,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:", "https://cdn.adsterra.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -65,21 +63,6 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Islamic360 API is running' });
 });
 
-// Temp: test push notification
-app.post('/api/push/test-fajr', async (req, res) => {
-  try {
-    const result = await sendPushToAll(
-      '🕌 Fajr ka waqt hogaya (TEST)',
-      'Yeh ek test notification hai. 10 second alarm bajega.',
-      'test-fajr-push',
-      10,
-    );
-    res.json({ success: true, data: result });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
-
 app.use('/api/prayers', prayerRoutes);
 app.use('/api/qibla', qiblaRoutes);
 app.use('/api/events', eventRoutes);
@@ -87,7 +70,6 @@ app.use('/api/duas', duaRoutes);
 app.use('/api/hadith', hadithRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/wazifas', wazifaRoutes);
-app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/hijri', hijriRoutes);
 app.use('/api/teachers', teacherRoutes);

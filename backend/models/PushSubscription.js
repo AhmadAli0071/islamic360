@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 
 const pushSubscriptionSchema = new mongoose.Schema({
+  type: { type: String, enum: ['owner', 'customer', 'user'], required: true },
   endpoint: { type: String, required: true, unique: true },
   keys: {
-    p256dh: { type: String, required: true },
-    auth: { type: String, required: true },
+    p256dh: { type: String },
+    auth: { type: String },
   },
-  userAgent: { type: String, default: '' },
-  createdAt: { type: Date, default: Date.now },
-});
+  subscription: { type: mongoose.Schema.Types.Mixed },
+}, { timestamps: true });
 
 export default mongoose.model('PushSubscription', pushSubscriptionSchema);

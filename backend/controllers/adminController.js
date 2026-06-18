@@ -5,7 +5,7 @@ import Course from '../models/Course.js';
 import Teacher from '../models/Teacher.js';
 import Student from '../models/Student.js';
 import ManualNotification from '../models/ManualNotification.js';
-import { sendPushManual } from '../services/pushService.js';
+import { sendPushManual } from '../services/push.js';
 
 export const getAdminStats = async (req, res, next) => {
   try {

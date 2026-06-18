@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { sendPushToAllWithHadith, sendPushWazifa } from './pushService.js';
+import { sendPushToAllWithHadith, sendPushWazifa } from './push.js';
 import { buildSchedule } from '../controllers/notificationController.js';
 
 const PRAYER_DAY_MAP = {

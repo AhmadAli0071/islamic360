@@ -4,9 +4,12 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import App from './App.tsx';
 import AdminPanel from './components/AdminPanel.tsx';
 import './index.css';
-import {startNotificationSystem} from './services/notificationManager.ts';
 
-startNotificationSystem();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { scope: '/' });
+}
+
+import('./utils/push.js').then(({ registerPush }) => registerPush());
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

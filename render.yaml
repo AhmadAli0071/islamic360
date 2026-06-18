@@ -30,3 +30,9 @@ services:
         sync: false
       - key: FROM_NAME
         sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_MAILTO
+        sync: false

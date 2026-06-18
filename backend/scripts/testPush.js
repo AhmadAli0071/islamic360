@@ -4,7 +4,7 @@ import { dirname, join } from 'path';
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '..', '.env') });
 
 import connectDB from '../config/db.js';
-import { sendPushToAll } from '../services/pushService.js';
+import { sendPushToAll } from '../services/push.js';
 
 async function run() {
   await connectDB();

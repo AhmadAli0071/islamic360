@@ -16,7 +16,6 @@ import HadithPage from './components/HadithPage';
 import WazifaPage from './components/WazifaPage';
 import TasbeehCounter from './components/TasbeehCounter';
 import AsmaUlHusna from './components/AsmaUlHusna';
-import AdsterraPush from './components/ads/AdsterraPush';
 import { CITIES_DB } from './prayerData';
 import { CityData } from './types';
 
@@ -196,8 +195,6 @@ export default function App() {
 
       {/* PWA INSTALL PROMPT */}
       <PWAInstallPrompt />
-
-      <AdsterraPush language={language} />
 
       {/* ===== MOBILE CHROME (hidden on desktop) ===== */}
       <div className="block md:hidden">
