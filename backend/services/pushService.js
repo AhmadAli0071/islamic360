@@ -1,5 +1,7 @@
 import webpush from 'web-push';
 import PushSubscription from '../models/PushSubscription.js';
+import FCMToken from '../models/FCMToken.js';
+import { initFirebaseAdmin, getFirebaseMessaging } from '../config/firebaseAdmin.js';
 
 let vapidInitialized = false;
 
@@ -19,12 +21,8 @@ function ensureVapid() {
   vapidInitialized = true;
 }
 
-export async function sendPushToAll(title, body, tag, soundDuration = 3) {
-  ensureVapid();
-  const subs = await PushSubscription.find().lean();
-  if (subs.length === 0) return { sent: 0, total: 0 };
-
-  const payload = JSON.stringify({
+function buildPayload(title, body, tag, soundDuration = 3) {
+  return JSON.stringify({
     title,
     body,
     tag,
@@ -34,6 +32,14 @@ export async function sendPushToAll(title, body, tag, soundDuration = 3) {
     requireInteraction: true,
     vibrate: soundDuration >= 10 ? [500, 200, 500, 200, 500, 200, 500, 200, 500] : [200, 100, 200],
   });
+}
+
+async function sendViaVAPID(title, body, tag, soundDuration = 3) {
+  ensureVapid();
+  const subs = await PushSubscription.find().lean();
+  if (subs.length === 0) return { sent: 0, total: 0 };
+
+  const payload = buildPayload(title, body, tag, soundDuration);
 
   const results = await Promise.allSettled(
     subs.map((sub) =>
@@ -49,6 +55,48 @@ export async function sendPushToAll(title, body, tag, soundDuration = 3) {
   );
 
   return { sent: results.filter(r => r.status === 'fulfilled').length, total: subs.length };
+}
+
+async function sendViaFCM(title, body, tag, soundDuration = 3) {
+  const messaging = getFirebaseMessaging();
+  if (!messaging) return { sent: 0, total: 0 };
+
+  const tokens = await FCMToken.find().lean();
+  if (tokens.length === 0) return { sent: 0, total: 0 };
+
+  const message = {
+    notification: { title, body },
+    data: {
+      tag,
+      soundDuration: String(soundDuration),
+    },
+  };
+
+  const results = await Promise.allSettled(
+    tokens.map((t) =>
+      messaging.send({ ...message, token: t.token }).catch(async (err) => {
+        if (err.code === 'messaging/registration-token-not-registered') {
+          await FCMToken.deleteOne({ token: t.token });
+        }
+      })
+    )
+  );
+
+  return { sent: results.filter(r => r.status === 'fulfilled').length, total: tokens.length };
+}
+
+export async function sendPushToAll(title, body, tag, soundDuration = 3) {
+  initFirebaseAdmin();
+  const [vapidResult, fcmResult] = await Promise.all([
+    sendViaVAPID(title, body, tag, soundDuration),
+    sendViaFCM(title, body, tag, soundDuration),
+  ]);
+  return {
+    vapid: vapidResult,
+    fcm: fcmResult,
+    sent: vapidResult.sent + fcmResult.sent,
+    total: vapidResult.total + fcmResult.total,
+  };
 }
 
 export async function sendPushToAllWithHadith(prayerName, hadith) {

@@ -255,19 +255,43 @@ export async function startNotificationSystem() {
 
   await registerServiceWorker();
 
+  const getCityFromStorage = () => {
+    try {
+      const stored = localStorage.getItem('theislamic360_city');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return { city: parsed.name || 'Karachi', country: parsed.country || 'Pakistan' };
+      }
+    } catch {}
+    return { city: 'Karachi', country: 'Pakistan' };
+  };
+
   // Wait for SW to be ready BEFORE setting up gesture listener
   const reg = await navigator.serviceWorker.ready;
   _swRegistration = reg;
 
   // Tell service worker to start polling for background notifications
+  const { city, country } = getCityFromStorage();
   const sendCityToSW = () => {
-    const { city, country } = getCityFromStorage();
     reg.active?.postMessage({ type: 'START_NOTIFICATION_POLL', city, country });
   };
   setTimeout(sendCityToSW, 1000);
 
+  // === FCM TOKEN (more reliable on mobile Chrome) ===
+  try {
+    const { getFCMToken, registerFCMToken, setupForegroundMessageHandler } = await import('./firebaseMessaging');
+    setupForegroundMessageHandler();
+    const fcmToken = await getFCMToken(reg);
+    if (fcmToken) {
+      registerFCMToken(fcmToken);
+      console.log('FCM token obtained:', fcmToken.substring(0, 20) + '...');
+    }
+  } catch (e) {
+    console.warn('FCM setup failed, falling back to VAPID:', e);
+  }
+
+  // === VAPID PUSH SUBSCRIBE (fallback for desktop) ===
   // Subscribe to push on first user gesture (required by Chrome mobile)
-  // _swRegistration is guaranteed to be set when user taps
   const subscribeOnTouch = () => {
     subscribeToPush();
     document.removeEventListener('click', subscribeOnTouch);
@@ -289,17 +313,6 @@ export async function startNotificationSystem() {
   const todayKey = new Date().toDateString();
   notifiedPrayers = new Set();
   notifiedWazifa = false;
-
-  const getCityFromStorage = () => {
-    try {
-      const stored = localStorage.getItem('theislamic360_city');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return { city: parsed.name || 'Karachi', country: parsed.country || 'Pakistan' };
-      }
-    } catch {}
-    return { city: 'Karachi', country: 'Pakistan' };
-  };
 
   const fetchAndNotify = async () => {
     const { city, country } = getCityFromStorage();
