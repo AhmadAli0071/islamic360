@@ -33,7 +33,12 @@ interface Stats {
   totalStudents: number;
 }
 
+const ADMIN_PIN = '135813';
+
 export default function AdminPanel({ language, standalone }: { language: 'en' | 'ur'; standalone?: boolean }) {
+  const [pinVerified, setPinVerified] = useState(() => sessionStorage.getItem('admin_pin') === ADMIN_PIN);
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState(false);
   const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students' | 'notifications'>('dashboard');
   const [stats, setStats] = useState<Stats | null>(null);
   const [courses, setCourses] = useState<CourseData[]>([]);
@@ -46,6 +51,18 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   const [notifBody, setNotifBody] = useState('');
   const [sendingNotif, setSendingNotif] = useState(false);
   const [notifSent, setNotifSent] = useState(false);
+
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pinInput === ADMIN_PIN) {
+      setPinVerified(true);
+      sessionStorage.setItem('admin_pin', ADMIN_PIN);
+      setPinError(false);
+    } else {
+      setPinError(true);
+      setPinInput('');
+    }
+  };
 
   useEffect(() => {
     loadAll();
@@ -148,6 +165,46 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
       return <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased">{skeleton}</div>;
     }
     return skeleton;
+  }
+
+  if (!pinVerified) {
+    const pinScreen = (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)] px-4">
+        <form onSubmit={handlePinSubmit} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8 shadow-xl w-full max-w-sm space-y-6">
+          <div className="text-center space-y-2">
+            <div className="text-4xl">🔐</div>
+            <h2 className="text-lg font-heading font-bold text-[var(--text-primary)]">
+              {language === 'en' ? 'Admin Access' : 'ایڈمن رسائی'}
+            </h2>
+            <p className="text-xs text-[var(--text-secondary)]">
+              {language === 'en' ? 'Enter PIN to access admin panel' : 'ایڈمن پینل کھولنے کے لیے پن درج کریں'}
+            </p>
+          </div>
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={6}
+            value={pinInput}
+            onChange={e => { setPinInput(e.target.value); setPinError(false); }}
+            className="w-full text-center text-2xl tracking-[0.5em] px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[var(--primary)] transition"
+            placeholder="••••••"
+            autoFocus
+          />
+          {pinError && (
+            <p className="text-red-500 text-xs text-center font-medium">
+              {language === 'en' ? 'Incorrect PIN. Try again.' : 'غلط پن۔ دوبارہ کوشش کریں۔'}
+            </p>
+          )}
+          <button type="submit" className="w-full py-2.5 bg-[var(--primary)] text-white text-sm font-bold rounded-xl hover:bg-[var(--primary-hover)] transition cursor-pointer">
+            {language === 'en' ? 'Unlock' : 'انلاک کریں'}
+          </button>
+        </form>
+      </div>
+    );
+    if (standalone) {
+      return <div className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] font-sans antialiased">{pinScreen}</div>;
+    }
+    return pinScreen;
   }
 
   const content = (
