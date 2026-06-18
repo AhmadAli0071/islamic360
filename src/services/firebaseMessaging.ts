@@ -2,15 +2,12 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from '../config/firebase';
 import { playNotificationSound } from './notificationManager';
 
-const API_BASE = '/api';
 const VAPID_KEY = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
 
-export async function getFCMToken(swRegistration?: ServiceWorkerRegistration): Promise<string | null> {
+export async function getFCMToken(): Promise<string | null> {
   try {
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: swRegistration,
-    });
+    // Don't pass swRegistration — let Firebase find firebase-messaging-sw.js
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
     return token;
   } catch (error) {
     console.warn('FCM token failed:', error);
@@ -19,7 +16,7 @@ export async function getFCMToken(swRegistration?: ServiceWorkerRegistration): P
 }
 
 export function registerFCMToken(token: string) {
-  fetch(`${API_BASE}/push/fcm-subscribe`, {
+  fetch(`/api/push/fcm-subscribe`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token, userAgent: navigator.userAgent }),
@@ -28,7 +25,7 @@ export function registerFCMToken(token: string) {
 }
 
 export function unregisterFCMToken(token: string) {
-  fetch(`${API_BASE}/push/fcm-unsubscribe`, {
+  fetch(`/api/push/fcm-unsubscribe`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token }),

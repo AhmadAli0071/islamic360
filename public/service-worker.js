@@ -1,18 +1,3 @@
-importScripts('https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js');
-
-firebase.initializeApp({
-  apiKey: "AIzaSyB8H4XNnWBAi1DIoc9GieF2D85KdZMRihQ",
-  authDomain: "islamic360-87d75.firebaseapp.com",
-  projectId: "islamic360-87d75",
-  storageBucket: "islamic360-87d75.firebasestorage.app",
-  messagingSenderId: "616701463239",
-  appId: "1:616701463239:web:c81fcbb523531d7f04cce2",
-  measurementId: "G-1Y4NL9MP1G"
-});
-
-const fbMessaging = firebase.messaging();
-
 const CACHE_NAME = 'islamic360-v1';
 const ASSETS_TO_CACHE = [
   '/',

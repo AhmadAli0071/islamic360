@@ -281,7 +281,7 @@ export async function startNotificationSystem() {
   try {
     const { getFCMToken, registerFCMToken, setupForegroundMessageHandler } = await import('./firebaseMessaging');
     setupForegroundMessageHandler();
-    const fcmToken = await getFCMToken(reg);
+    const fcmToken = await getFCMToken();
     if (fcmToken) {
       registerFCMToken(fcmToken);
       console.log('FCM token obtained:', fcmToken.substring(0, 20) + '...');
