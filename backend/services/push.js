@@ -46,16 +46,16 @@ export async function sendPushToAll(title, body, tag, soundDuration = 3) {
 }
 
 export async function sendPushToAllWithHadith(prayerName, hadith) {
-  const title = `🕌 ${prayerName} ka waqt hogaya`;
+  const title = `🕌 ${prayerName} Time Has Come`;
   const body = hadith
-    ? `${hadith.urdu}\n\n— ${hadith.narrator} (${hadith.source})`
-    : `${prayerName} ki namaz ka waqt hai`;
+    ? `${hadith.english}\n\n— ${hadith.narrator} (${hadith.source})`
+    : `It's time for ${prayerName} prayer.`;
   return sendPushToAll(title, body, `push-${prayerName}`, 10);
 }
 
 export async function sendPushWazifa(wazifa) {
-  const title = `🤲 Aaj ka Wazifa: ${wazifa.title.ur}`;
-  const body = `${wazifa.urdu}\n\nTadad: ${wazifa.count} martaba`;
+  const title = `🤲 Today's Wazifa: ${wazifa.title.en}`;
+  const body = `${wazifa.english}\n\nCount: ${wazifa.count} times`;
   return sendPushToAll(title, body, 'push-wazifa', 5);
 }
 

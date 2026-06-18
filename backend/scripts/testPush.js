@@ -10,8 +10,8 @@ async function run() {
   await connectDB();
   console.log('Sending test Fajr push notification...');
   const result = await sendPushToAll(
-    '🕌 Fajr ka waqt hogaya',
-    'Fajr ki namaz ka waqt hai. 10 second alarm ke saath test notification.',
+    '🕌 Fajr Time Has Come',
+    'Test notification with alarm.',
     'test-fajr-push',
     10,
   );
