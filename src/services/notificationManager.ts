@@ -63,37 +63,42 @@ export async function registerServiceWorker(): Promise<boolean> {
   }
 }
 
+let _swRegistration: ServiceWorkerRegistration | null = null;
+
 export async function subscribeToPush() {
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
   try {
-    const registration = await navigator.serviceWorker.ready;
-
-    // Unsubscribe any existing subscription (Adsterra may have registered one)
-    const existing = await registration.pushManager.getSubscription();
-    if (existing) {
-      await existing.unsubscribe();
-      console.log('Unsubscribed existing push subscription');
-    }
-
+    // Use pre-fetched registration or get it
+    const registration = _swRegistration || await navigator.serviceWorker.ready;
     const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
     const publicKey = urlBase64ToUint8Array(publicKeyBase64);
-    const sub = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: publicKey,
-    });
 
-    await fetch(`${API_BASE}/push/subscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        endpoint: sub.endpoint,
-        keys: { p256dh: arrayBufferToBase64(sub.getKey('p256dh')), auth: arrayBufferToBase64(sub.getKey('auth')) },
-        userAgent: navigator.userAgent,
-      }),
+    // Chain all async operations without breaking gesture context
+    registration.pushManager.getSubscription().then(async (existing) => {
+      if (existing) {
+        await existing.unsubscribe();
+        console.log('Unsubscribed existing push subscription');
+      }
+      // subscribe() now runs inside the same promise chain, still within gesture context
+      return registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: publicKey,
+      });
+    }).then(async (sub) => {
+      await fetch(`${API_BASE}/push/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          endpoint: sub.endpoint,
+          keys: { p256dh: arrayBufferToBase64(sub.getKey('p256dh')), auth: arrayBufferToBase64(sub.getKey('auth')) },
+          userAgent: navigator.userAgent,
+        }),
+      });
+      console.log('Push subscription registered successfully');
+    }).catch((err) => {
+      console.error('Push subscription failed:', err);
     });
-
-    console.log('Push subscription registered successfully');
   } catch (err) {
     console.error('Push subscription failed:', err);
   }
@@ -263,6 +268,9 @@ export async function startNotificationSystem() {
   }
 
   await registerServiceWorker();
+
+  // Pre-fetch SW registration so subscribeToPush doesn't need await
+  navigator.serviceWorker.ready.then(r => { _swRegistration = r; }).catch(() => {});
 
   // Tell service worker to start polling for background notifications
   const sendCityToSW = () => {
