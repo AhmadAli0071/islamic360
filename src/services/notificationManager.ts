@@ -66,23 +66,13 @@ export async function registerServiceWorker(): Promise<boolean> {
 let _swRegistration: ServiceWorkerRegistration | null = null;
 
 export function subscribeToPush() {
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  if (!_swRegistration || !('PushManager' in window)) return;
 
   const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
   const publicKey = urlBase64ToUint8Array(publicKeyBase64);
 
-  // Use pre-fetched registration, no await to preserve gesture context
-  const reg = _swRegistration;
-  if (!reg) {
-    navigator.serviceWorker.ready.then(r => {
-      _swRegistration = r;
-      r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicKey })
-        .then(s => saveSubscription(s)).catch(e => console.error('Push sub failed:', e));
-    });
-    return;
-  }
-
-  reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicKey })
+  // Call subscribe() synchronously - preserves gesture context for Chrome mobile
+  _swRegistration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicKey })
     .then(s => saveSubscription(s))
     .catch(e => console.error('Push sub failed:', e));
 }
@@ -265,17 +255,19 @@ export async function startNotificationSystem() {
 
   await registerServiceWorker();
 
-  // Pre-fetch SW registration so subscribeToPush doesn't need await
-  navigator.serviceWorker.ready.then(r => { _swRegistration = r; }).catch(() => {});
+  // Wait for SW to be ready BEFORE setting up gesture listener
+  const reg = await navigator.serviceWorker.ready;
+  _swRegistration = reg;
 
   // Tell service worker to start polling for background notifications
   const sendCityToSW = () => {
     const { city, country } = getCityFromStorage();
-    navigator.serviceWorker.controller?.postMessage({ type: 'START_NOTIFICATION_POLL', city, country });
+    reg.active?.postMessage({ type: 'START_NOTIFICATION_POLL', city, country });
   };
   setTimeout(sendCityToSW, 1000);
 
   // Subscribe to push on first user gesture (required by Chrome mobile)
+  // _swRegistration is guaranteed to be set when user taps
   const subscribeOnTouch = () => {
     subscribeToPush();
     document.removeEventListener('click', subscribeOnTouch);
@@ -283,8 +275,8 @@ export async function startNotificationSystem() {
   };
   document.addEventListener('click', subscribeOnTouch, { once: true });
   document.addEventListener('touchstart', subscribeOnTouch, { once: true });
-  // Also try immediately (works on desktop / already-granted mobile)
-  setTimeout(subscribeToPush, 3000);
+  // Also try immediately (works on desktop)
+  subscribeToPush();
 
   // Listen for PLAY_NOTIFICATION_SOUND from service worker
   navigator.serviceWorker.addEventListener('message', (event) => {
