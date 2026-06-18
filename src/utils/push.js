@@ -1,4 +1,4 @@
-const API_BASE = '';
+import { playAlarm, playShortSound } from './sound.ts';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -14,7 +14,7 @@ export async function registerPush() {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/api/push/vapid-public-key`);
+    const res = await fetch('/api/push/vapid-public-key');
     const { publicKey } = await res.json();
     if (!publicKey) return;
 
@@ -31,13 +31,21 @@ export async function registerPush() {
       });
     }
 
-    await fetch(`${API_BASE}/api/push/subscribe`, {
+    await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         subscription: subscription.toJSON(),
         type: 'user',
       }),
+    });
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data?.type === 'PLAY_NOTIFICATION_SOUND') {
+        const dur = Number(event.data.duration) || 3;
+        if (dur >= 10) playAlarm(dur);
+        else playShortSound(dur);
+      }
     });
 
     console.log('Push subscription registered');

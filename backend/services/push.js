@@ -51,7 +51,7 @@ export async function sendPushToAllWithHadith(prayerName, hadith) {
 export async function sendPushWazifa(wazifa) {
   const title = `🤲 Aaj ka Wazifa: ${wazifa.title.ur}`;
   const body = `${wazifa.urdu}\n\nTadad: ${wazifa.count} martaba`;
-  return sendPushToAll(title, body, 'push-wazifa', 3);
+  return sendPushToAll(title, body, 'push-wazifa', 5);
 }
 
 export async function sendPushManual(title, body) {

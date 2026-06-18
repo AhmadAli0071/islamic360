@@ -66,13 +66,20 @@ export default function App() {
     }
   }, []);
 
-  // Read ?tab= parameter from URL on mount (for notification click navigation)
+  // Read ?tab= / ?from_notif= from URL (notification click navigation)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
+    const notifType = params.get('from_notif');
+    const tab = params.get('tab') || (notifType === 'prayer' ? 'prayer' : notifType === 'wazifa' ? 'wazifa' : '');
+
+    if (notifType === 'prayer') {
+      import('./utils/sound').then(({ playAlarm }) => playAlarm(15));
+    } else if (notifType === 'wazifa') {
+      import('./utils/sound').then(({ playShortSound }) => playShortSound(5));
+    }
+
     if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history'].includes(tab)) {
       setActiveTab(tab);
-      // Clean URL without reload
       window.history.replaceState(null, '', '/');
     }
   }, []);
