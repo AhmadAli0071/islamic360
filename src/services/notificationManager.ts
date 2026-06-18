@@ -277,30 +277,29 @@ export async function startNotificationSystem() {
   };
   setTimeout(sendCityToSW, 1000);
 
-  // === FCM TOKEN (more reliable on mobile Chrome) ===
-  try {
-    const { getFCMToken, registerFCMToken, setupForegroundMessageHandler } = await import('./firebaseMessaging');
-    setupForegroundMessageHandler();
-    const fcmToken = await getFCMToken();
-    if (fcmToken) {
-      registerFCMToken(fcmToken);
-      console.log('FCM token obtained:', fcmToken.substring(0, 20) + '...');
-    }
-  } catch (e) {
-    console.warn('FCM setup failed, falling back to VAPID:', e);
-  }
-
-  // === VAPID PUSH SUBSCRIBE (fallback for desktop) ===
-  // Subscribe to push on first user gesture (required by Chrome mobile)
-  const subscribeOnTouch = () => {
+  // === VAPID PUSH SUBSCRIBE + FCM TOKEN (on user gesture for Chrome mobile) ===
+  const subscribeOnTouch = async () => {
+    // 1) VAPID subscribe
     subscribeToPush();
+    // 2) FCM token — needs gesture context on mobile Chrome
+    try {
+      const { getFCMToken, registerFCMToken, setupForegroundMessageHandler } = await import('./firebaseMessaging');
+      setupForegroundMessageHandler();
+      const fcmToken = await getFCMToken(reg);
+      if (fcmToken) {
+        registerFCMToken(fcmToken);
+        console.log('FCM token obtained:', fcmToken.substring(0, 20) + '...');
+      }
+    } catch (e) {
+      console.warn('FCM token failed in gesture:', e);
+    }
     document.removeEventListener('click', subscribeOnTouch);
     document.removeEventListener('touchstart', subscribeOnTouch);
   };
   document.addEventListener('click', subscribeOnTouch, { once: true });
   document.addEventListener('touchstart', subscribeOnTouch, { once: true });
   // Also try immediately (works on desktop)
-  subscribeToPush();
+  subscribeOnTouch();
 
   // Listen for PLAY_NOTIFICATION_SOUND from service worker
   navigator.serviceWorker.addEventListener('message', (event) => {

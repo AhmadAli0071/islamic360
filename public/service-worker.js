@@ -1,3 +1,20 @@
+// Try loading Firebase for FCM background messages — non-fatal if CDN fails
+try { importScripts('https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js', 'https://www.gstatic.com/firebasejs/12.15.0/firebase-messaging-compat.js'); } catch(e) { console.warn('Firebase CDN unavailable, FCM disabled'); }
+
+if (typeof firebase !== 'undefined') {
+  try {
+    firebase.initializeApp({
+      apiKey: "AIzaSyB8H4XNnWBAi1DIoc9GieF2D85KdZMRihQ",
+      authDomain: "islamic360-87d75.firebaseapp.com",
+      projectId: "islamic360-87d75",
+      storageBucket: "islamic360-87d75.firebasestorage.app",
+      messagingSenderId: "616701463239",
+      appId: "1:616701463239:web:c81fcbb523531d7f04cce2",
+      measurementId: "G-1Y4NL9MP1G"
+    });
+  } catch(e) { console.warn('Firebase init failed:', e); }
+}
+
 const CACHE_NAME = 'islamic360-v1';
 const ASSETS_TO_CACHE = [
   '/',

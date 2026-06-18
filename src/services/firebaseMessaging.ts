@@ -4,10 +4,13 @@ import { playNotificationSound } from './notificationManager';
 
 const VAPID_KEY = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
 
-export async function getFCMToken(): Promise<string | null> {
+export async function getFCMToken(swRegistration?: ServiceWorkerRegistration): Promise<string | null> {
   try {
-    // Don't pass swRegistration — let Firebase find firebase-messaging-sw.js
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    // Use our SW so Firebase doesn't register its own (avoiding SW conflict)
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: swRegistration,
+    });
     return token;
   } catch (error) {
     console.warn('FCM token failed:', error);
