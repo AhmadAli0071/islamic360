@@ -271,7 +271,15 @@ export async function startNotificationSystem() {
   };
   setTimeout(sendCityToSW, 1000);
 
-  // Subscribe to push (VAPID) for real-time notifications
+  // Subscribe to push on first user gesture (required by Chrome mobile)
+  const subscribeOnTouch = () => {
+    subscribeToPush().catch(console.error);
+    document.removeEventListener('click', subscribeOnTouch);
+    document.removeEventListener('touchstart', subscribeOnTouch);
+  };
+  document.addEventListener('click', subscribeOnTouch, { once: true });
+  document.addEventListener('touchstart', subscribeOnTouch, { once: true });
+  // Also try immediately (works on desktop / already-granted mobile)
   setTimeout(subscribeToPush, 3000);
 
   // Listen for PLAY_NOTIFICATION_SOUND from service worker
