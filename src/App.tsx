@@ -40,6 +40,11 @@ function findNearestCity(lat: number, lng: number): CityData {
   return nearest;
 }
 
+interface PrayerEntry {
+  name: string;
+  time: string;
+}
+
 export default function App() {
   // Master states
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -47,6 +52,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [language, setLanguage] = useState<'en' | 'ur'>((localStorage.getItem('theislamic360_lang') as 'en' | 'ur') || 'en');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [sidebarPrayers, setSidebarPrayers] = useState<Record<string, string> | null>(null);
 
   // Load and apply dark theme from localStorage on initial boot
   useEffect(() => {
@@ -124,6 +130,22 @@ export default function App() {
       );
     }
   }, []);
+
+  // Fetch live prayer times for sidebar
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/prayers/times?city=${currentCity.name}&country=${currentCity.country}`)
+      .then(r => r.json())
+      .then(json => {
+        if (!cancelled && json.success) {
+          const map: Record<string, string> = {};
+          json.data.prayers.forEach((p: PrayerEntry) => { map[p.name] = p.time; });
+          setSidebarPrayers(map);
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [currentCity]);
 
   // Theme change callback
   const handleThemeToggle = () => {
@@ -327,22 +349,22 @@ export default function App() {
               <h4 className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Quick Schedule ({currentCity.name})</h4>
               <div className="space-y-1.5 font-mono">
                 <div className="flex justify-between pb-1 border-b border-[var(--border)] text-[11px]">
-                  <span>Fajr:</span><span className="font-bold">{currentCity.fajr} AM</span>
+                  <span>Fajr:</span><span className="font-bold">{sidebarPrayers?.Fajr || currentCity.fajr}</span>
                 </div>
                 <div className="flex justify-between pb-1 border-b border-[var(--border)] text-[11px]">
-                  <span>Sunrise:</span><span className="text-gray-400">{currentCity.sunrise} AM</span>
+                  <span>Sunrise:</span><span className="text-gray-400">{sidebarPrayers?.Sunrise || currentCity.sunrise}</span>
                 </div>
                 <div className="flex justify-between pb-1 border-b border-[var(--border)] text-[11px]">
-                  <span>Dhuhr:</span><span className="font-bold">{currentCity.dhuhr} PM</span>
+                  <span>Dhuhr:</span><span className="font-bold">{sidebarPrayers?.Dhuhr || currentCity.dhuhr}</span>
                 </div>
                 <div className="flex justify-between pb-1 border-b border-[var(--border)] text-[11px]">
-                  <span>Asr:</span><span className="font-bold">{currentCity.asr} PM</span>
+                  <span>Asr:</span><span className="font-bold">{sidebarPrayers?.Asr || currentCity.asr}</span>
                 </div>
                 <div className="flex justify-between pb-1 border-b border-[var(--border)] text-[11px]">
-                  <span>Maghrib:</span><span className="text-red-500 font-bold">{currentCity.maghrib} PM</span>
+                  <span>Maghrib:</span><span className="text-red-500 font-bold">{sidebarPrayers?.Maghrib || currentCity.maghrib}</span>
                 </div>
                 <div className="flex justify-between text-[11px]">
-                  <span>Isha:</span><span className="font-bold">{currentCity.isha} PM</span>
+                  <span>Isha:</span><span className="font-bold">{sidebarPrayers?.Isha || currentCity.isha}</span>
                 </div>
               </div>
             </div>

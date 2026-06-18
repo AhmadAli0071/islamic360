@@ -3,6 +3,20 @@ import { CityData, AcademicCourse } from '../types';
 import { HISTORY_EVENTS, UPCOMING_EVENTS, getHijriDateString, getFullDayName } from '../prayerData';
 import AdContainer from './AdContainer';
 
+interface PrayerEntry {
+  name: string;
+  time: string;
+}
+
+const PRAYER_META: Record<string, { arabic: string; icon: string }> = {
+  Fajr: { arabic: 'الفجر', icon: '🌅' },
+  Sunrise: { arabic: 'الشروق', icon: '☀️' },
+  Dhuhr: { arabic: 'الظهر', icon: '☀️' },
+  Asr: { arabic: 'العصر', icon: '⛅' },
+  Maghrib: { arabic: 'المغرب', icon: '🌇' },
+  Isha: { arabic: 'العشاء', icon: '🌙' },
+};
+
 interface HomepageProps {
   currentCity: CityData;
   language: 'en' | 'ur';
@@ -17,6 +31,8 @@ export default function Homepage({
   onSetRemindEvent
 }: HomepageProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [prayersData, setPrayersData] = useState<PrayerEntry[] | null>(null);
+  const [prayersError, setPrayersError] = useState(false);
   
   // Real-time ticking clock
   useEffect(() => {
@@ -26,19 +42,24 @@ export default function Homepage({
     return () => clearInterval(timer);
   }, []);
 
-  // Compute Prayer States for Today
-  const getPrayersList = (city: CityData) => {
-    return [
-      { name: 'Fajr', arabic: 'الفجر', time: city.fajr, icon: '🌅' },
-      { name: 'Sunrise', arabic: 'الشروق', time: city.sunrise, icon: '☀️' },
-      { name: 'Dhuhr', arabic: 'الظهر', time: city.dhuhr, icon: '☀️' },
-      { name: 'Asr', arabic: 'العصر', time: city.asr, icon: '⛅' },
-      { name: 'Maghrib', arabic: 'المغرب', time: city.maghrib, icon: '🌇' },
-      { name: 'Isha', arabic: 'العشاء', time: city.isha, icon: '🌙' },
-    ];
-  };
+  // Fetch live prayer times
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/prayers/times?city=${currentCity.name}&country=${currentCity.country}`)
+      .then(r => r.json())
+      .then(json => {
+        if (!cancelled && json.success) setPrayersData(json.data.prayers);
+        else if (!cancelled) setPrayersError(true);
+      })
+      .catch(() => { if (!cancelled) setPrayersError(true); });
+    return () => { cancelled = true; };
+  }, [currentCity]);
 
-  const prayers = getPrayersList(currentCity);
+  // Build prayer list from API data
+  const prayers: { name: string; arabic: string; time: string; icon: string }[] =
+    prayersData
+      ? prayersData.map(p => ({ ...p, ...PRAYER_META[p.name] || { arabic: '', icon: '🕌' } }))
+      : Object.entries(PRAYER_META).map(([name, meta]) => ({ name, time: '--:--', ...meta }));
 
   // Parse time strings (HH:MM) to absolute Date representations relative to today
   const getPrayerDate = (timeStr: string) => {
