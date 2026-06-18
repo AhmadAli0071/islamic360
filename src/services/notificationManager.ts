@@ -65,43 +65,39 @@ export async function registerServiceWorker(): Promise<boolean> {
 
 let _swRegistration: ServiceWorkerRegistration | null = null;
 
-export async function subscribeToPush() {
+export function subscribeToPush() {
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
-  try {
-    // Use pre-fetched registration or get it
-    const registration = _swRegistration || await navigator.serviceWorker.ready;
-    const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
-    const publicKey = urlBase64ToUint8Array(publicKeyBase64);
+  const publicKeyBase64 = 'BCLFgW4MfGMHm8N3DxI5iwS6fwO3p0K5lPEmeqIbZic09OKoFsucVUj6ZombxjllyuBlXdMXvE8CpMYP04XS_XI';
+  const publicKey = urlBase64ToUint8Array(publicKeyBase64);
 
-    // Chain all async operations without breaking gesture context
-    registration.pushManager.getSubscription().then(async (existing) => {
-      if (existing) {
-        await existing.unsubscribe();
-        console.log('Unsubscribed existing push subscription');
-      }
-      // subscribe() now runs inside the same promise chain, still within gesture context
-      return registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: publicKey,
-      });
-    }).then(async (sub) => {
-      await fetch(`${API_BASE}/push/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          endpoint: sub.endpoint,
-          keys: { p256dh: arrayBufferToBase64(sub.getKey('p256dh')), auth: arrayBufferToBase64(sub.getKey('auth')) },
-          userAgent: navigator.userAgent,
-        }),
-      });
-      console.log('Push subscription registered successfully');
-    }).catch((err) => {
-      console.error('Push subscription failed:', err);
+  // Use pre-fetched registration, no await to preserve gesture context
+  const reg = _swRegistration;
+  if (!reg) {
+    navigator.serviceWorker.ready.then(r => {
+      _swRegistration = r;
+      r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicKey })
+        .then(s => saveSubscription(s)).catch(e => console.error('Push sub failed:', e));
     });
-  } catch (err) {
-    console.error('Push subscription failed:', err);
+    return;
   }
+
+  reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: publicKey })
+    .then(s => saveSubscription(s))
+    .catch(e => console.error('Push sub failed:', e));
+}
+
+function saveSubscription(sub: PushSubscription) {
+  fetch(`${API_BASE}/push/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      endpoint: sub.endpoint,
+      keys: { p256dh: arrayBufferToBase64(sub.getKey('p256dh')), auth: arrayBufferToBase64(sub.getKey('auth')) },
+      userAgent: navigator.userAgent,
+    }),
+  }).then(() => console.log('Push subscription saved'))
+    .catch(e => console.error('Push save failed:', e));
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -281,7 +277,7 @@ export async function startNotificationSystem() {
 
   // Subscribe to push on first user gesture (required by Chrome mobile)
   const subscribeOnTouch = () => {
-    subscribeToPush().catch(console.error);
+    subscribeToPush();
     document.removeEventListener('click', subscribeOnTouch);
     document.removeEventListener('touchstart', subscribeOnTouch);
   };
