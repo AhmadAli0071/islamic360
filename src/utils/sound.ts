@@ -41,6 +41,8 @@ export function playAlarm(duration = 15) {
 
     activeOscillators = oscillators;
 
+    if (ctx.state === 'suspended') ctx.resume();
+
     setTimeout(stopAlarm, duration * 1000 + 100);
   } catch {
     // Silent fail
