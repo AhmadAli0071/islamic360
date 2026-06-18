@@ -45,6 +45,13 @@ export async function registerPush() {
         const dur = Number(event.data.duration) || 3;
         if (dur >= 10) playAlarm(dur);
         else playShortSound(dur);
+        if (event.data.fromNotif === 'prayer') {
+          window.history.replaceState(null, '', '/?tab=prayer');
+          window.dispatchEvent(new CustomEvent('notif-nav', { detail: 'prayer' }));
+        } else if (event.data.fromNotif === 'wazifa') {
+          window.history.replaceState(null, '', '/?tab=wazifa');
+          window.dispatchEvent(new CustomEvent('notif-nav', { detail: 'wazifa' }));
+        }
       }
     });
 

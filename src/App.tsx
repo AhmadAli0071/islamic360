@@ -74,14 +74,25 @@ export default function App() {
 
     if (notifType === 'prayer') {
       import('./utils/sound').then(({ playAlarm }) => playAlarm(15));
+      setActiveTab('prayer');
     } else if (notifType === 'wazifa') {
       import('./utils/sound').then(({ playShortSound }) => playShortSound(5));
+      setActiveTab('wazifa');
+    } else if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history'].includes(tab)) {
+      setActiveTab(tab);
     }
 
-    if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history'].includes(tab)) {
-      setActiveTab(tab);
-      window.history.replaceState(null, '', '/');
-    }
+    if (notifType || tab) window.history.replaceState(null, '', '/');
+  }, []);
+
+  // Listen for notif-nav from service worker (when app was already open)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail === 'prayer' || detail === 'wazifa') setActiveTab(detail);
+    };
+    window.addEventListener('notif-nav', handler);
+    return () => window.removeEventListener('notif-nav', handler);
   }, []);
 
   // Load ads (only on main app, not on /admin)
