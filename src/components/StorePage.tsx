@@ -29,6 +29,7 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => { fetchProducts(); }, []);
 
@@ -119,8 +120,8 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {products.map(p => (
-            <div key={p._id} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-md transition group">
-              <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden cursor-pointer" onClick={() => setSelectedImage(p.image || null)}>
+            <div key={p._id} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-md transition group cursor-pointer" onClick={() => setSelectedProduct(p)}>
+              <div className="aspect-square bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
                 {p.image ? (
                   <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
                 ) : (
@@ -132,7 +133,7 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
                 <p className="text-[10px] text-[var(--text-secondary)] line-clamp-2">{p.description}</p>
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-sm font-black text-[var(--primary)] dark:text-[var(--secondary)]">Rs.{p.price}</span>
-                  <button onClick={() => addToCart(p)} className="px-2.5 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-lg cursor-pointer hover:bg-[var(--primary-hover)] transition">
+                  <button onClick={e => { e.stopPropagation(); addToCart(p); }} className="px-2.5 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-lg cursor-pointer hover:bg-[var(--primary-hover)] transition">
                     {language === 'en' ? 'Add' : 'شامل کریں'}
                   </button>
                 </div>
@@ -142,10 +143,43 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
         </div>
       )}
 
-      {/* Image Preview Modal */}
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedProduct(null)}>
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slideUp" onClick={e => e.stopPropagation()}>
+            <div className="relative">
+              {selectedProduct.image ? (
+                <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full aspect-[4/3] object-cover rounded-t-2xl" onClick={() => setSelectedImage(selectedProduct.image || null)} />
+              ) : (
+                <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-6xl text-gray-300 dark:text-gray-600 rounded-t-2xl">📦</div>
+              )}
+              <button onClick={() => setSelectedProduct(null)} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm cursor-pointer hover:bg-black/70 transition">✕</button>
+              {selectedProduct.image && (
+                <button onClick={() => setSelectedImage(selectedProduct.image || null)} className="absolute top-3 left-3 px-2 py-1 rounded-lg bg-black/50 text-white text-[10px] cursor-pointer hover:bg-black/70 transition">🔍</button>
+              )}
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-heading font-black text-[var(--text-primary)]">{selectedProduct.name}</h2>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--background)] text-[var(--text-secondary)] border border-[var(--border)]">{selectedProduct.category}</span>
+                </div>
+                <p className="text-sm font-black text-[var(--primary)] dark:text-[var(--secondary)] mt-1">Rs.{selectedProduct.price}</p>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{selectedProduct.description}</p>
+              <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} className="w-full py-2.5 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition flex items-center justify-center gap-2">
+                🛒 {language === 'en' ? 'Add to Cart' : 'کارٹ میں ڈالیں'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Image Preview */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedImage(null)}>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm" onClick={() => setSelectedImage(null)}>
           <img src={selectedImage} alt="Preview" className="max-w-full max-h-full rounded-2xl object-contain" />
+          <button onClick={() => setSelectedImage(null)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm cursor-pointer hover:bg-white/30 transition">✕</button>
         </div>
       )}
 
