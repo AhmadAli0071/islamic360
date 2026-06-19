@@ -21,6 +21,7 @@ export default function BottomNavbar({ activeTab, onTabChange, language }: Botto
     { id: 'calendar', label: language === 'en' ? 'Calendar' : 'کیلنڈر', icon: '📅', badge: false },
     { id: 'history', label: language === 'en' ? 'History' : 'تاریخ', icon: '📖', badge: false },
     { id: 'store', label: language === 'en' ? 'Store' : 'اسٹور', icon: '🛍️', badge: false },
+    { id: 'track', label: language === 'en' ? 'Track' : 'ٹریک', icon: '📦', badge: false },
   ];
 
   const mainTabs = allTabs.slice(0, 4);

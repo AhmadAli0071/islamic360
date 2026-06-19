@@ -8,6 +8,7 @@ const pushSubscriptionSchema = new mongoose.Schema({
     auth: { type: String },
   },
   subscription: { type: mongoose.Schema.Types.Mixed },
+  phone: { type: String, default: '' },
 }, { timestamps: true });
 
 export default mongoose.model('PushSubscription', pushSubscriptionSchema);

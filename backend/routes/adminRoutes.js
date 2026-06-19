@@ -10,8 +10,9 @@ import {
   getStudents,
   createManualNotification,
   getAdminProducts, createProduct, updateProduct, deleteProduct,
-  getAdminOrders, updateOrderStatus,
+  getAdminOrders,
 } from '../controllers/adminController.js';
+import { updateOrderStatus } from '../controllers/orderController.js';
 import seedEvents from '../scripts/seedEvents.js';
 import seedDuas from '../scripts/seedDuas.js';
 import seedHadith from '../scripts/seedHadith.js';

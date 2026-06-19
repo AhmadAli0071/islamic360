@@ -72,6 +72,11 @@ export default function Footer({ language, onTabChange }: FooterProps) {
                 🛍️ {language === 'en' ? 'Islamic Store' : 'اسلامک اسٹور'}
               </button>
             </li>
+            <li>
+              <button onClick={() => onTabChange('track')} className="hover:text-amber-400 transition cursor-pointer text-left w-full">
+                📦 {language === 'en' ? 'Track Order' : 'آرڈر ٹریک کریں'}
+              </button>
+            </li>
           </ul>
         </div>
 

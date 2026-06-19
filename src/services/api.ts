@@ -105,10 +105,14 @@ export const api = {
   updateProductWithImage: (id: string, formData: FormData) => putFormData(`/admin/products/${id}`, formData),
 
   // Orders (admin)
-  updateOrderStatus: (id: string, data: { status: string }) => putJSON(`/admin/orders/${id}/status`, data),
+  updateOrderStatus: (id: string, data: { status: string; comment?: string }) => putJSON(`/admin/orders/${id}/status`, data),
 
   // Students
   getStudents: () => fetchJSON('/admin/students'),
+
+  // Order Tracking
+  getOrdersByPhone: (phone: string) => fetchJSON(`/orders/track/${phone}`),
+  savePhoneSubscription: (data: { subscription: unknown; phone: string }) => postJSON('/orders/subscribe', data),
 
   // Manual Notifications
   sendNotification: (data: { title: string; body: string }) => postJSON('/admin/notifications', data),

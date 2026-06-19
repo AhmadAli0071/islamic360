@@ -19,6 +19,7 @@ export default function Sidebar({ activeTab, onTabChange, language }: SidebarPro
     { id: 'calendar', label: language === 'en' ? 'Islamic Calendar' : 'قمری کیلنڈر', icon: '🗓️' },
     { id: 'history', label: language === 'en' ? 'History & Azkar' : 'تاریخ اور اذکار', icon: '📖' },
     { id: 'store', label: language === 'en' ? 'Islamic Store' : 'اسلامک اسٹور', icon: '🛍️' },
+    { id: 'track', label: language === 'en' ? 'Track Order' : 'آرڈر ٹریک', icon: '📦' },
   ];
 
   return (

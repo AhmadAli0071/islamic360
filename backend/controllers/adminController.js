@@ -295,13 +295,3 @@ export const getAdminOrders = async (req, res, next) => {
     next(error);
   }
 };
-
-export const updateOrderStatus = async (req, res, next) => {
-  try {
-    const order = await Order.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true, runValidators: true });
-    if (!order) { res.status(404); throw new Error('Order not found'); }
-    res.json({ success: true, data: order });
-  } catch (error) {
-    next(error);
-  }
-};

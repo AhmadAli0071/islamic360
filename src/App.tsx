@@ -17,6 +17,7 @@ import WazifaPage from './components/WazifaPage';
 import TasbeehCounter from './components/TasbeehCounter';
 import AsmaUlHusna from './components/AsmaUlHusna';
 import StorePage from './components/StorePage';
+import OrderTracking from './components/OrderTracking';
 import { CITIES_DB } from './prayerData';
 import { CityData } from './types';
 
@@ -85,7 +86,7 @@ export default function App() {
     } else if (notifType === 'wazifa') {
       import('./utils/sound').then(({ playShortSound }) => playShortSound(5));
       setActiveTab('wazifa');
-    } else if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history', 'store'].includes(tab)) {
+    } else if (tab && ['home', 'prayer', 'duas', 'hadith', 'wazifa', 'tasbeeh', 'asma', 'academy', 'calendar', 'history', 'store', 'track'].includes(tab)) {
       setActiveTab(tab);
     }
 
@@ -209,6 +210,8 @@ export default function App() {
         return <AsmaUlHusna language={language} />;
       case 'store':
         return <StorePage language={language} />;
+      case 'track':
+        return <OrderTracking language={language} />;
       default:
         return (
           <Homepage

@@ -77,6 +77,9 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   const [notifBody, setNotifBody] = useState('');
   const [sendingNotif, setSendingNotif] = useState(false);
   const [notifSent, setNotifSent] = useState(false);
+  const [statusUpdateOrder, setStatusUpdateOrder] = useState<OrderData | null>(null);
+  const [statusUpdateValue, setStatusUpdateValue] = useState('');
+  const [statusUpdateComment, setStatusUpdateComment] = useState('');
 
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,7 +182,9 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
 
   const handleUpdateOrderStatus = async (id: string, status: string) => {
     try {
-      await api.updateOrderStatus(id, { status });
+      await api.updateOrderStatus(id, { status, comment: statusUpdateComment });
+      setStatusUpdateOrder(null);
+      setStatusUpdateComment('');
       await loadAll();
     } catch (err) {
       alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
@@ -503,7 +508,7 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
                     <td className="p-3 text-[var(--text-secondary)]">{o.items.map(i => i.name).join(', ')}</td>
                     <td className="p-3 font-bold">Rs.{o.totalAmount}</td>
                     <td className="p-3">
-                      <select value={o.status} onChange={e => handleUpdateOrderStatus(o._id, e.target.value)}
+                      <button onClick={() => { setStatusUpdateOrder(o); setStatusUpdateValue(o.status); setStatusUpdateComment(''); }}
                         className={`px-2 py-1 rounded text-[10px] font-bold border cursor-pointer ${
                           o.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-300' :
                           o.status === 'confirmed' ? 'bg-blue-100 text-blue-700 border-blue-300' :
@@ -511,12 +516,8 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
                           o.status === 'delivered' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' :
                           'bg-red-100 text-red-700 border-red-300'
                         }`}>
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
+                        {o.status}
+                      </button>
                     </td>
                     <td className="p-3 text-gray-400">{new Date(o.createdAt).toLocaleDateString()}</td>
                   </tr>
@@ -524,6 +525,38 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
               </tbody>
             </table>
           </div>
+
+          {/* Status Update Modal */}
+          {statusUpdateOrder && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setStatusUpdateOrder(null)}>
+              <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-sm w-full p-6 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+                <button onClick={() => setStatusUpdateOrder(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer text-lg">✕</button>
+                <h3 className="font-heading font-bold text-sm mb-1">{language === 'en' ? 'Update Order Status' : 'آرڈر کی حیثیت تبدیل کریں'}</h3>
+                <p className="text-[10px] text-[var(--text-secondary)] mb-4">
+                  {language === 'en' ? `Order #${statusUpdateOrder._id.slice(-6)} — ${statusUpdateOrder.customerName}` : `آرڈر #${statusUpdateOrder._id.slice(-6)} — ${statusUpdateOrder.customerName}`}
+                </p>
+                <div className="space-y-3">
+                  <select value={statusUpdateValue} onChange={e => setStatusUpdateValue(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] cursor-pointer">
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <textarea value={statusUpdateComment} onChange={e => setStatusUpdateComment(e.target.value)}
+                    placeholder={language === 'en' ? 'Comment for customer (optional)' : 'صارف کے لیے تبصرہ (اختیاری)'}
+                    rows={3}
+                    className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)] placeholder-gray-400"
+                  />
+                  <button onClick={() => handleUpdateOrderStatus(statusUpdateOrder._id, statusUpdateValue)}
+                    className="w-full py-2.5 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition">
+                    {language === 'en' ? 'Update Status' : 'حیثیت اپ ڈیٹ کریں'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
