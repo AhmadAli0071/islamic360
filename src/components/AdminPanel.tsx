@@ -91,8 +91,8 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   };
 
   useEffect(() => {
-    loadAll();
-  }, []);
+    if (pinVerified) loadAll(); else setLoading(false);
+  }, [pinVerified]);
 
   const loadAll = async () => {
     setLoading(true);
