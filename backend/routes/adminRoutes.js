@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import upload from '../middleware/upload.js';
 import {
   getAdminStats,
   createEvent, updateEvent, deleteEvent,
@@ -59,8 +60,8 @@ router.delete('/teachers/:id', deleteTeacher);
 router.get('/students', getStudents);
 
 router.get('/products', getAdminProducts);
-router.post('/products', createProduct);
-router.put('/products/:id', updateProduct);
+router.post('/products', upload.single('image'), createProduct);
+router.put('/products/:id', upload.single('image'), updateProduct);
 router.delete('/products/:id', deleteProduct);
 
 router.get('/orders', getAdminOrders);

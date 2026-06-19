@@ -36,6 +36,20 @@ async function del(url: string) {
   return json.data;
 }
 
+async function postFormData(url: string, formData: FormData) {
+  const res = await fetch(`${API}${url}`, { method: 'POST', body: formData });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message || 'API error');
+  return json.data;
+}
+
+async function putFormData(url: string, formData: FormData) {
+  const res = await fetch(`${API}${url}`, { method: 'PUT', body: formData });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.message || 'API error');
+  return json.data;
+}
+
 export const api = {
   // Events
   getTodayEvents: () => fetchJSON('/events/today'),
@@ -87,6 +101,8 @@ export const api = {
   createProduct: (data: unknown) => postJSON('/admin/products', data),
   updateProduct: (id: string, data: unknown) => putJSON(`/admin/products/${id}`, data),
   deleteProduct: (id: string) => del(`/admin/products/${id}`),
+  createProductWithImage: (formData: FormData) => postFormData('/admin/products', formData),
+  updateProductWithImage: (id: string, formData: FormData) => putFormData(`/admin/products/${id}`, formData),
 
   // Orders (admin)
   updateOrderStatus: (id: string, data: { status: string }) => putJSON(`/admin/orders/${id}/status`, data),

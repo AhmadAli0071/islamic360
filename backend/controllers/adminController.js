@@ -249,7 +249,12 @@ export const getAdminProducts = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
-    const product = await Product.create(req.body);
+    const data = { ...req.body };
+    if (req.file) {
+      const base64 = req.file.buffer.toString('base64');
+      data.image = `data:${req.file.mimetype};base64,${base64}`;
+    }
+    const product = await Product.create(data);
     res.status(201).json({ success: true, data: product });
   } catch (error) {
     next(error);
@@ -258,7 +263,12 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const data = { ...req.body };
+    if (req.file) {
+      const base64 = req.file.buffer.toString('base64');
+      data.image = `data:${req.file.mimetype};base64,${base64}`;
+    }
+    const product = await Product.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!product) { res.status(404); throw new Error('Product not found'); }
     res.json({ success: true, data: product });
   } catch (error) {

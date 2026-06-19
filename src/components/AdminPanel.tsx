@@ -144,12 +144,20 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
     }
   };
 
-  const handleSaveProduct = async (product: Partial<ProductData>) => {
+  const handleSaveProduct = async (data: Partial<ProductData> | FormData) => {
     try {
       if (editingProduct) {
-        await api.updateProduct(editingProduct._id, product);
+        if (data instanceof FormData) {
+          await api.updateProductWithImage(editingProduct._id, data);
+        } else {
+          await api.updateProduct(editingProduct._id, data);
+        }
       } else {
-        await api.createProduct(product);
+        if (data instanceof FormData) {
+          await api.createProductWithImage(data);
+        } else {
+          await api.createProduct(data);
+        }
       }
       setShowForm(false);
       setEditingProduct(null);
@@ -680,18 +688,39 @@ function CourseForm({ course, language, onSave, onClose }: {
 function ProductForm({ product, language, onSave, onClose }: {
   product: ProductData | null;
   language: 'en' | 'ur';
-  onSave: (data: Partial<ProductData>) => void;
+  onSave: (data: Partial<ProductData> | FormData) => void;
   onClose: () => void;
 }) {
   const [name, setName] = useState(product?.name || '');
   const [description, setDescription] = useState(product?.description || '');
   const [price, setPrice] = useState(product?.price?.toString() || '');
   const [category, setCategory] = useState(product?.category || 'General');
-  const [image, setImage] = useState(product?.image || '');
+  const [imageUrl, setImageUrl] = useState(product?.image || '');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState(product?.image || '');
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name, description, price: Number(price), category, image });
+    if (imageFile) {
+      const fd = new FormData();
+      fd.append('name', name);
+      fd.append('description', description);
+      fd.append('price', price);
+      fd.append('category', category);
+      fd.append('image', imageFile);
+      if (imageUrl && !imageUrl.startsWith('data:')) fd.append('imageUrl', imageUrl);
+      onSave(fd);
+    } else {
+      onSave({ name, description, price: Number(price), category, image: imageUrl });
+    }
   };
 
   return (
@@ -712,8 +741,14 @@ function ProductForm({ product, language, onSave, onClose }: {
               <option value="Digital">Digital</option>
             </select>
           </div>
-          <input value={image} onChange={e => setImage(e.target.value)} placeholder={language === 'en' ? 'Image URL (optional)' : 'تصویر کا لنک (اختیاری)'} className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
-          {image && <img src={image} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-[var(--border)]" onError={e => (e.currentTarget.style.display = 'none')} />}
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold text-[var(--text-secondary)]">{language === 'en' ? 'Upload Image' : 'تصویر اپ لوڈ کریں'}</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} className="w-full text-xs text-[var(--text-primary)] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-[var(--primary)] file:text-white cursor-pointer" />
+          </div>
+          {!imageFile && (
+            <input value={imageUrl} onChange={e => { setImageUrl(e.target.value); setPreview(e.target.value); }} placeholder={language === 'en' ? 'Or paste image URL' : 'یا تصویر کا لنک ڈالیں'} className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
+          )}
+          {preview && <img src={preview} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-[var(--border)]" onError={e => (e.currentTarget.style.display = 'none')} />}
           <button type="submit" className="w-full py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition">
             {product ? (language === 'en' ? 'Update Product' : 'اپ ڈیٹ کریں') : (language === 'en' ? 'Create Product' : 'محفوظ کریں')}
           </button>
