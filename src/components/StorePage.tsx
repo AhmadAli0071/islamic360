@@ -130,7 +130,7 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
               </div>
               <div className="p-3 space-y-1.5">
                 <h3 className="text-xs font-bold text-[var(--text-primary)] leading-tight">{p.name}</h3>
-                <p className="text-[10px] text-[var(--text-secondary)] line-clamp-2">{p.description}</p>
+                <p className="text-[10px] text-[var(--text-secondary)] line-clamp-2 whitespace-pre-wrap">{p.description}</p>
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-sm font-black text-[var(--primary)] dark:text-[var(--secondary)]">Rs.{p.price}</span>
                   <button onClick={e => { e.stopPropagation(); addToCart(p); }} className="px-2.5 py-1 bg-[var(--primary)] text-white text-[10px] font-bold rounded-lg cursor-pointer hover:bg-[var(--primary-hover)] transition">
@@ -166,7 +166,7 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
                 </div>
                 <p className="text-sm font-black text-[var(--primary)] dark:text-[var(--secondary)] mt-1">Rs.{selectedProduct.price}</p>
               </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{selectedProduct.description}</p>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">{selectedProduct.description}</p>
               <button onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }} className="w-full py-2.5 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition flex items-center justify-center gap-2">
                 🛒 {language === 'en' ? 'Add to Cart' : 'کارٹ میں ڈالیں'}
               </button>
