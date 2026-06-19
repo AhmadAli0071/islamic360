@@ -14,6 +14,15 @@ function getTodayKey() {
   return new Date().toDateString();
 }
 
+function getCurrentMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function isFriday() {
+  return new Date().getDay() === 5;
+}
+
 export function startPushCron() {
   console.log('Push cron started — checks every 30 seconds');
 
@@ -25,8 +34,7 @@ export function startPushCron() {
       lastDate = todayKey;
     }
 
-    const now = new Date();
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const currentMinutes = getCurrentMinutes();
 
     try {
       const schedule = await buildSchedule('Karachi', 'Pakistan');
@@ -40,16 +48,35 @@ export function startPushCron() {
 
         if (diff >= 0 && diff <= 2 && !sentPrayers.has(prayer.prayer)) {
           sentPrayers.add(prayer.prayer);
-          console.log(`Pushing prayer notification: ${prayer.prayer}`);
-          await sendPushToAllWithHadith(prayer.prayer, prayer.hadith);
+
+          // On Friday, send "Jummah" instead of "Dhuhr"
+          let prayerName = prayer.prayer;
+          if (isFriday() && prayer.prayer === 'Dhuhr') {
+            prayerName = 'Jummah';
+          }
+
+          console.log(`Pushing prayer notification: ${prayerName}`);
+          await sendPushToAllWithHadith(prayerName, prayer.hadith);
         }
       }
 
-      // Wazifa between Fajr (5:00) and Dhuhr (12:30)
-      if (!sentWazifa && currentMinutes >= 300 && currentMinutes <= 750 && schedule.wazifa) {
-        sentWazifa = true;
-        console.log('Pushing wazifa notification');
-        await sendPushWazifa(schedule.wazifa);
+      // Wazifa between Fajr and Dhuhr
+      if (schedule.prayers.length > 0) {
+        const fajrTime = schedule.prayers.find(p => p.prayer === 'Fajr')?.time || '05:00';
+        const dhuhrTime = schedule.prayers.find(p => p.prayer === 'Dhuhr')?.time || '12:30';
+        const [fh, fm] = fajrTime.split(':').map(Number);
+        const [dh, dm] = dhuhrTime.split(':').map(Number);
+        const fajrMinutes = fh * 60 + fm;
+        const dhuhrMinutes = dh * 60 + dm;
+        // Send wazifa in the middle of Fajr-Dhuhr window
+        const wazifaWindowStart = fajrMinutes + 30;
+        const wazifaWindowEnd = dhuhrMinutes - 30;
+
+        if (!sentWazifa && currentMinutes >= wazifaWindowStart && currentMinutes <= wazifaWindowEnd && schedule.wazifa) {
+          sentWazifa = true;
+          console.log('Pushing wazifa notification');
+          await sendPushWazifa(schedule.wazifa);
+        }
       }
     } catch (err) {
       console.error('Push cron error:', err.message);

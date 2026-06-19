@@ -36,3 +36,5 @@ services:
         sync: false
       - key: VAPID_MAILTO
         sync: false
+      - key: TZ
+        value: Asia/Karachi
