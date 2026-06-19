@@ -54,10 +54,16 @@ export const api = {
   getCourses: () => fetchJSON('/courses'),
   getCourseBySlug: (slug: string) => fetchJSON(`/courses/${slug}`),
 
+  // Store
+  getProducts: () => fetchJSON('/products'),
+  createOrder: (data: unknown) => postJSON('/orders', data),
+
   // Admin
   getAdminStats: () => fetchJSON('/admin/stats'),
   getAdminCourses: () => fetchJSON('/admin/courses'),
   getAdminTeachers: () => fetchJSON('/admin/teachers'),
+  getAdminProducts: () => fetchJSON('/admin/products'),
+  getAdminOrders: () => fetchJSON('/admin/orders'),
   createEvent: (data: unknown) => postJSON('/admin/events', data),
   updateEvent: (id: string, data: unknown) => putJSON(`/admin/events/${id}`, data),
   deleteEvent: (id: string) => del(`/admin/events/${id}`),
@@ -76,6 +82,14 @@ export const api = {
   createTeacher: (data: unknown) => postJSON('/admin/teachers', data),
   updateTeacher: (id: string, data: unknown) => putJSON(`/admin/teachers/${id}`, data),
   deleteTeacher: (id: string) => del(`/admin/teachers/${id}`),
+
+  // Products (admin)
+  createProduct: (data: unknown) => postJSON('/admin/products', data),
+  updateProduct: (id: string, data: unknown) => putJSON(`/admin/products/${id}`, data),
+  deleteProduct: (id: string) => del(`/admin/products/${id}`),
+
+  // Orders (admin)
+  updateOrderStatus: (id: string, data: { status: string }) => putJSON(`/admin/orders/${id}/status`, data),
 
   // Students
   getStudents: () => fetchJSON('/admin/students'),

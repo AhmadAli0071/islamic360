@@ -8,6 +8,8 @@ import {
   getAdminTeachers, getTeachers, createTeacher, updateTeacher, deleteTeacher,
   getStudents,
   createManualNotification,
+  getAdminProducts, createProduct, updateProduct, deleteProduct,
+  getAdminOrders, updateOrderStatus,
 } from '../controllers/adminController.js';
 import seedEvents from '../scripts/seedEvents.js';
 import seedDuas from '../scripts/seedDuas.js';
@@ -55,6 +57,14 @@ router.put('/teachers/:id', updateTeacher);
 router.delete('/teachers/:id', deleteTeacher);
 
 router.get('/students', getStudents);
+
+router.get('/products', getAdminProducts);
+router.post('/products', createProduct);
+router.put('/products/:id', updateProduct);
+router.delete('/products/:id', deleteProduct);
+
+router.get('/orders', getAdminOrders);
+router.put('/orders/:id/status', updateOrderStatus);
 
 router.post('/notifications', createManualNotification);
 

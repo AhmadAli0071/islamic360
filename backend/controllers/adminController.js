@@ -5,6 +5,8 @@ import Course from '../models/Course.js';
 import Teacher from '../models/Teacher.js';
 import Student from '../models/Student.js';
 import ManualNotification from '../models/ManualNotification.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
 import { sendPushManual } from '../services/push.js';
 
 export const getAdminStats = async (req, res, next) => {
@@ -15,8 +17,10 @@ export const getAdminStats = async (req, res, next) => {
     const totalCourses = await Course.countDocuments();
     const totalTeachers = await Teacher.countDocuments();
     const totalStudents = await Student.countDocuments();
+    const totalProducts = await Product.countDocuments();
+    const totalOrders = await Order.countDocuments();
 
-    res.json({ success: true, data: { totalEvents, totalDuas, totalHadith, totalCourses, totalTeachers, totalStudents } });
+    res.json({ success: true, data: { totalEvents, totalDuas, totalHadith, totalCourses, totalTeachers, totalStudents, totalProducts, totalOrders } });
   } catch (error) {
     next(error);
   }
@@ -228,6 +232,65 @@ export const getManualNotifications = async (req, res, next) => {
       createdAt: { $gt: new Date(since) },
     }).sort({ createdAt: -1 }).lean();
     res.json({ success: true, data: notifications });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Products CRUD
+export const getAdminProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, data: products });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createProduct = async (req, res, next) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(201).json({ success: true, data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!product) { res.status(404); throw new Error('Product not found'); }
+    res.json({ success: true, data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) { res.status(404); throw new Error('Product not found'); }
+    res.json({ success: true, message: 'Product deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Orders listing
+export const getAdminOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }).populate('items.product', 'name image price').lean();
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateOrderStatus = async (req, res, next) => {
+  try {
+    const order = await Order.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true, runValidators: true });
+    if (!order) { res.status(404); throw new Error('Order not found'); }
+    res.json({ success: true, data: order });
   } catch (error) {
     next(error);
   }

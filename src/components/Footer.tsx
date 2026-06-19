@@ -67,6 +67,11 @@ export default function Footer({ language, onTabChange }: FooterProps) {
                 🗓️ {language === 'en' ? 'Islamic Hijri Calendar' : 'قمری ہجری کیلنڈر'}
               </button>
             </li>
+            <li>
+              <button onClick={() => onTabChange('store')} className="hover:text-amber-400 transition cursor-pointer text-left w-full">
+                🛍️ {language === 'en' ? 'Islamic Store' : 'اسلامک اسٹور'}
+              </button>
+            </li>
           </ul>
         </div>
 

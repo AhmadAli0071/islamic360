@@ -21,6 +21,8 @@ import hijriRoutes from './routes/hijriRoutes.js';
 import teacherRoutes from './routes/teacherRoutes.js';
 import enrollRoutes from './routes/enrollRoutes.js';
 import pushRoutes from './routes/push.js';
+import productRoutes from './routes/productRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 import { startPushCron } from './services/pushCron.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
@@ -75,6 +77,8 @@ app.use('/api/hijri', hijriRoutes);
 app.use('/api/teachers', teacherRoutes);
 app.use('/api/enroll', enrollRoutes);
 app.use('/api/push', pushRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Fallback: serve index.html for any non-API route (SPA)
 app.get('*', (req, res) => {

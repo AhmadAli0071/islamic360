@@ -24,6 +24,27 @@ interface TeacherData {
   isActive?: boolean;
 }
 
+interface ProductData {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  isActive?: boolean;
+}
+
+interface OrderData {
+  _id: string;
+  items: { product: { _id: string; name: string; image: string }; name: string; price: number; quantity: number }[];
+  totalAmount: number;
+  customerName: string;
+  customerPhone: string;
+  customerAddress: string;
+  status: string;
+  createdAt: string;
+}
+
 interface Stats {
   totalEvents: number;
   totalDuas: number;
@@ -31,6 +52,8 @@ interface Stats {
   totalCourses: number;
   totalTeachers: number;
   totalStudents: number;
+  totalProducts: number;
+  totalOrders: number;
 }
 
 const ADMIN_PIN = '135813';
@@ -39,13 +62,16 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
   const [pinVerified, setPinVerified] = useState(() => sessionStorage.getItem('admin_pin') === ADMIN_PIN);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students' | 'notifications'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'courses' | 'teachers' | 'students' | 'products' | 'orders' | 'notifications'>('dashboard');
   const [stats, setStats] = useState<Stats | null>(null);
   const [courses, setCourses] = useState<CourseData[]>([]);
   const [teachers, setTeachers] = useState<TeacherData[]>([]);
+  const [products, setProducts] = useState<ProductData[]>([]);
+  const [orders, setOrders] = useState<OrderData[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingCourse, setEditingCourse] = useState<CourseData | null>(null);
   const [editingTeacher, setEditingTeacher] = useState<TeacherData | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductData | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [notifTitle, setNotifTitle] = useState('');
   const [notifBody, setNotifBody] = useState('');
@@ -73,6 +99,8 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
     try { setStats(await api.getAdminStats() as Stats); } catch (err) { console.error('Stats error:', err); }
     try { setCourses(await api.getAdminCourses() as CourseData[]); } catch (err) { console.error('Courses error:', err); }
     try { setTeachers(await api.getAdminTeachers() as TeacherData[]); } catch (err) { console.error('Teachers error:', err); }
+    try { setProducts(await api.getAdminProducts() as ProductData[]); } catch (err) { console.error('Products error:', err); }
+    try { setOrders(await api.getAdminOrders() as OrderData[]); } catch (err) { console.error('Orders error:', err); }
     setLoading(false);
   };
 
@@ -110,6 +138,40 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
       }
       setShowForm(false);
       setEditingTeacher(null);
+      await loadAll();
+    } catch (err) {
+      alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
+    }
+  };
+
+  const handleSaveProduct = async (product: Partial<ProductData>) => {
+    try {
+      if (editingProduct) {
+        await api.updateProduct(editingProduct._id, product);
+      } else {
+        await api.createProduct(product);
+      }
+      setShowForm(false);
+      setEditingProduct(null);
+      await loadAll();
+    } catch (err) {
+      alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Delete this product?')) return;
+    try {
+      await api.deleteProduct(id);
+      await loadAll();
+    } catch (err) {
+      alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
+    }
+  };
+
+  const handleUpdateOrderStatus = async (id: string, status: string) => {
+    try {
+      await api.updateOrderStatus(id, { status });
       await loadAll();
     } catch (err) {
       alert('Error: ' + (err instanceof Error ? err.message : 'Unknown'));
@@ -234,6 +296,8 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
             { label: 'Events', value: stats.totalEvents, color: 'bg-amber-500' },
             { label: 'Duas', value: stats.totalDuas, color: 'bg-purple-500' },
             { label: 'Hadith', value: stats.totalHadith, color: 'bg-rose-500' },
+            { label: 'Products', value: stats.totalProducts, color: 'bg-orange-500' },
+            { label: 'Orders', value: stats.totalOrders, color: 'bg-pink-500' },
           ].map(item => (
             <div key={item.label} className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 text-center">
               <div className={`w-8 h-8 ${item.color} rounded-full mx-auto flex items-center justify-center text-white text-xs font-bold`}>
@@ -247,7 +311,7 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
 
       {/* NAV */}
       <div className="flex space-x-2 border-b border-[var(--border)] pb-2 overflow-x-auto">
-        {(['dashboard', 'courses', 'teachers', 'students', 'notifications'] as const).map(s => (
+        {(['dashboard', 'courses', 'teachers', 'students', 'products', 'orders', 'notifications'] as const).map(s => (
           <button key={s} onClick={() => { setActiveSection(s); setShowForm(false); }}
             className={`px-4 py-2 text-xs font-bold rounded-t-lg transition cursor-pointer ${
               activeSection === s ? 'bg-[var(--primary)] text-white' : 'bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--background)]'
@@ -348,6 +412,111 @@ export default function AdminPanel({ language, standalone }: { language: 'en' | 
       {/* STUDENTS SECTION */}
       {activeSection === 'students' && (
         <StudentsList language={language} />
+      )}
+
+      {/* PRODUCTS SECTION */}
+      {activeSection === 'products' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-heading font-bold text-sm">{language === 'en' ? 'Manage Products' : 'مصنوعات کا انتظام'}</h3>
+            <button onClick={() => { setEditingProduct(null); setShowForm(true); }} className="px-4 py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition">
+              + {language === 'en' ? 'New Product' : 'نئی پروڈکٹ'}
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-[var(--background)] border-b border-[var(--border)] text-left">
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Image</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Name</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Category</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Price</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {products.map(p => (
+                  <tr key={p._id} className="hover:bg-[var(--background)] transition">
+                    <td className="p-3">
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-lg">📦</div>
+                      )}
+                    </td>
+                    <td className="p-3 font-semibold">{p.name}</td>
+                    <td className="p-3 text-[var(--text-secondary)]">{p.category}</td>
+                    <td className="p-3">Rs.{p.price}</td>
+                    <td className="p-3">
+                      <button onClick={() => { setEditingProduct(p); setShowForm(true); }} className="px-2 py-1 bg-amber-500 text-white rounded text-[10px] cursor-pointer mr-1">Edit</button>
+                      <button onClick={() => handleDeleteProduct(p._id)} className="px-2 py-1 bg-red-500 text-white rounded text-[10px] cursor-pointer">Del</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* PRODUCT FORM MODAL */}
+          {showForm && activeSection === 'products' && (
+            <ProductForm
+              product={editingProduct}
+              language={language}
+              onSave={handleSaveProduct}
+              onClose={() => { setShowForm(false); setEditingProduct(null); }}
+            />
+          )}
+        </div>
+      )}
+
+      {/* ORDERS SECTION */}
+      {activeSection === 'orders' && (
+        <div className="space-y-4">
+          <h3 className="font-heading font-bold text-sm">{language === 'en' ? 'Manage Orders' : 'آرڈرز کا انتظام'}</h3>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-[var(--background)] border-b border-[var(--border)] text-left">
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Customer</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Phone</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Items</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Total</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Status</th>
+                  <th className="p-3 font-bold text-[var(--text-secondary)]">Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {orders.map(o => (
+                  <tr key={o._id} className="hover:bg-[var(--background)] transition">
+                    <td className="p-3 font-semibold">{o.customerName}</td>
+                    <td className="p-3">{o.customerPhone}</td>
+                    <td className="p-3 text-[var(--text-secondary)]">{o.items.map(i => i.name).join(', ')}</td>
+                    <td className="p-3 font-bold">Rs.{o.totalAmount}</td>
+                    <td className="p-3">
+                      <select value={o.status} onChange={e => handleUpdateOrderStatus(o._id, e.target.value)}
+                        className={`px-2 py-1 rounded text-[10px] font-bold border cursor-pointer ${
+                          o.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-300' :
+                          o.status === 'confirmed' ? 'bg-blue-100 text-blue-700 border-blue-300' :
+                          o.status === 'shipped' ? 'bg-purple-100 text-purple-700 border-purple-300' :
+                          o.status === 'delivered' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' :
+                          'bg-red-100 text-red-700 border-red-300'
+                        }`}>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </td>
+                    <td className="p-3 text-gray-400">{new Date(o.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       {/* NOTIFICATIONS SECTION */}
@@ -501,6 +670,52 @@ function CourseForm({ course, language, onSave, onClose }: {
           </div>
           <button type="submit" className="w-full py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition">
             {course ? 'Update Course' : 'Create Course'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function ProductForm({ product, language, onSave, onClose }: {
+  product: ProductData | null;
+  language: 'en' | 'ur';
+  onSave: (data: Partial<ProductData>) => void;
+  onClose: () => void;
+}) {
+  const [name, setName] = useState(product?.name || '');
+  const [description, setDescription] = useState(product?.description || '');
+  const [price, setPrice] = useState(product?.price?.toString() || '');
+  const [category, setCategory] = useState(product?.category || 'General');
+  const [image, setImage] = useState(product?.image || '');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave({ name, description, price: Number(price), category, image });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl max-w-md w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 cursor-pointer text-lg">✕</button>
+        <h3 className="font-heading font-bold text-sm mb-4">{product ? (language === 'en' ? 'Edit Product' : 'پروڈکٹ میں ترمیم') : (language === 'en' ? 'New Product' : 'نئی پروڈکٹ')}</h3>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input value={name} onChange={e => setName(e.target.value)} placeholder={language === 'en' ? 'Product Name' : 'پروڈکٹ کا نام'} required className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
+          <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder={language === 'en' ? 'Description' : 'تفصیل'} required rows={3} className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
+          <div className="grid grid-cols-2 gap-3">
+            <input value={price} onChange={e => setPrice(e.target.value)} placeholder={language === 'en' ? 'Price (Rs.)' : 'قیمت (روپے)'} type="number" required className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
+            <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]">
+              <option value="General">General</option>
+              <option value="Books">Books</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Home">Home</option>
+              <option value="Digital">Digital</option>
+            </select>
+          </div>
+          <input value={image} onChange={e => setImage(e.target.value)} placeholder={language === 'en' ? 'Image URL (optional)' : 'تصویر کا لنک (اختیاری)'} className="w-full px-3 py-2 text-xs rounded-lg bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]" />
+          {image && <img src={image} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-[var(--border)]" onError={e => (e.currentTarget.style.display = 'none')} />}
+          <button type="submit" className="w-full py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition">
+            {product ? (language === 'en' ? 'Update Product' : 'اپ ڈیٹ کریں') : (language === 'en' ? 'Create Product' : 'محفوظ کریں')}
           </button>
         </form>
       </div>
