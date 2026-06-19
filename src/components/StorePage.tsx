@@ -15,7 +15,7 @@ interface CartItem {
   quantity: number;
 }
 
-export default function StorePage({ language }: { language: 'en' | 'ur' }) {
+export default function StorePage({ language, onTabChange }: { language: 'en' | 'ur'; onTabChange?: (tab: string) => void }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -102,10 +102,15 @@ export default function StorePage({ language }: { language: 'en' | 'ur' }) {
             {language === 'en' ? 'Premium Islamic products' : 'اعلیٰ اسلامی مصنوعات'}
           </p>
         </div>
-        <button onClick={() => setShowCart(true)} className="relative px-3 py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition flex items-center gap-1.5">
-          🛒 {language === 'en' ? 'Cart' : 'کارٹ'}
-          {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{cartCount}</span>}
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => onTabChange?.('track')} className="px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary)] hover:text-white transition border border-[var(--border)] flex items-center gap-1.5">
+            📦 {language === 'en' ? 'Track Order' : 'آرڈر ٹریک'}
+          </button>
+          <button onClick={() => setShowCart(true)} className="relative px-3 py-2 bg-[var(--primary)] text-white text-xs font-bold rounded-xl cursor-pointer hover:bg-[var(--primary-hover)] transition flex items-center gap-1.5">
+            🛒 {language === 'en' ? 'Cart' : 'کارٹ'}
+            {cartCount > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold">{cartCount}</span>}
+          </button>
+        </div>
       </div>
 
       {/* Products Grid */}

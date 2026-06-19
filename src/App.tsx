@@ -209,7 +209,7 @@ export default function App() {
       case 'asma':
         return <AsmaUlHusna language={language} />;
       case 'store':
-        return <StorePage language={language} />;
+        return <StorePage language={language} onTabChange={setActiveTab} />;
       case 'track':
         return <OrderTracking language={language} />;
       default:
