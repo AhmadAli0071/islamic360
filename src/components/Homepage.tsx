@@ -205,6 +205,46 @@ export default function Homepage({
         </div>
       </section>
 
+      {/* 2.5 STORE PROMO CARD */}
+      <button onClick={() => onTabChange('store')} className="w-full text-left cursor-pointer group">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-900 via-orange-800 to-rose-900 text-white p-5 md:p-6 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:scale-[1.01]">
+          <div className="absolute inset-0 opacity-15 pointer-events-none">
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+              <pattern id="store-pattern" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+                <circle cx="24" cy="24" r="1" fill="#FFD700" fillOpacity="0.3" />
+                <path d="M12 12L36 36M36 12L12 36" stroke="#FFD700" strokeOpacity="0.1" strokeWidth="0.5" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#store-pattern)" />
+            </svg>
+          </div>
+          <div className="relative flex items-center gap-4 md:gap-6">
+            <div className="text-4xl md:text-5xl bg-white/10 rounded-2xl p-3.5 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
+              🛍️
+            </div>
+            <div className="flex-1 space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-[10px] font-bold uppercase tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                <span>{language === 'en' ? 'New' : 'نیا'}</span>
+              </div>
+              <h3 className="text-lg md:text-xl font-black font-heading tracking-tight">
+                {language === 'en' ? 'Islamic 360 Store' : 'اسلامک 360 اسٹور'}
+              </h3>
+              <p className="text-xs text-amber-200/90 leading-relaxed max-w-md">
+                {language === 'en'
+                  ? 'Shop premium Islamic products — Books, Attire, Home Decor & more. COD available.'
+                  : 'اعلیٰ اسلامی مصنوعات خریدیں — کتب، لباس، گھر کی سجاوٹ اور مزید۔ کوڈ کی سہولت۔'}
+              </p>
+              <div className="flex items-center gap-2 pt-1">
+                <span className="text-[11px] font-bold bg-white/20 px-3 py-1 rounded-full group-hover:bg-white/30 transition">
+                  {language === 'en' ? '🛒 Browse Store →' : '🛒 اسٹور دیکھیں →'}
+                </span>
+                <span className="text-[10px] text-amber-300/70">{language === 'en' ? 'Cash on Delivery' : 'ڈیلیوری پر ادائیگی'}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </button>
+
       {/* 3. AD PLACEMENT 1 - LEADERBOARD */}
       <AdContainer id="ad-leaderboard-1" size="728x90 (Desktop) / 320x100 (Mobile)" type="leaderboard" />
 
