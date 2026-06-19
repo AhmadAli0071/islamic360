@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { CityData, AcademicCourse } from '../types';
-import { HISTORY_EVENTS, UPCOMING_EVENTS, getHijriDateString, getFullDayName } from '../prayerData';
+import { CityData, AcademicCourse, HistoryEvent } from '../types';
+import { HISTORY_EVENTS, UPCOMING_EVENTS, getHijriDateString, getFullDayName, extractDayMonth, findTodayHistoryEvent } from '../prayerData';
 import AdContainer from './AdContainer';
 
 interface PrayerEntry {
@@ -33,6 +33,8 @@ export default function Homepage({
   const [currentTime, setCurrentTime] = useState(new Date());
   const [prayersData, setPrayersData] = useState<PrayerEntry[] | null>(null);
   const [prayersError, setPrayersError] = useState(false);
+  const [todayHijri, setTodayHijri] = useState<string>(getHijriDateString(new Date()));
+  const [todayEvent, setTodayEvent] = useState<HistoryEvent | undefined>(() => findTodayHistoryEvent(extractDayMonth(getHijriDateString(new Date()))));
   
   // Real-time ticking clock
   useEffect(() => {
@@ -54,6 +56,23 @@ export default function Homepage({
       .catch(() => { if (!cancelled) setPrayersError(true); });
     return () => { cancelled = true; };
   }, [currentCity]);
+
+  // Fetch today's Hijri date and match history event
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/hijri/today')
+      .then(r => r.json())
+      .then(json => {
+        if (!cancelled && json.success) {
+          const hijriStr = json.data.full;
+          const dayMonth = extractDayMonth(hijriStr);
+          setTodayHijri(hijriStr);
+          setTodayEvent(findTodayHistoryEvent(dayMonth));
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   // Build prayer list from API data
   const prayers: { name: string; arabic: string; time: string; icon: string }[] =
@@ -127,7 +146,7 @@ export default function Homepage({
   };
 
   // Find preview event for Today in History
-  const historyEventPreview = HISTORY_EVENTS.find(e => e.hijriDate.includes('29 Dhul-Hijjah') || e.hijriDate.includes('7 Muharram')) || HISTORY_EVENTS[0];
+  const historyEventPreview = todayEvent || HISTORY_EVENTS[0];
 
   return (
     <div className="flex-1 space-y-6 max-w-5xl mx-auto px-4 pb-16">
@@ -323,7 +342,7 @@ export default function Homepage({
           <div className="text-2xl">🌙</div>
           <div>
             <div className="text-sm font-bold text-amber-700 dark:text-amber-400 font-heading">
-              {getHijriDateString(currentTime)}
+              {todayHijri}
             </div>
             <div className="text-[11px] text-[var(--text-secondary)] mt-0.5">
               {getFullDayName(currentTime)} • {currentTime.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -381,31 +400,43 @@ export default function Homepage({
               {language === 'en' ? 'Recommended' : 'مسنون عمل'}
             </span>
             <div className="text-xs font-semibold text-[var(--text-primary)] pt-1">
-              Ask for Patience & Forgiveness (Ahl al-Bayt remembrance)
+              {historyEventPreview.title}
             </div>
-            
-            <p className="text-base font-arabic font-bold text-emerald-800 dark:text-amber-400 text-center leading-relaxed py-2">
-              إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ. اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا
-            </p>
 
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic border-t border-[var(--border)] pt-2">
-              "Indeed we belong to Allah, and indeed we shall return to Him. O Allah, reward me in my affliction and compensate me with something better than it."
-            </p>
+            {historyEventPreview.amal.map((a, i) => (
+              <p key={i} className="text-xs text-[var(--text-secondary)] leading-relaxed">{i + 1}. {a}</p>
+            ))}
+
+            {historyEventPreview.duaArabic && (
+              <>
+                <p className="text-base font-arabic font-bold text-emerald-800 dark:text-amber-400 text-center leading-relaxed py-2">
+                  {historyEventPreview.duaArabic}
+                </p>
+
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed italic border-t border-[var(--border)] pt-2">
+                  {historyEventPreview.duaTranslation}
+                </p>
+              </>
+            )}
 
             <div className="flex items-center justify-between pt-1">
-              <button
-                onClick={() => handlePlayAudio('recite-1')}
-                className="flex items-center space-x-1 text-[11px] text-emerald-600 dark:text-amber-400 hover:underline cursor-pointer"
-              >
-                <span>{playingAudio === 'recite-1' ? '⏸️ Stop Recitation' : '🔊 Listen To Recitation'}</span>
-              </button>
+              {historyEventPreview.audioUrl && (
+                <button
+                  onClick={() => handlePlayAudio('amal-' + historyEventPreview.id)}
+                  className="flex items-center space-x-1 text-[11px] text-emerald-600 dark:text-amber-400 hover:underline cursor-pointer"
+                >
+                  <span>{playingAudio === 'amal-' + historyEventPreview.id ? '⏸️ Stop Recitation' : '🔊 Listen To Recitation'}</span>
+                </button>
+              )}
 
-              <button
-                onClick={() => handleCopyText('إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ. اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا', 'recite-1')}
-                className="flex items-center space-x-1 text-[11px] text-amber-600 hover:underline cursor-pointer font-medium"
-              >
-                <span>{copyStatus === 'recite-1' ? '✓ Copied' : '📋 Copy Arabic Dua'}</span>
-              </button>
+              {historyEventPreview.duaArabic && (
+                <button
+                  onClick={() => handleCopyText(historyEventPreview.duaArabic!, 'amal-' + historyEventPreview.id)}
+                  className="flex items-center space-x-1 text-[11px] text-amber-600 hover:underline cursor-pointer font-medium"
+                >
+                  <span>{copyStatus === 'amal-' + historyEventPreview.id ? '✓ Copied' : '📋 Copy Arabic Dua'}</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

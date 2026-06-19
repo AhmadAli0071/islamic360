@@ -301,7 +301,7 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     id: 'history-1',
     title: 'Water Cut Off in Karbala',
     hijriDate: '7 Muharram',
-    gregorianDate: 'January 15 (Traditional Reference)', // Fits prompt description
+    gregorianDate: 'June 25 (Traditional Reference)',
     shortDescription: 'The water supply to Hazrat Imam Hussain (R.A.) and his household was stopped by Yazid\'s forces, worsening conditions before Ashura.',
     fullDescription: 'On the 7th of Muharram, Umar ibn Sa\'d received instructions from Ubayd Allah ibn Ziyad to blockade the Euphrates riverbank. Imam Hussain\'s (R.A.) camp was cut off from clean water supply in the desert of Karbala. The extreme physical deprivation suffered by the family, especially the young children, is remembered as one of the most poignant trials of Islamic history, demonstrating absolute steadfastness in the face of tyranny.',
     impact: 'Established the ultimate standard of patience (Sabr) and justice in Islamic conscious history.',
@@ -312,13 +312,13 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     ],
     duaArabic: 'إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ. اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا',
     duaTranslation: '"Indeed we belong to Allah, and indeed we shall return to Him. O Allah, reward me in my affliction and compensate me with something better than it."',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' // Safe, standard sample mock mp3 file
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
   },
   {
     id: 'history-2',
     title: 'Completion of the Kaaba\'s Reconstruction',
     hijriDate: '29 Dhul-Hijjah',
-    gregorianDate: 'June 15 (Modern Current Date)',
+    gregorianDate: 'June 15 (Traditional Reference)',
     shortDescription: 'The sacred reconstruction of the Holy Kaaba by Prophet Ibrahim (A.S.) and Hazrat Ismail (A.S.) as described in Quranic texts.',
     fullDescription: 'Prophet Ibrahim (A.S.) alongside his firstborn Hazrat Ismail (A.S.) completed raising the ancient foundations of the Holy Kaaba in Mecca, building the first house dedicated solely to monotheistic worship on Earth. The station was designated by Almighty Allah for the pilgrimage (Hajj) of mankind.',
     impact: 'Established the spiritual epicenter, the Qiblah direction, and the cornerstone of global Islamic unity.',
@@ -345,7 +345,56 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     ],
     duaArabic: 'اللَّهُمَّ أَنْجِزْ لِي مَا وَعَدْتَنِي ، اللَّهُمَّ آتِ مَا وَعَدْتَنِي',
     duaTranslation: '"O Allah, fulfill for me that which You have promised me. O Allah, bring about what You have promised."'
-  }
+  },
+  {
+    id: 'history-4',
+    title: 'Entry of Imam Hussain (R.A.) into Karbala',
+    hijriDate: '2 Muharram',
+    gregorianDate: 'June 20 (Traditional Reference)',
+    shortDescription: 'Imam Hussain (R.A.) and his blessed caravan arrived at the plain of Karbala, where they would make their historic stand.',
+    fullDescription: 'On the 2nd of Muharram 61 AH, Imam Hussain (R.A.) along with his family and companions arrived at the land of Karbala. Upon being informed of the location, the Holy Imam exclaimed "Karbala" (trial and affliction). Despite knowing the hardship ahead, he chose to stay and uphold the principles of justice and truth against the illegitimate rule of Yazid.',
+    impact: 'The choice of standing against tyranny at Karbala became an eternal symbol of resistance for all oppressed peoples.',
+    amal: [
+      'Recite Ziyarat Ashura or send salutations upon the Prophet\'s family.',
+      'Make sincere intention to always stand for truth, even when alone.',
+      'Give charity in the name of the Ahl al-Bayt.'
+    ],
+    duaArabic: 'اللَّهُمَّ اجْعَلْنِي مَعَ الْحُسَيْنِ فِي الدُّنْيَا وَالْآخِرَةِ',
+    duaTranslation: '"O Allah, place me with Hussain in this world and the Hereafter."'
+  },
+  {
+    id: 'history-5',
+    title: 'Hazrat Zainab (R.A.) — The Shield of Karbala',
+    hijriDate: '5 Muharram',
+    gregorianDate: 'June 23 (Traditional Reference)',
+    shortDescription: 'Hazrat Zainab (R.A.) began her role as the caretaker and protector of the Imam\'s mission after her brother.',
+    fullDescription: 'By the 5th of Muharram, the camp of Imam Hussain (R.A.) was fully besieged by Yazid\'s forces. Hazrat Zainab (R.A.), the daughter of Fatima (R.A.) and Ali (R.A.), emerged as the pillar of strength for the women and children in the camp. Her unwavering faith and eloquence would later carry the message of Karbala to the courts of Kufa and Damascus, forever preserving the legacy of Ashura.',
+    impact: 'Demonstrated the critical role of women in preserving Islamic history and spreading the message of truth.',
+    amal: [
+      'Recite Salawat 100 times honoring the family of the Prophet.',
+      'Reflect on the strength and patience of Hazrat Zainab (R.A.).',
+      'Support women\'s Islamic education initiatives.'
+    ],
+    duaArabic: 'رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا',
+    duaTranslation: '"Our Lord, pour upon us patience and plant firmly our feet."'
+  },
+  {
+    id: 'history-6',
+    title: 'Day of Ashura — The Ultimate Sacrifice',
+    hijriDate: '10 Muharram',
+    gregorianDate: 'June 28 (Traditional Reference)',
+    shortDescription: 'The martyrdom of Imam Hussain (R.A.) and his loyal companions on the plains of Karbala — the zenith of sacrifice for truth.',
+    fullDescription: 'On the 10th of Muharram 61 AH (October 10, 680 CE), Imam Hussain (R.A.) and approximately 72 of his family members and companions were martyred on the scorching plains of Karbala after days of thirst and siege. Despite the tragedy, Imam Hussain\'s unwavering stand against tyranny ensured that the true spirit of Islam would never be extinguished. His final moments were spent in prostration, and his sacrifice became a beacon of courage, justice, and faith for all generations.',
+    impact: 'Ashura stands as the most profound symbol of sacrifice for justice in Islamic history, inspiring countless movements for truth worldwide.',
+    amal: [
+      'Fast on the 9th and 10th of Muharram (or 10th and 11th) following the Sunnah.',
+      'Recite Surat Al-Ikhlas 1000 times.',
+      'Give generously to orphans and the needy.',
+      'Reflect on the meaning of sacrifice and renew your commitment to truth.'
+    ],
+    duaArabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+    duaTranslation: '"Sufficient for us is Allah, and He is the best Disposer of affairs."'
+  },
 ];
 
 export const UPCOMING_EVENTS: IslamicEvent[] = [
@@ -377,10 +426,8 @@ export const UPCOMING_EVENTS: IslamicEvent[] = [
 
 // Mock conversion for display
 export function getHijriDateString(date: Date): string {
-  // Let us approximate Hijri date for June 15, 2026 as 29 Dhul-Hijjah 1447 AH
-  // Return interactive dates based on day
   const day = date.getDate();
-  const month = date.getMonth(); // 5 for June
+  const month = date.getMonth();
   const year = date.getFullYear();
 
   if (year === 2026 && month === 5) {
@@ -392,11 +439,24 @@ export function getHijriDateString(date: Date): string {
     if (day === 20) return '5 Muharram 1448 AH';
     if (day === 21) return '6 Muharram 1448 AH';
     if (day === 22) return '7 Muharram 1448 AH';
+    if (day === 23) return '8 Muharram 1448 AH';
+    if (day === 24) return '9 Muharram 1448 AH';
+    if (day === 25) return '10 Muharram 1448 AH';
     return `${day - 15} Muharram 1448 AH`;
   }
-  
-  // Custom backup for fallback user interactions
+
   return '29 Dhul-Hijjah 1447 AH';
+}
+
+/** Extract "D Month" from a full Hijri string like "4 Muharram 1448 AH" */
+export function extractDayMonth(full: string): string {
+  const parts = full.split(' ');
+  return parts.slice(0, 2).join(' ');
+}
+
+/** Find the history event matching today's Hijri date */
+export function findTodayHistoryEvent(todayHijriDayMonth: string): HistoryEvent | undefined {
+  return HISTORY_EVENTS.find(e => e.hijriDate === todayHijriDayMonth);
 }
 
 export function getFullDayName(date: Date): string {
