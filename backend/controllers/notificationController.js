@@ -75,8 +75,9 @@ export async function buildPrayerOnly(city = 'Karachi', country = 'Pakistan') {
 
 const getDayOfYear = () => {
   const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const diff = now - start;
-  const oneDay = 1000 * 60 * 60 * 24;
-  return Math.floor(diff / oneDay);
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+  const get = (t) => parts.find(p => p.type === t)?.value;
+  const pktDate = new Date(`${get('year')}-${get('month')}-${get('day')}T00:00:00`);
+  const start = new Date(pktDate.getFullYear(), 0, 0);
+  return Math.floor((pktDate - start) / (1000 * 60 * 60 * 24));
 };

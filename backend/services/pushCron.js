@@ -2,6 +2,8 @@ import cron from 'node-cron';
 import { sendPushToAllWithHadith, sendPushWazifa } from './push.js';
 import { buildSchedule } from '../controllers/notificationController.js';
 
+const TIMEZONE = 'Asia/Karachi';
+
 const PRAYER_DAY_MAP = {
   Fajr: 0, Dhuhr: 1, Asr: 2, Maghrib: 3, Isha: 4,
 };
@@ -10,17 +12,28 @@ let sentPrayers = new Set();
 let sentWazifa = false;
 let lastDate = '';
 
+function getPktDate() {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+  const get = (t) => parts.find(p => p.type === t)?.value;
+  return `${get('year')}-${get('month')}-${get('day')}`;
+}
+
 function getTodayKey() {
-  return new Date().toDateString();
+  return getPktDate();
 }
 
 function getCurrentMinutes() {
   const now = new Date();
-  return now.getHours() * 60 + now.getMinutes();
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(now);
+  const h = parseInt(parts.find(p => p.type === 'hour')?.value || '0');
+  const m = parseInt(parts.find(p => p.type === 'minute')?.value || '0');
+  return h * 60 + m;
 }
 
 function isFriday() {
-  return new Date().getDay() === 5;
+  const day = new Intl.DateTimeFormat('en-US', { timeZone: TIMEZONE, weekday: 'long' }).format(new Date());
+  return day === 'Friday';
 }
 
 export function startPushCron() {
