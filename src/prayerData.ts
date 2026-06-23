@@ -492,6 +492,353 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     duaArabic: 'اللَّهُمَّ أَنْجِزْ لِي مَا وَعَدْتَنِي ، اللَّهُمَّ آتِ مَا وَعَدْتَنِي',
     duaTranslation: '"O Allah, fulfill for me that which You have promised me. O Allah, bring about what You have promised."'
   },
+  // Safar
+  {
+    id: 'history-13',
+    title: 'Arbaeen — 40th Day After Ashura',
+    hijriDate: '20 Safar',
+    gregorianDate: 'July 7 (Traditional Reference)',
+    shortDescription: 'The 40th day commemorating the martyrs of Karbala, when the surviving family of Imam Hussain (R.A.) returned to Karbala.',
+    fullDescription: 'Arbaeen marks 40 days after the martyrdom of Imam Hussain (R.A.) at Karbala. According to tradition, the surviving family members — including Imam Zain al-Abidin (A.S.) and Hazrat Zainab (R.A.) — returned to Karbala to perform Ziyarat (visitation) of the martyrs. Arbaeen is one of the largest peaceful gatherings in the world, with millions walking to Karbala to pay homage.',
+    impact: 'Arbaeen symbolizes the enduring legacy of Karbala and the triumph of truth over tyranny.',
+    amal: [
+      'Recite Ziyarat Arbaeen if possible.',
+      'Send Salawat upon the Prophet and his family 100 times.',
+      'Reflect on the message of perseverance and faith.'
+    ],
+    duaArabic: 'السَّلَامُ عَلَيْكَ يَا أَبَا عَبْدِ اللَّهِ وَعَلَى الْأَرْوَاحِ الَّتِي حَلَّتْ بِفِنَائِكَ',
+    duaTranslation: '"Peace be upon you, O Abu Abdillah, and upon the souls that gathered in your courtyard."'
+  },
+  {
+    id: 'history-14',
+    title: 'Death of Prophet Muhammad (PBUH)',
+    hijriDate: '28 Safar',
+    gregorianDate: 'August 14 (Traditional Reference)',
+    shortDescription: 'The beloved Prophet Muhammad (PBUH) passed away in Medina, marking the end of direct divine revelation on Earth.',
+    fullDescription: 'On 28 Safar 11 AH (8 June 632 CE), Prophet Muhammad (PBUH) passed away in the city of Medina at the age of 63. His final days were spent in the apartment of his beloved wife Aisha (R.A.). His last words were "Al-rafiq al-a\'la" (The Highest Companion). His passing plunged the Muslim community into grief, but his legacy — the Quran and Sunnah — remains the eternal guide for humanity.',
+    impact: 'The Seal of the Prophets completed his mission, leaving behind the Quran and his Sunnah as guidance for all mankind until the end of time.',
+    amal: [
+      'Recite Salawat (Durood) 100 times sending peace upon the Prophet.',
+      'Read Seerah (biography) of the Prophet to learn from his life.',
+      'Make sincere intention to follow the Sunnah in daily life.'
+    ],
+    duaArabic: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ',
+    duaTranslation: '"O Allah, send peace upon Muhammad and upon the family of Muhammad."'
+  },
+  // Rabi al-Awwal
+  {
+    id: 'history-15',
+    title: 'The Hijrah — Migration to Medina',
+    hijriDate: '1 Rabi al-Awwal',
+    gregorianDate: 'August 18 (Traditional Reference)',
+    shortDescription: 'Prophet Muhammad (PBUH) migrated from Mecca to Medina, marking the turning point for the early Muslim community.',
+    fullDescription: 'In 622 CE (13 years after Prophethood), Prophet Muhammad (PBUH) and his companion Abu Bakr (R.A.) secretly left Mecca for Medina after a plot to assassinate the Prophet was discovered. The Hijrah marks the establishment of the first Islamic state in Medina and serves as the epoch of the Islamic calendar. The people of Medina (Ansar) welcomed the Prophet with open arms, and the foundation of a just society was laid.',
+    impact: 'The Hijrah transformed the Muslim community from a persecuted minority into the foundation of a civilization based on justice and faith.',
+    amal: [
+      'Reflect on the sacrifices of the Muhajirun (migrants).',
+      'Make du\'a for those who leave their homes for the sake of Allah.',
+      'Support refugees and displaced people.'
+    ],
+    duaArabic: 'رَبِّ أَدْخِلْنِي مُدْخَلَ صِدْقٍ وَأَخْرِجْنِي مُخْرَجَ صِدْقٍ',
+    duaTranslation: '"My Lord, cause me to enter a goodly entrance and to exit a goodly exit."'
+  },
+  {
+    id: 'history-16',
+    title: 'Mawlid al-Nabi — Birth of Prophet Muhammad (PBUH)',
+    hijriDate: '12 Rabi al-Awwal',
+    gregorianDate: 'August 29 (Traditional Reference)',
+    shortDescription: 'The birth of the Prophet Muhammad (PBUH), a mercy to all creation, in the blessed city of Mecca.',
+    fullDescription: 'Prophet Muhammad (PBUH) was born on 12 Rabi al-Awwal in the Year of the Elephant (approximately 570 CE) in Mecca. His father Abdullah had passed away before his birth, and his mother Amina died when he was six. He was raised by his grandfather Abdul Muttalib and later his uncle Abu Talib. His birth brought light to the world, and he would grow to become the final messenger of Allah, bringing the Quran to humanity.',
+    impact: 'The birth of the Prophet Muhammad (PBUH) is the greatest event in human history, as he brought the final divine guidance for all of humanity.',
+    amal: [
+      'Recite abundant Salawat upon the Prophet.',
+      'Read about his noble character and Seerah.',
+      'Celebrate by feeding others and showing extra kindness.'
+    ],
+    duaArabic: 'اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِ سَيِّدِنَا مُحَمَّدٍ',
+    duaTranslation: '"O Allah, send peace upon our master Muhammad and upon the family of our master Muhammad."'
+  },
+  // Rabi al-Thani
+  {
+    id: 'history-17',
+    title: 'Death of Hazrat Fatima (R.A.)',
+    hijriDate: '10 Rabi al-Thani',
+    gregorianDate: 'September 26 (Traditional Reference)',
+    shortDescription: 'The beloved daughter of Prophet Muhammad (PBUH), Hazrat Fatima al-Zahra (R.A.), passed away in Medina.',
+    fullDescription: 'Hazrat Fatima al-Zahra (R.A.), the youngest daughter of Prophet Muhammad (PBUH) and Khadijah (R.A.), passed away at the age of approximately 18-27 years, just months after her father\'s death. She was the wife of Imam Ali (R.A.), and the mother of Imam Hasan (R.A.) and Imam Hussain (R.A.). Known for her piety, charity, and devotion, she is considered the leader of the women of Paradise.',
+    impact: 'Hazrat Fatima\'s life remains a timeless model of piety, patience, and devotion for all Muslim women.',
+    amal: [
+      'Recite Tasbih of Fatima (SubhanAllah 33, Alhamdulillah 33, Allahu Akbar 34).',
+      'Give charity in her name.',
+      'Reflect on her simple and devoted life.'
+    ],
+    duaArabic: 'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَاللَّهُ أَكْبَرُ',
+    duaTranslation: '"Glory be to Allah, all praise be to Allah, and Allah is the Greatest."'
+  },
+  // Jumada al-Ula
+  {
+    id: 'history-18',
+    title: 'Birth of Hazrat Zainab (R.A.)',
+    hijriDate: '15 Jumada al-Ula',
+    gregorianDate: 'October 30 (Traditional Reference)',
+    shortDescription: 'The birth of Hazrat Zainab (R.A.), the courageous daughter of Imam Ali (R.A.) and Hazrat Fatima (R.A.).',
+    fullDescription: 'Hazrat Zainab (R.A.) was born in Medina to Imam Ali (R.A.) and Hazrat Fatima (R.A.), the daughter of Prophet Muhammad (PBUH). She grew up in the household of revelation and became known for her eloquence, wisdom, and unwavering faith. Her role after the tragedy of Karbala — protecting the captives and delivering powerful sermons in the courts of Kufa and Damascus — preserved the message of Imam Hussain\'s sacrifice for all time.',
+    impact: 'Hazrat Zainab (R.A.) is a timeless symbol of courage, eloquence, and faith in the face of unimaginable adversity.',
+    amal: [
+      'Recite Salawat 100 times honoring the family of the Prophet.',
+      'Reflect on the strength and eloquence of Hazrat Zainab.',
+      'Support women\'s education in Islamic studies.'
+    ],
+    duaArabic: 'رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا',
+    duaTranslation: '"Our Lord, pour upon us patience and plant firmly our feet."'
+  },
+  // Jumada al-Thaniya
+  {
+    id: 'history-19',
+    title: 'Birth of Hazrat Fatima al-Zahra (R.A.)',
+    hijriDate: '20 Jumada al-Thaniya',
+    gregorianDate: 'December 3 (Traditional Reference)',
+    shortDescription: 'The birth of Hazrat Fatima (R.A.), the radiant daughter of Prophet Muhammad (PBUH) and the mother of the Ahl al-Bayt.',
+    fullDescription: 'Hazrat Fatima al-Zahra (R.A.), meaning "the radiant one," was born to Prophet Muhammad (PBUH) and Khadijah (R.A.) in Mecca. She is one of the four perfect women of all time according to Islamic tradition. The Prophet said, "Fatima is part of me; whoever angers her angers me." Her marriage to Imam Ali (R.A.) united the Prophet\'s household, and her descendants continue the lineage of the Prophet to this day.',
+    impact: 'Hazrat Fatima (R.A.) represents the highest spiritual station attainable by women and remains an eternal role model.',
+    amal: [
+      'Perform the Tasbih of Fatima (34, 33, 33).',
+      'Give charity in her blessed name.',
+      'Send abundant Salawat upon the Prophet and his family.'
+    ],
+    duaArabic: 'رَضِيتُ بِاللَّهِ رَبًّا وَبِمُحَمَّدٍ نَبِيًّا وَبِفَاطِمَةَ سَيِّدَةً',
+    duaTranslation: '"I am pleased with Allah as my Lord, Muhammad as my Prophet, and Fatima as my leader."'
+  },
+  // Rajab
+  {
+    id: 'history-20',
+    title: 'Birth of Imam Ali (R.A.)',
+    hijriDate: '13 Rajab',
+    gregorianDate: 'January 23 (Traditional Reference)',
+    shortDescription: 'The birth of Imam Ali ibn Abi Talib (R.A.), the cousin and son-in-law of Prophet Muhammad (PBUH), inside the Holy Kaaba.',
+    fullDescription: 'Imam Ali (R.A.) was born on 13 Rajab inside the Holy Kaaba in Mecca — a unique honor in Islamic history. He was the first child to accept Islam, the cousin of the Prophet, and later his son-in-law through marriage to Fatima (R.A.). Known as "Asadullah" (Lion of Allah), he was renowned for his bravery, wisdom, and deep knowledge of the Quran. He would later become the fourth Caliph of Islam.',
+    impact: 'Imam Ali (R.A.) is revered for his unparalleled knowledge, bravery, and justice, serving as a model of Islamic leadership.',
+    amal: [
+      'Read and reflect on the Nahj al-Balaghah (sayings of Imam Ali).',
+      'Recite Salawat 100 times.',
+      'Make du\'a for knowledge and wisdom.'
+    ],
+    duaArabic: 'اللَّهُمَّ زِدْنِي عِلْمًا وَارْزُقْنِي فَهْمًا',
+    duaTranslation: '"O Allah, increase me in knowledge and grant me understanding."'
+  },
+  {
+    id: 'history-21',
+    title: 'Isra and Mi\'raj — The Night Journey',
+    hijriDate: '27 Rajab',
+    gregorianDate: 'February 6 (Traditional Reference)',
+    shortDescription: 'Prophet Muhammad (PBUH) was taken on a miraculous journey from Mecca to Jerusalem and ascended to the heavens.',
+    fullDescription: 'On the 27th of Rajab, Prophet Muhammad (PBUH) was transported from the Sacred Mosque in Mecca to Al-Aqsa Mosque in Jerusalem (Isra), and then ascended through the heavens (Mi\'raj) to the presence of Allah. During this journey, the five daily prayers were ordained. The Prophet met earlier prophets and witnessed Paradise and Hell. This event strengthened the faith of the believers and established the connection between the two holy sanctuaries.',
+    impact: 'The Mi\'raj established the five daily prayers as the cornerstone of Islamic worship and affirmed the link between Mecca and Jerusalem.',
+    amal: [
+      'Offer extra prayers, especially at night (Tahajjud).',
+      'Recite Surah Al-Isra and reflect on its meanings.',
+      'Make sincere repentance and du\'a.'
+    ],
+    duaArabic: 'سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا',
+    duaTranslation: '"Exalted is He who took His servant by night from al-Masjid al-Haram to al-Masjid al-Aqsa."'
+  },
+  // Shaban
+  {
+    id: 'history-22',
+    title: 'Birth of Imam Hussain (R.A.)',
+    hijriDate: '3 Shaban',
+    gregorianDate: 'February 12 (Traditional Reference)',
+    shortDescription: 'The birth of Imam Hussain (R.A.), the grandson of Prophet Muhammad (PBUH) and the prince of the youth of Paradise.',
+    fullDescription: 'Imam Hussain (R.A.) was born on 3 Shaban 4 AH in Medina to Imam Ali (R.A.) and Hazrat Fatima (R.A.). The Prophet Muhammad (PBUH) named him Hussain and held him with great affection, declaring, "Hussain is from me, and I am from Hussain." He would grow to become the central figure of Karbala, whose stand against tyranny would echo through the centuries as the ultimate symbol of sacrifice for justice.',
+    impact: 'Imam Hussain\'s birth brought joy to the Prophet\'s household, and his life became a beacon of courage for all generations.',
+    amal: [
+      'Recite abundant Salawat upon the Prophet and his family.',
+      'Learn about the life and teachings of Imam Hussain.',
+      'Make intention to uphold justice and truth in all matters.'
+    ],
+    duaArabic: 'اللَّهُمَّ اجْعَلْنِي مَعَ الْحُسَيْنِ فِي الدُّنْيَا وَالْآخِرَةِ',
+    duaTranslation: '"O Allah, place me with Hussain in this world and the Hereafter."'
+  },
+  {
+    id: 'history-23',
+    title: 'Shab-e-Barat — Night of Forgiveness',
+    hijriDate: '15 Shaban',
+    gregorianDate: 'February 24 (Traditional Reference)',
+    shortDescription: 'The blessed night of the middle of Shaban, when Allah\'s mercy descends and sins are forgiven.',
+    fullDescription: 'Shab-e-Barat (Laylat al-Bara\'ah) is the 15th night of Shaban. The Prophet Muhammad (PBUH) said that on this night, Allah looks upon His creation and forgives all believers except those who associate partners with Him or harbor hatred in their hearts. It is a night of intense worship, prayer, and seeking forgiveness. Many Muslims spend the night in prayer, recitation of the Quran, and making du\'a for their deceased loved ones.',
+    impact: 'Shab-e-Barat offers believers a profound opportunity for spiritual renewal and forgiveness before the arrival of Ramadan.',
+    amal: [
+      'Spend the night in prayer and recitation of the Quran.',
+      'Fast on the 15th of Shaban following the Sunnah.',
+      'Visit the graves of loved ones and make du\'a for them.'
+    ],
+    duaArabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
+    duaTranslation: '"O Allah, You are Forgiving and love forgiveness, so forgive me."'
+  },
+  // Ramadan
+  {
+    id: 'history-24',
+    title: 'Death of Hazrat Khadijah (R.A.)',
+    hijriDate: '10 Ramadan',
+    gregorianDate: 'March 20 (Traditional Reference)',
+    shortDescription: 'The death of Hazrat Khadijah (R.A.), the first wife of Prophet Muhammad (PBUH) and the first person to accept Islam.',
+    fullDescription: 'Hazrat Khadijah bint Khuwaylid (R.A.), the first wife of Prophet Muhammad (PBUH), passed away in Ramadan of the 10th year of Prophethood (619 CE), about three years before the Hijrah. She was the first person to believe in the Prophet\'s message and stood by him through the most difficult years of persecution. Her wealth was used to support the early Muslim community. The Prophet called the year of her death "The Year of Sorrow."',
+    impact: 'Hazrat Khadijah\'s unwavering faith and support laid the foundation for the early Muslim community.',
+    amal: [
+      'Recite Salawat 100 times in her honor.',
+      'Give charity to support widows and orphans.',
+      'Reflect on the sacrifices of the early believers.'
+    ],
+    duaArabic: 'رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ',
+    duaTranslation: '"Our Lord, forgive us and our brothers who preceded us in faith."'
+  },
+  {
+    id: 'history-25',
+    title: 'Martyrdom of Imam Ali (R.A.)',
+    hijriDate: '21 Ramadan',
+    gregorianDate: 'March 31 (Traditional Reference)',
+    shortDescription: 'Imam Ali ibn Abi Talib (R.A.) was martyred while praying in the mosque of Kufa during the blessed nights of Ramadan.',
+    fullDescription: 'On the 19th of Ramadan 40 AH, Imam Ali (R.A.) was struck on the head with a poisoned sword by Abd al-Rahman ibn Muljim while leading the Fajr prayer in the mosque of Kufa. He passed away on the 21st of Ramadan at the age of approximately 63. His martyrdom came during a period of great turmoil, yet his legacy of justice, knowledge, and spiritual wisdom continues to inspire Muslims across all traditions.',
+    impact: 'Imam Ali\'s martyrdom in the mosque while praying exemplifies his absolute devotion to Allah until his last breath.',
+    amal: [
+      'Recite abundant Salawat upon the Prophet and his family.',
+      'Reflect on the virtues of Imam Ali — knowledge, bravery, and justice.',
+      'Increase prayers and charity during the last ten days of Ramadan.'
+    ],
+    duaArabic: 'فَوَزْ وَرَبِّ الْكَعْبَةِ',
+    duaTranslation: '"By the Lord of the Kaaba, I have succeeded."'
+  },
+  {
+    id: 'history-26',
+    title: 'Laylat al-Qadr — The Night of Power',
+    hijriDate: '27 Ramadan',
+    gregorianDate: 'April 6 (Traditional Reference)',
+    shortDescription: 'The night when the Quran was first revealed — better than a thousand months.',
+    fullDescription: 'Laylat al-Qadr (The Night of Decree) is the most blessed night of the year, occurring in the last ten nights of Ramadan, most commonly observed on the 27th. On this night, the Quran was first revealed to Prophet Muhammad (PBUH) through Angel Jibril. Worship on this night is better than 1,000 months of worship. The angels descend with blessings, and destinies for the coming year are decreed.',
+    impact: 'The revelation of the Quran on Laylat al-Qadr changed the course of human history forever.',
+    amal: [
+      'Spend the night in prayer, Quran recitation, and du\'a.',
+      'Recite "Allahumma innaka afuwwun tuhibbul afwa fa\'fu anni" abundantly.',
+      'Give charity and seek forgiveness throughout the last ten nights.'
+    ],
+    duaArabic: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
+    duaTranslation: '"O Allah, You are Forgiving and love forgiveness, so forgive me."'
+  },
+  // Shawwal
+  {
+    id: 'history-27',
+    title: 'Eid al-Fitr — The Festival of Breaking Fast',
+    hijriDate: '1 Shawwal',
+    gregorianDate: 'April 10 (Traditional Reference)',
+    shortDescription: 'The joyous celebration marking the end of Ramadan, a day of gratitude, charity, and community.',
+    fullDescription: 'Eid al-Fitr is celebrated on the 1st of Shawwal, marking the completion of the blessed month of Ramadan. It is a day of joy, gratitude, and community. Muslims begin the day with a special Eid prayer and give Zakat al-Fitr (obligatory charity) before the prayer so that the needy may also celebrate. The Prophet Muhammad (PBUH) said, "For the one who fasts, there are two joys: the joy when he breaks his fast, and the joy when he meets his Lord."',
+    impact: 'Eid al-Fitr strengthens community bonds and ensures that the blessings of Ramadan reach everyone, including the less fortunate.',
+    amal: [
+      'Pay Zakat al-Fitr before the Eid prayer.',
+      'Attend the Eid congregation and prayer.',
+      'Exchange greetings and spend time with family and friends.'
+    ],
+    duaArabic: 'تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمْ',
+    duaTranslation: '"May Allah accept from us and from you."'
+  },
+  {
+    id: 'history-28',
+    title: 'Battle of Uhud',
+    hijriDate: '7 Shawwal',
+    gregorianDate: 'April 16 (Traditional Reference)',
+    shortDescription: 'The Muslims defended Medina against the Quraysh at Mount Uhud, a battle of profound lessons in obedience and perseverance.',
+    fullDescription: 'The Battle of Uhud took place on 7 Shawwal 3 AH (March 23, 625 CE) when the Quraysh of Mecca marched on Medina with 3,000 soldiers to avenge their defeat at Badr. The Prophet Muhammad (PBUH) led 1,000 Muslims to Mount Uhud. Initially victorious, the tide turned when the archers disobeyed the Prophet\'s orders to hold their position, leading to heavy Muslim losses including the Prophet\'s uncle Hamza (R.A.). Despite the setback, the battle taught lasting lessons about discipline, obedience, and steadfastness.',
+    impact: 'Uhud taught the Muslim community that victory comes from Allah alone and that disobedience to the leader has severe consequences.',
+    amal: [
+      'Read Surah Al-Imran verses related to Uhud.',
+      'Reflect on the importance of obedience to Allah and His messenger.',
+      'Make du\'a for steadfastness in faith.'
+    ],
+    duaArabic: 'رَبَّنَا لَا تَجْعَلْنَا فِتْنَةً لِلَّذِينَ كَفَرُوا وَاغْفِرْ لَنَا',
+    duaTranslation: '"Our Lord, make us not a trial for the disbelievers and forgive us, our Lord."'
+  },
+  // Dhul-Qa'dah
+  {
+    id: 'history-29',
+    title: 'Treaty of Hudaybiyyah',
+    hijriDate: '1 Dhul-Qa\'dah',
+    gregorianDate: 'May 9 (Traditional Reference)',
+    shortDescription: 'The historic peace treaty between Prophet Muhammad (PBUH) and the Quraysh of Mecca, a strategic turning point for Islam.',
+    fullDescription: 'In Dhul-Qa\'dah 6 AH, Prophet Muhammad (PBUH) set out with 1,400 Muslims for Umrah but was stopped at Hudaybiyyah by the Quraysh. After negotiations, the Treaty of Hudaybiyyah was signed, initially seeming unfavorable to Muslims. However, the 10-year peace allowed Islam to spread rapidly, and within two years, the number of believers doubled. The treaty is described in the Quran as a "clear victory."',
+    impact: 'The Treaty of Hudaybiyyah demonstrated the power of peaceful diplomacy and strategic patience, leading to the conquest of Mecca.',
+    amal: [
+      'Reflect on the wisdom of patience in difficult negotiations.',
+      'Read Surah Al-Fath (The Victory) which was revealed after this treaty.',
+      'Make du\'a for peace and unity among Muslims.'
+    ],
+    duaArabic: 'إِنَّا فَتَحْنَا لَكَ فَتْحًا مُّبِينًا',
+    duaTranslation: '"Indeed, We have given you a clear victory."'
+  },
+  {
+    id: 'history-30',
+    title: 'Birth of Imam Ali al-Ridha (A.S.)',
+    hijriDate: '11 Dhul-Qa\'dah',
+    gregorianDate: 'May 19 (Traditional Reference)',
+    shortDescription: 'The birth of Imam Ali ibn Musa al-Ridha (A.S.), the eighth Imam known for his profound knowledge and piety.',
+    fullDescription: 'Imam Ali al-Ridha (A.S.) was born on 11 Dhul-Qa\'dah 148 AH in Medina. He was renowned for his extensive knowledge of Islamic sciences and was appointed as the crown prince by the Abbasid Caliph al-Ma\'mun, though he never actively sought power. His debates with scholars of various faiths demonstrated the intellectual depth of Islamic civilization. His shrine in Mashhad, Iran, is one of the most visited pilgrimage sites in the world.',
+    impact: 'Imam al-Ridha\'s legacy of knowledge and interfaith dialogue continues to inspire scholars and seekers of truth.',
+    amal: [
+      'Seek knowledge and reflect on Islamic teachings.',
+      'Visit or learn about the shrine of Imam al-Ridha in Mashhad.',
+      'Send Salawat upon the Prophet and his family.'
+    ],
+    duaArabic: 'رَبِّ زِدْنِي عِلْمًا',
+    duaTranslation: '"My Lord, increase me in knowledge."'
+  },
+  // Dhul-Hijjah (additional events beyond existing 29 Dhul-Hijjah)
+  {
+    id: 'history-31',
+    title: 'Day of Arafah — The Height of Hajj',
+    hijriDate: '9 Dhul-Hijjah',
+    gregorianDate: 'June 15 (Traditional Reference)',
+    shortDescription: 'The most sacred day of the Islamic year, when pilgrims stand on the plain of Arafat and sins are forgiven.',
+    fullDescription: 'The 9th of Dhul-Hijjah is the Day of Arafah, the climax of the Hajj pilgrimage. Pilgrims gather on the plain of Arafat from noon until sunset, engaged in prayer, supplication, and repentance. The Prophet Muhammad (PBUH) said, "There is no day on which Allah frees more people from the Fire than the Day of Arafah." For those not performing Hajj, fasting on this day expiates the sins of the previous and coming year.',
+    impact: 'The Day of Arafah represents the ultimate act of worship and submission to Allah, uniting millions in a single act of devotion.',
+    amal: [
+      'Fast on the Day of Arafah (9th Dhul-Hijjah).',
+      'Make abundant du\'a and repentance throughout the day.',
+      'Recite the Tahleel (La ilaha illallah) and Takbeer abundantly.'
+    ],
+    duaArabic: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ',
+    duaTranslation: '"There is no god but Allah, alone, without partner."'
+  },
+  {
+    id: 'history-32',
+    title: 'Eid al-Adha — Festival of Sacrifice',
+    hijriDate: '10 Dhul-Hijjah',
+    gregorianDate: 'June 16 (Traditional Reference)',
+    shortDescription: 'The celebration of Prophet Ibrahim\'s (A.S.) unwavering obedience to Allah through the symbolic sacrifice.',
+    fullDescription: 'Eid al-Adha on 10 Dhul-Hijjah commemorates Prophet Ibrahim\'s (A.S.) willingness to sacrifice his son Ismail (A.S.) in obedience to Allah\'s command. As he was about to carry out the sacrifice, Allah replaced Ismail with a ram. Muslims around the world perform the Eid prayer and sacrifice an animal, distributing the meat to family, friends, and the needy. This day coincides with the final rites of Hajj in Mecca.',
+    impact: 'Eid al-Adha embodies the highest level of faith — complete submission to the will of Allah.',
+    amal: [
+      'Attend the Eid prayer in congregation.',
+      'Perform Qurbani (animal sacrifice) if able.',
+      'Share meat with family, neighbors, and the poor.'
+    ],
+    duaArabic: 'بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ',
+    duaTranslation: '"In the name of Allah, and Allah is the Greatest."'
+  },
+  {
+    id: 'history-33',
+    title: 'Event of Ghadir Khumm',
+    hijriDate: '18 Dhul-Hijjah',
+    gregorianDate: 'June 24 (Traditional Reference)',
+    shortDescription: 'The Prophet Muhammad (PBUH) declared Imam Ali (R.A.) as his successor at Ghadir Khumm during the farewell pilgrimage.',
+    fullDescription: 'On 18 Dhul-Hijjah 10 AH, during the return from the Farewell Pilgrimage, Prophet Muhammad (PBUH) stopped at Ghadir Khumm and delivered a famous sermon. He declared, "Of whomsoever I am the master (mawla), this Ali is also his master." This event is celebrated by Shia Muslims as the formal designation of Imam Ali (R.A.) as the Prophet\'s successor, while Sunni Muslims revere it as a declaration of Ali\'s close relationship and virtue.',
+    impact: 'Ghadir Khumm stands as one of the most significant events in early Islamic history regarding the succession of leadership.',
+    amal: [
+      'Recite Salawat upon the Prophet and his family abundantly.',
+      'Reflect on the teachings of the Prophet\'s farewell sermon.',
+      'Make du\'a for unity among the Muslim Ummah.'
+    ],
+    duaArabic: 'اللَّهُمَّ وَالِ مَنْ وَالَاهُ وَعَادِ مَنْ عَادَاهُ',
+    duaTranslation: '"O Allah, befriend those who befriend him and oppose those who oppose him."'
+  },
 ];
 
 export const UPCOMING_EVENTS: IslamicEvent[] = [

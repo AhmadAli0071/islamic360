@@ -146,7 +146,7 @@ export default function Homepage({
   };
 
   // Find preview event for Today in History
-  const historyEventPreview = todayEvent || HISTORY_EVENTS[0];
+  const historyEventPreview = todayEvent;
 
   return (
     <div className="flex-1 space-y-6 max-w-5xl mx-auto px-4 pb-16">
@@ -358,6 +358,7 @@ export default function Homepage({
       <AdContainer id="ad-content-1" size="300x250 Rectangle" type="native" />
 
       {/* 7. TODAY IN ISLAMIC HISTORY (Preview widget) */}
+      {historyEventPreview && (
       <section className="bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border)] rounded-2xl p-5 shadow-sm transition-colors duration-300 relative overflow-hidden">
         <div className="flex justify-between items-start mb-3">
           <h3 className="font-heading font-bold text-base flex items-center space-x-2">
@@ -386,8 +387,10 @@ export default function Homepage({
           </button>
         </div>
       </section>
+      )}
 
       {/* 8. RECOMMENDED AMAL FOR TODAY */}
+      {historyEventPreview && (
       <section className="bg-emerald-500/5 dark:bg-emerald-500/5 border border-emerald-600/20 rounded-2xl p-5 shadow-sm">
         <h3 className="font-heading font-bold text-base flex items-center space-x-2 mb-3.5">
           <span>🤲</span>
@@ -441,6 +444,7 @@ export default function Homepage({
           </div>
         </div>
       </section>
+      )}
 
       {/* 9. QUICK ACTION BUTTONS Grid of 4 */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
