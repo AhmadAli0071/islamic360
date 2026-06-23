@@ -33,14 +33,14 @@ router.get('/calendar', cacheMiddleware(86400), async (req, res, next) => {
 router.get('/today', cacheMiddleware(3600), async (req, res, next) => {
   try {
     const now = new Date();
-    const dd = String(now.getDate()).padStart(2, '0');
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const yyyy = now.getFullYear();
-    const url = `https://api.aladhan.com/v1/gToH?date=${dd}-${mm}-${yyyy}`;
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+    const get = (t) => parts.find(p => p.type === t)?.value;
+    // Use method 1 (University of Islamic Sciences, Karachi) for Pakistan-aligned dates
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=Karachi&country=Pakistan&method=1&date=${get('day')}-${get('month')}-${get('year')}`;
     const response = await fetch(url);
     const data = await response.json();
     if (data.code === 200 && data.data) {
-      const h = data.data.hijri;
+      const h = data.data.date.hijri;
       res.json({
         success: true,
         data: {
