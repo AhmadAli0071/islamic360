@@ -299,55 +299,23 @@ export const STUDENT_TESTIMONIALS: Testimonial[] = [
 export const HISTORY_EVENTS: HistoryEvent[] = [
   {
     id: 'history-1',
-    title: 'Water Cut Off in Karbala',
-    hijriDate: '7 Muharram',
-    gregorianDate: 'June 25 (Traditional Reference)',
-    shortDescription: 'The water supply to Hazrat Imam Hussain (R.A.) and his household was stopped by Yazid\'s forces, worsening conditions before Ashura.',
-    fullDescription: 'On the 7th of Muharram, Umar ibn Sa\'d received instructions from Ubayd Allah ibn Ziyad to blockade the Euphrates riverbank. Imam Hussain\'s (R.A.) camp was cut off from clean water supply in the desert of Karbala. The extreme physical deprivation suffered by the family, especially the young children, is remembered as one of the most poignant trials of Islamic history, demonstrating absolute steadfastness in the face of tyranny.',
-    impact: 'Established the ultimate standard of patience (Sabr) and justice in Islamic conscious history.',
+    title: 'Islamic New Year — 1 Muharram',
+    hijriDate: '1 Muharram',
+    gregorianDate: 'June 16 (Traditional Reference)',
+    shortDescription: 'The beginning of the Hijri calendar year, marking the migration (Hijrah) of Prophet Muhammad (PBUH) from Mecca to Medina.',
+    fullDescription: '1 Muharram marks the start of the Islamic lunar calendar, established during the caliphate of Umar ibn al-Khattab (R.A.). The Hijri calendar takes its epoch from the migration (Hijrah) of Prophet Muhammad (PBUH) from Mecca to Medina in 622 CE — one of the most pivotal events in Islamic history that transformed a persecuted community into the foundation of a just civilization.',
+    impact: 'The Hijri calendar serves as a timeless reminder of the sacrifice and faith of the early Muslims who left their homes for the sake of Allah.',
     amal: [
-      'Recite Salawat (Allahumma Salli Ala Muhammad) 100 times to honor the Household of the Prophet.',
-      'Reflect on the patience of the Ahl al-Bayt and avoid water wastage.',
-      'Provide water to the needy or place water bowls for birds and small animals.'
+      'Recite the New Moon Du\'a upon sighting the crescent.',
+      'Make sincere intentions (Niyyah) for the new year ahead.',
+      'Fast on the Day of Ashura (10 Muharram) and preferably also on 9th or 11th.'
     ],
-    duaArabic: 'إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ. اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا',
-    duaTranslation: '"Indeed we belong to Allah, and indeed we shall return to Him. O Allah, reward me in my affliction and compensate me with something better than it."',
+    duaArabic: 'اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْأَمْنِ وَالْإِيمَانِ وَالسَّلَامَةِ وَالْإِسْلَامِ',
+    duaTranslation: '"O Allah, bring it upon us with security, faith, safety, and Islam."',
     audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
   },
   {
     id: 'history-2',
-    title: 'Completion of the Kaaba\'s Reconstruction',
-    hijriDate: '29 Dhul-Hijjah',
-    gregorianDate: 'June 15 (Traditional Reference)',
-    shortDescription: 'The sacred reconstruction of the Holy Kaaba by Prophet Ibrahim (A.S.) and Hazrat Ismail (A.S.) as described in Quranic texts.',
-    fullDescription: 'Prophet Ibrahim (A.S.) alongside his firstborn Hazrat Ismail (A.S.) completed raising the ancient foundations of the Holy Kaaba in Mecca, building the first house dedicated solely to monotheistic worship on Earth. The station was designated by Almighty Allah for the pilgrimage (Hajj) of mankind.',
-    impact: 'Established the spiritual epicenter, the Qiblah direction, and the cornerstone of global Islamic unity.',
-    amal: [
-      'Recite Du\'a of Ibrahim: "Rabbana Taqabbal Minna" (Our Lord, accept this from us) 33 times.',
-      'Make intentions to perform Hajj or Umrah soon.',
-      'Offer two rak\'ats of Nafal prayer facing the Qiblah with absolute devotion.'
-    ],
-    duaArabic: 'رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ',
-    duaTranslation: '"Our Lord, accept [this] from us. Indeed You are the Hearing, the Knowing."'
-  },
-  {
-    id: 'history-3',
-    title: 'The Great Victory at Badr',
-    hijriDate: '17 Ramadan',
-    gregorianDate: 'Mid-April Reference',
-    shortDescription: 'The legendary Battle of Badr where Muslims triumphed against overwhelming odds, establishing security.',
-    fullDescription: 'In the second year after Higrah, 313 ill-equipped Muslim companions triumphed against a mechanised army of over 1,000 Quraysh warriors at the Wells of Badr. Blessed with divine assistance and led directly by Prophet Muhammad (PBUH), the stunning victory secured the sovereignty of the nascent Medina community state forever.',
-    impact: 'Vindicated true monotheistic faith, broke the aura of pagan invincibility, and launched a global legacy of courage.',
-    amal: [
-      'Recite Surat Al-Anfal verses detailing Badr to study courage.',
-      'Offer charity to families of martyrs and underprivileged soldiers worldwide.',
-      'Increase Istighfar (seeking forgiveness) to fortify spiritual purity.'
-    ],
-    duaArabic: 'اللَّهُمَّ أَنْجِزْ لِي مَا وَعَدْتَنِي ، اللَّهُمَّ آتِ مَا وَعَدْتَنِي',
-    duaTranslation: '"O Allah, fulfill for me that which You have promised me. O Allah, bring about what You have promised."'
-  },
-  {
-    id: 'history-4',
     title: 'Entry of Imam Hussain (R.A.) into Karbala',
     hijriDate: '2 Muharram',
     gregorianDate: 'June 20 (Traditional Reference)',
@@ -361,6 +329,38 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     ],
     duaArabic: 'اللَّهُمَّ اجْعَلْنِي مَعَ الْحُسَيْنِ فِي الدُّنْيَا وَالْآخِرَةِ',
     duaTranslation: '"O Allah, place me with Hussain in this world and the Hereafter."'
+  },
+  {
+    id: 'history-3',
+    title: 'Army of Umar ibn Sa\'d Arrives at Karbala',
+    hijriDate: '3 Muharram',
+    gregorianDate: 'June 21 (Traditional Reference)',
+    shortDescription: 'Umar ibn Sa\'d arrived with a large army, sent by Ubayd Allah ibn Ziyad to confront Imam Hussain (R.A.) at Karbala.',
+    fullDescription: 'On the 3rd of Muharram, Umar ibn Sa\'d arrived at Karbala with an army of 4,000 soldiers, later swelling to over 30,000. He was appointed by Ubayd Allah ibn Ziyad to either extract allegiance from Imam Hussain (R.A.) or fight him. Despite his initial reluctance, Umar ibn Sa\'d chose worldly reward over principle, setting the stage for one of history\'s greatest tragedies.',
+    impact: 'The choice of worldly power over truth by Umar ibn Sa\'d stands as a warning about the dangers of compromising faith for material gain.',
+    amal: [
+      'Recite Salawat 100 times sending peace upon the Prophet and his family.',
+      'Reflect on the importance of standing firm in one\'s principles.',
+      'Make du\'a for strength to choose truth over worldly benefits.'
+    ],
+    duaArabic: 'رَبَّنَا لَا تَجْعَلْنَا فِتْنَةً لِلْقَوْمِ الظَّالِمِينَ',
+    duaTranslation: '"Our Lord, make us not a trial for the wrongdoing people."'
+  },
+  {
+    id: 'history-4',
+    title: 'Imam Hussain\'s Sermon — Path of Truth',
+    hijriDate: '4 Muharram',
+    gregorianDate: 'June 22 (Traditional Reference)',
+    shortDescription: 'Imam Hussain (R.A.) addressed his companions, declaring his unwavering commitment to truth and allowing anyone to leave freely.',
+    fullDescription: 'On the 4th of Muharram, Imam Hussain (R.A.) gathered his companions and delivered a powerful sermon. He declared that the enemy sought only him, and that anyone who wished to leave could do so under the cover of night without any obligation. His companions, however, responded with unwavering loyalty, declaring "By Allah, we will never abandon you!" This night solidified the bond of faith and sacrifice that would carry them through the days ahead.',
+    impact: 'Demonstrated true leadership — a leader who puts his followers\' safety above his own mission.',
+    amal: [
+      'Reflect on the meaning of true loyalty and sacrifice.',
+      'Make intention to be among those who stand by truth till the end.',
+      'Recite Surat Al-Asr and ponder on its message.'
+    ],
+    duaArabic: 'اللَّهُمَّ ثَبِّتْ قُلُوبَنَا عَلَى دِينِكَ',
+    duaTranslation: '"O Allah, make our hearts firm upon Your religion."'
   },
   {
     id: 'history-5',
@@ -380,6 +380,71 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
   },
   {
     id: 'history-6',
+    title: 'Habib ibn Madhahir Joins Imam Hussain',
+    hijriDate: '6 Muharram',
+    gregorianDate: 'June 24 (Traditional Reference)',
+    shortDescription: 'Habib ibn Madhahir, a loyal companion, arrived to support Imam Hussain (R.A.) despite the overwhelming enemy forces.',
+    fullDescription: 'On the 6th of Muharram, Habib ibn Madhahir al-Asadi, an elderly and devoted companion of the Prophet\'s household, arrived in Karbala with a small band of supporters. Despite the overwhelming numbers of the enemy army, Habib declared his unwavering loyalty to Imam Hussain (R.A.), stating, "I would rather die with you than live under oppression." His arrival brought strength to the small camp, even as the siege tightened and negotiations failed.',
+    impact: 'Habib\'s sacrifice reminds us that true faith means standing with truth regardless of the odds or personal cost.',
+    amal: [
+      'Recite Salawat 100 times sending peace upon the Prophet\'s family.',
+      'Reflect on the value of loyalty and faithfulness.',
+      'Make du\'a to be blessed with righteous companions.'
+    ],
+    duaArabic: 'اللَّهُمَّ ارْزُقْنَا مَوَدَّةَ أَهْلِ بَيْتِ نَبِيِّكَ',
+    duaTranslation: '"O Allah, grant us the love of the household of Your Prophet."'
+  },
+  {
+    id: 'history-7',
+    title: 'Water Cut Off in Karbala',
+    hijriDate: '7 Muharram',
+    gregorianDate: 'June 25 (Traditional Reference)',
+    shortDescription: 'The water supply to Hazrat Imam Hussain (R.A.) and his household was stopped by Yazid\'s forces, worsening conditions before Ashura.',
+    fullDescription: 'On the 7th of Muharram, Umar ibn Sa\'d received instructions from Ubayd Allah ibn Ziyad to blockade the Euphrates riverbank. Imam Hussain\'s (R.A.) camp was cut off from clean water supply in the desert of Karbala. The extreme physical deprivation suffered by the family, especially the young children, is remembered as one of the most poignant trials of Islamic history, demonstrating absolute steadfastness in the face of tyranny.',
+    impact: 'Established the ultimate standard of patience (Sabr) and justice in Islamic conscious history.',
+    amal: [
+      'Recite Salawat (Allahumma Salli Ala Muhammad) 100 times to honor the Household of the Prophet.',
+      'Reflect on the patience of the Ahl al-Bayt and avoid water wastage.',
+      'Provide water to the needy or place water bowls for birds and small animals.'
+    ],
+    duaArabic: 'إِنَّا لِلَّٰهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ. اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي وَأَخْلِفْ لِي خَيْرًا مِنْهَا',
+    duaTranslation: '"Indeed we belong to Allah, and indeed we shall return to Him. O Allah, reward me in my affliction and compensate me with something better than it."',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+  },
+  {
+    id: 'history-8',
+    title: 'Encirclement of Imam Hussain\'s Camp',
+    hijriDate: '8 Muharram',
+    gregorianDate: 'June 26 (Traditional Reference)',
+    shortDescription: 'Yazid\'s forces completely surrounded Imam Hussain\'s camp, sealing all escape routes and preparing for battle.',
+    fullDescription: 'By the 8th of Muharram, the forces of Yazid had completely encircled the camp of Imam Hussain (R.A.). Umar ibn Sa\'d ordered his troops to tighten the noose, positioning archers and cavalry around the small encampment. Despite being vastly outnumbered and completely cut off from water and supplies, the spirit of the camp remained unbroken. The night fell with an eerie silence, knowing that the final confrontation was now inevitable.',
+    impact: 'Shows the depth of oppression faced by the Ahl al-Bayt and their unbreakable faith in the face of certain death.',
+    amal: [
+      'Recite Astaghfirullah 100 times seeking forgiveness.',
+      'Reflect on the importance of trust in Allah during difficult times.',
+      'Make du\'a for the oppressed Muslims around the world.'
+    ],
+    duaArabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+    duaTranslation: '"Sufficient for us is Allah, and He is the best Disposer of affairs."'
+  },
+  {
+    id: 'history-9',
+    title: 'Tasu\'a — The Night of Vigil',
+    hijriDate: '9 Muharram',
+    gregorianDate: 'June 27 (Traditional Reference)',
+    shortDescription: 'The night before Ashura — Imam Hussain and his companions spent the entire night in worship, preparing to meet their Lord.',
+    fullDescription: 'The 9th of Muharram, known as Tasu\'a, was a night of profound spiritual significance. Imam Hussain (R.A.) requested a one-night reprieve from Umar ibn Sa\'d to spend in worship. The camp spent the entire night in prayer, recitation of the Quran, and supplication. The sound of worship echoed through the desert as the small band of believers prepared to meet their Creator. Shimr ibn Dhil-Jawshan brought a guarantee of safety for some relatives, but Imam Hussain (R.A.) refused any offer that excluded his companions, declaring, "I will never abandon my companions."',
+    impact: 'Tasu\'a stands as a symbol of absolute loyalty — a leader who refuses personal safety without his companions.',
+    amal: [
+      'Fast on Tasu\'a (9th Muharram) following the Sunnah.',
+      'Spend the night in worship and recitation of the Quran.',
+      'Make sincere repentance and seek forgiveness for all sins.'
+    ],
+    duaArabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ حُسْنَ الْخَاتِمَةِ',
+    duaTranslation: '"O Allah, I ask You for a good end."'
+  },
+  {
+    id: 'history-10',
     title: 'Day of Ashura — The Ultimate Sacrifice',
     hijriDate: '10 Muharram',
     gregorianDate: 'June 28 (Traditional Reference)',
@@ -394,6 +459,38 @@ export const HISTORY_EVENTS: HistoryEvent[] = [
     ],
     duaArabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
     duaTranslation: '"Sufficient for us is Allah, and He is the best Disposer of affairs."'
+  },
+  {
+    id: 'history-11',
+    title: 'Completion of the Kaaba\'s Reconstruction',
+    hijriDate: '29 Dhul-Hijjah',
+    gregorianDate: 'June 15 (Traditional Reference)',
+    shortDescription: 'The sacred reconstruction of the Holy Kaaba by Prophet Ibrahim (A.S.) and Hazrat Ismail (A.S.) as described in Quranic texts.',
+    fullDescription: 'Prophet Ibrahim (A.S.) alongside his firstborn Hazrat Ismail (A.S.) completed raising the ancient foundations of the Holy Kaaba in Mecca, building the first house dedicated solely to monotheistic worship on Earth. The station was designated by Almighty Allah for the pilgrimage (Hajj) of mankind.',
+    impact: 'Established the spiritual epicenter, the Qiblah direction, and the cornerstone of global Islamic unity.',
+    amal: [
+      'Recite Du\'a of Ibrahim: "Rabbana Taqabbal Minna" (Our Lord, accept this from us) 33 times.',
+      'Make intentions to perform Hajj or Umrah soon.',
+      'Offer two rak\'ats of Nafal prayer facing the Qiblah with absolute devotion.'
+    ],
+    duaArabic: 'رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ',
+    duaTranslation: '"Our Lord, accept [this] from us. Indeed You are the Hearing, the Knowing."'
+  },
+  {
+    id: 'history-12',
+    title: 'The Great Victory at Badr',
+    hijriDate: '17 Ramadan',
+    gregorianDate: 'Mid-April Reference',
+    shortDescription: 'The legendary Battle of Badr where Muslims triumphed against overwhelming odds, establishing security.',
+    fullDescription: 'In the second year after Hijrah, 313 ill-equipped Muslim companions triumphed against a mechanised army of over 1,000 Quraysh warriors at the Wells of Badr. Blessed with divine assistance and led directly by Prophet Muhammad (PBUH), the stunning victory secured the sovereignty of the nascent Medina community state forever.',
+    impact: 'Vindicated true monotheistic faith, broke the aura of pagan invincibility, and launched a global legacy of courage.',
+    amal: [
+      'Recite Surat Al-Anfal verses detailing Badr to study courage.',
+      'Offer charity to families of martyrs and underprivileged soldiers worldwide.',
+      'Increase Istighfar (seeking forgiveness) to fortify spiritual purity.'
+    ],
+    duaArabic: 'اللَّهُمَّ أَنْجِزْ لِي مَا وَعَدْتَنِي ، اللَّهُمَّ آتِ مَا وَعَدْتَنِي',
+    duaTranslation: '"O Allah, fulfill for me that which You have promised me. O Allah, bring about what You have promised."'
   },
 ];
 
