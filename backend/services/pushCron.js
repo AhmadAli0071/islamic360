@@ -95,4 +95,15 @@ export function startPushCron() {
       console.error('Push cron error:', err.message);
     }
   });
+
+  // Self-ping every 10 minutes to prevent Render free tier sleep
+  cron.schedule('*/10 * * * *', async () => {
+    const baseUrl = process.env.RENDER_EXTERNAL_URL || process.env.FRONTEND_URL || 'https://islamic360.onrender.com';
+    try {
+      const response = await fetch(`${baseUrl}/api/health`, { timeout: 10000 });
+      if (response.ok) console.log('Keep-alive ping OK');
+    } catch (err) {
+      console.log('Keep-alive ping failed:', err.message);
+    }
+  });
 }
